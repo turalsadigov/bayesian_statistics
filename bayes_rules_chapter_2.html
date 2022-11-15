@@ -152,8 +152,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="toc-section-number">1.2</span>  data</a></li>
   <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda"><span class="toc-section-number">1.3</span>  EDA</a></li>
   <li><a href="#now-we-include-data-features-to-udpate-out-model" id="toc-now-we-include-data-features-to-udpate-out-model" class="nav-link" data-scroll-target="#now-we-include-data-features-to-udpate-out-model"><span class="toc-section-number">1.4</span>  Now we include data (features to udpate out model)</a></li>
+  <li><a href="#now-include-more-info" id="toc-now-include-more-info" class="nav-link" data-scroll-target="#now-include-more-info"><span class="toc-section-number">1.5</span>  now include more info</a></li>
   </ul></li>
   <li><a href="#section-2.2" id="toc-section-2.2" class="nav-link" data-scroll-target="#section-2.2"><span class="toc-section-number">2</span>  section 2.2</a></li>
+  <li><a href="#section-2.3" id="toc-section-2.3" class="nav-link" data-scroll-target="#section-2.3"><span class="toc-section-number">3</span>  section 2.3</a>
+  <ul class="collapse">
+  <li><a href="#pi-has-prior-discrete-distribution" id="toc-pi-has-prior-discrete-distribution" class="nav-link" data-scroll-target="#pi-has-prior-discrete-distribution"><span class="toc-section-number">3.1</span>  pi has prior discrete distribution</a></li>
+  <li><a href="#pi-has-prior-uniform-distribution" id="toc-pi-has-prior-uniform-distribution" class="nav-link" data-scroll-target="#pi-has-prior-uniform-distribution"><span class="toc-section-number">3.2</span>  pi has prior Uniform distribution</a></li>
+  <li><a href="#pi-has-prior-beta-distribution" id="toc-pi-has-prior-beta-distribution" class="nav-link" data-scroll-target="#pi-has-prior-beta-distribution"><span class="toc-section-number">3.3</span>  pi has prior beta distribution</a></li>
+  </ul></li>
+  <li><a href="#section-2.5---exercises" id="toc-section-2.5---exercises" class="nav-link" data-scroll-target="#section-2.5---exercises"><span class="toc-section-number">4</span>  section 2.5 - exercises</a>
+  <ul class="collapse">
+  <li><a href="#ex-2.13-lactose-intolerance" id="toc-ex-2.13-lactose-intolerance" class="nav-link" data-scroll-target="#ex-2.13-lactose-intolerance"><span class="toc-section-number">4.1</span>  ex 2.13: Lactose intolerance:</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -166,13 +177,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1 data-number="1"><span class="header-section-number">1</span> section 2.1</h1>
 <section id="libraries" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="libraries"><span class="header-section-number">1.1</span> libraries</h2>
-<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-1_6956a85b21c4de598811782b7208ac5f">
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-1_4598c2b6e4a3512fb3b0e691edb02ecf">
 <details open="">
 <summary>Collapse/show the code below</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Load packages</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(bayesrules)</span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(patchwork)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -313,48 +325,91 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
+<section id="now-include-more-info" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="now-include-more-info"><span class="header-section-number">1.5</span> now include more info</h2>
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-9_17a3d7790594244e16f3489f589c6bbc">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>df <span class="ot">&lt;-</span> fake_news <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">select</span>(type, title_has_excl, text_words) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3"></a>  <span class="fu">transmute</span>(type, title_has_excl, <span class="at">test_words_dummy =</span> <span class="fu">if_else</span>(text_words <span class="sc">&gt;</span> <span class="fu">median</span>(text_words), <span class="st">'high'</span>, <span class="st">'low'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4"></a>  <span class="fu">tibble</span>()</span>
+<span id="cb15-5"><a href="#cb15-5"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 150 × 3
+   type  title_has_excl test_words_dummy
+   &lt;fct&gt; &lt;lgl&gt;          &lt;chr&gt;           
+ 1 fake  FALSE          low             
+ 2 real  FALSE          high            
+ 3 fake  TRUE           high            
+ 4 real  FALSE          low             
+ 5 fake  FALSE          high            
+ 6 real  FALSE          low             
+ 7 fake  FALSE          low             
+ 8 fake  TRUE           high            
+ 9 fake  FALSE          high            
+10 real  FALSE          high            
+# … with 140 more rows</code></pre>
+</div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">filter</span>(title_has_excl <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">count</span>(test_words_dummy, type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  test_words_dummy type      n
+  &lt;chr&gt;            &lt;fct&gt; &lt;int&gt;
+1 high             fake      9
+2 high             real      2
+3 low              fake      7</code></pre>
+</div>
+</div>
+</section>
 </section>
 <section id="section-2.2" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> section 2.2</h1>
-<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-9_0479e17c4fbfff1d6821709c24e91f37">
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-10_2d2dc51144d65739742bf9b3cf15a208">
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">data</span>(<span class="st">"pop_vs_soda"</span>)</span>
-<span id="cb15-2"><a href="#cb15-2"></a></span>
-<span id="cb15-3"><a href="#cb15-3"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
-<span id="cb15-4"><a href="#cb15-4"></a>  <span class="fu">count</span>(state, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-5"><a href="#cb15-5"></a>  <span class="fu">mutate</span>(<span class="at">state =</span> <span class="fu">fct_reorder</span>(state, n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-6"><a href="#cb15-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(state, n)) <span class="sc">+</span></span>
-<span id="cb15-7"><a href="#cb15-7"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb15-8"><a href="#cb15-8"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">data</span>(<span class="st">"pop_vs_soda"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">count</span>(state, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">mutate</span>(<span class="at">state =</span> <span class="fu">fct_reorder</span>(state, n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-6"><a href="#cb19-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(state, n)) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="bayes_rules_chapter_2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="bayes_rules_chapter_2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
-<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">count</span>(region, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">count</span>(region, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">transmute</span>(region, <span class="at">prior =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 3
-  region         n percent
-  &lt;fct&gt;      &lt;int&gt;   &lt;dbl&gt;
-1 midwest   145096   0.388
-2 south      90164   0.241
-3 northeast  77188   0.206
-4 west       61802   0.165</code></pre>
+<pre><code># A tibble: 4 × 2
+  region    prior
+  &lt;fct&gt;     &lt;dbl&gt;
+1 midwest   0.388
+2 south     0.241
+3 northeast 0.206
+4 west      0.165</code></pre>
 </div>
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
-<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">count</span>(word_for_cola) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-4"><a href="#cb18-4"></a>  <span class="fu">filter</span>(word_for_cola <span class="sc">==</span> <span class="st">'pop'</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-5"><a href="#cb18-5"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb18-6"><a href="#cb18-6"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-7"><a href="#cb18-7"></a>  <span class="fu">arrange</span>(percent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">count</span>(word_for_cola) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">filter</span>(word_for_cola <span class="sc">==</span> <span class="st">'pop'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-5"><a href="#cb22-5"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb22-6"><a href="#cb22-6"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-7"><a href="#cb22-7"></a>  <span class="fu">arrange</span>(percent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 4
@@ -367,15 +422,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
-<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">mutate</span>(<span class="at">pop_dummy =</span> <span class="fu">if_else</span>(word_for_cola <span class="sc">==</span> <span class="st">'pop'</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">group_by</span>(pop_dummy) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">count</span>(region) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-6"><a href="#cb20-6"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-7"><a href="#cb20-7"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> region, <span class="at">values_from =</span> percent, <span class="at">id_cols =</span> pop_dummy) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-8"><a href="#cb20-8"></a>  <span class="fu">adorn_totals</span>(<span class="st">'col'</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-9"><a href="#cb20-9"></a>  <span class="fu">adorn_totals</span>(<span class="st">'row'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">mutate</span>(<span class="at">pop_dummy =</span> <span class="fu">if_else</span>(word_for_cola <span class="sc">==</span> <span class="st">'pop'</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">group_by</span>(pop_dummy) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-4"><a href="#cb24-4"></a>  <span class="fu">count</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-5"><a href="#cb24-5"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-6"><a href="#cb24-6"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-7"><a href="#cb24-7"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> region, <span class="at">values_from =</span> percent, <span class="at">id_cols =</span> pop_dummy) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-8"><a href="#cb24-8"></a>  <span class="fu">adorn_totals</span>(<span class="st">'col'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-9"><a href="#cb24-9"></a>  <span class="fu">adorn_totals</span>(<span class="st">'row'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> pop_dummy   midwest northeast      south      west    Total
@@ -385,9 +440,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
-<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">tabyl</span>(pop, region) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">adorn_percentages</span>(<span class="st">"col"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">tabyl</span>(pop, region) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-3"><a href="#cb26-3"></a>  <span class="fu">adorn_percentages</span>(<span class="st">"col"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   pop   midwest northeast      south      west
@@ -396,9 +451,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
-<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">tabyl</span>(region) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">adorn_percentages</span>(<span class="st">"col"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="#cb28-2"></a>  <span class="fu">tabyl</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-3"><a href="#cb28-3"></a>  <span class="fu">adorn_percentages</span>(<span class="st">"col"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>    region         n   percent
@@ -410,20 +465,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>A = someone uses the word ‘pop’ L(M|A) = Pr(A|M) = 0.645 L(N|A) = Pr(A|N) = 0.273 L(S|A) = Pr(A|S) = 0.0792 L(W|A) = Pr(A|W) = 0.294</p>
 <p>PRIOR VS Posterior probability P(S) = 0.241 Pr(S|A) = prior * likelihood/(normalization constant) = 0.241 * 0.0792/0.2826</p>
-<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-10_9632650092d928c66437af1284e75d3e">
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-11_62cfbbeded7fc48b16466b62744e5c48">
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
-<span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">mutate</span>(<span class="at">pop_dummy =</span> <span class="fu">if_else</span>(word_for_cola <span class="sc">==</span> <span class="st">'pop'</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-3"><a href="#cb26-3"></a>  <span class="fu">group_by</span>(pop_dummy) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-4"><a href="#cb26-4"></a>  <span class="fu">count</span>(region) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-5"><a href="#cb26-5"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-6"><a href="#cb26-6"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-7"><a href="#cb26-7"></a>  <span class="fu">filter</span>(pop_dummy <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-8"><a href="#cb26-8"></a>  <span class="fu">transmute</span>(region, <span class="at">likelihood =</span> percent) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-9"><a href="#cb26-9"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb26-10"><a href="#cb26-10"></a>  <span class="fu">bind_cols</span>(pop_vs_soda <span class="sc">%&gt;%</span> <span class="fu">count</span>(region) <span class="sc">%&gt;%</span> <span class="fu">transmute</span>(<span class="at">prior =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-11"><a href="#cb26-11"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> likelihood<span class="sc">*</span>prior<span class="sc">/</span><span class="fu">sum</span>(likelihood<span class="sc">*</span>prior))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>pop_vs_soda <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2"></a>  <span class="fu">mutate</span>(<span class="at">pop_dummy =</span> <span class="fu">if_else</span>(word_for_cola <span class="sc">==</span> <span class="st">'pop'</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-3"><a href="#cb30-3"></a>  <span class="fu">group_by</span>(pop_dummy) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-4"><a href="#cb30-4"></a>  <span class="fu">count</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-5"><a href="#cb30-5"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-6"><a href="#cb30-6"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-7"><a href="#cb30-7"></a>  <span class="fu">filter</span>(pop_dummy <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-8"><a href="#cb30-8"></a>  <span class="fu">transmute</span>(region, <span class="at">likelihood =</span> percent) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-9"><a href="#cb30-9"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb30-10"><a href="#cb30-10"></a>  <span class="fu">bind_cols</span>(pop_vs_soda <span class="sc">%&gt;%</span> <span class="fu">count</span>(region) <span class="sc">%&gt;%</span> <span class="fu">transmute</span>(<span class="at">prior =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-11"><a href="#cb30-11"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> likelihood<span class="sc">*</span>prior<span class="sc">/</span><span class="fu">sum</span>(likelihood<span class="sc">*</span>prior))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 4
@@ -435,6 +490,141 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 4 west          0.294  0.165    0.130 </code></pre>
 </div>
 </div>
+</section>
+<section id="section-2.3" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> section 2.3</h1>
+<p>Kasparov</p>
+<section id="pi-has-prior-discrete-distribution" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="pi-has-prior-discrete-distribution"><span class="header-section-number">3.1</span> pi has prior discrete distribution</h2>
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-12_a3eacdd70a7f53f22b29fb33ac241edf">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>)</span>
+<span id="cb32-2"><a href="#cb32-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.65</span>)</span>
+<span id="cb32-3"><a href="#cb32-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior)</span>
+<span id="cb32-4"><a href="#cb32-4"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="#cb32-5"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">6</span>, pi)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-6"><a href="#cb32-6"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-7"><a href="#cb32-7"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+     pi prior likelihood posterior_num posterior
+  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+1   0.2  0.1     0.393        0.0393      0.617 
+2   0.5  0.25    0.0937       0.0234      0.368 
+3   0.8  0.65    0.00154      0.000998    0.0157</code></pre>
+</div>
+</div>
+</section>
+<section id="pi-has-prior-uniform-distribution" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="pi-has-prior-uniform-distribution"><span class="header-section-number">3.2</span> pi has prior Uniform distribution</h2>
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-13_12fc98aa1c23ff729255c4e368819021">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb34-2"><a href="#cb34-2"></a>pi <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> n)</span>
+<span id="cb34-3"><a href="#cb34-3"></a>prior <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span>n, n)</span>
+<span id="cb34-4"><a href="#cb34-4"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior)</span>
+<span id="cb34-5"><a href="#cb34-5"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb34-6"><a href="#cb34-6"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">6</span>, pi)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-7"><a href="#cb34-7"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-8"><a href="#cb34-8"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num))</span>
+<span id="cb34-9"><a href="#cb34-9"></a></span>
+<span id="cb34-10"><a href="#cb34-10"></a>p1 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb34-11"><a href="#cb34-11"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> prior)) <span class="sc">+</span></span>
+<span id="cb34-12"><a href="#cb34-12"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb34-13"><a href="#cb34-13"></a></span>
+<span id="cb34-14"><a href="#cb34-14"></a>p2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb34-15"><a href="#cb34-15"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> posterior)) <span class="sc">+</span></span>
+<span id="cb34-16"><a href="#cb34-16"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb34-17"><a href="#cb34-17"></a></span>
+<span id="cb34-18"><a href="#cb34-18"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="bayes_rules_chapter_2_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="pi-has-prior-beta-distribution" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="pi-has-prior-beta-distribution"><span class="header-section-number">3.3</span> pi has prior beta distribution</h2>
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-14_9821f49f85f706d8c3c45df8ae1cadbb">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>n <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb35-2"><a href="#cb35-2"></a>pi <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> n)</span>
+<span id="cb35-3"><a href="#cb35-3"></a>prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(pi, <span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb35-4"><a href="#cb35-4"></a>prior <span class="ot">&lt;-</span> prior<span class="sc">/</span><span class="fu">sum</span>(prior)</span>
+<span id="cb35-5"><a href="#cb35-5"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior)</span>
+<span id="cb35-6"><a href="#cb35-6"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb35-7"><a href="#cb35-7"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">6</span>, pi)) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-8"><a href="#cb35-8"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-9"><a href="#cb35-9"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num))</span>
+<span id="cb35-10"><a href="#cb35-10"></a></span>
+<span id="cb35-11"><a href="#cb35-11"></a>p1 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb35-12"><a href="#cb35-12"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> prior)) <span class="sc">+</span></span>
+<span id="cb35-13"><a href="#cb35-13"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb35-14"><a href="#cb35-14"></a></span>
+<span id="cb35-15"><a href="#cb35-15"></a>p2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb35-16"><a href="#cb35-16"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> posterior)) <span class="sc">+</span></span>
+<span id="cb35-17"><a href="#cb35-17"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb35-18"><a href="#cb35-18"></a></span>
+<span id="cb35-19"><a href="#cb35-19"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="bayes_rules_chapter_2_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="section-2.5---exercises" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> section 2.5 - exercises</h1>
+<section id="ex-2.13-lactose-intolerance" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="ex-2.13-lactose-intolerance"><span class="header-section-number">4.1</span> ex 2.13: Lactose intolerance:</h2>
+<p>Fatima wants to learn more about the proportion of adults who are lactose intolerant, <span class="math inline">\(\pi\)</span>. Fatima surveys a random sample of 80 adults and 47 are lactose intolerant.</p>
+<p>So, <span class="math inline">\(Y:=\)</span> number of people who are lactore intolerant among 80 people, i.e., <span class="math inline">\(Y\)</span>~ Binomial(n = 80, <span class="math inline">\(\pi\)</span>).</p>
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-15_cefb20460a5a788d0097ae6ff18d488c">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>)</span>
+<span id="cb36-2"><a href="#cb36-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>,    <span class="fl">0.44</span>,   <span class="fl">0.26</span>)</span>
+<span id="cb36-3"><a href="#cb36-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-4"><a href="#cb36-4"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">47</span>, <span class="at">size =</span> <span class="dv">80</span>, <span class="at">prob =</span> pi),</span>
+<span id="cb36-5"><a href="#cb36-5"></a>         <span class="at">posteriro_num =</span> prior<span class="sc">*</span>likelihood,</span>
+<span id="cb36-6"><a href="#cb36-6"></a>         <span class="at">posteriro =</span> posteriro_num<span class="sc">/</span><span class="fu">sum</span>(posteriro_num)) </span>
+<span id="cb36-7"><a href="#cb36-7"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+     pi prior likelihood posteriro_num posteriro
+  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+1   0.4  0.1    0.000301     0.0000301  0.000649
+2   0.5  0.2    0.0264       0.00527    0.114   
+3   0.6  0.44   0.0880       0.0387     0.834   
+4   0.7  0.26   0.00929      0.00242    0.0520  </code></pre>
+</div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>)</span>
+<span id="cb38-2"><a href="#cb38-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>,    <span class="fl">0.44</span>,   <span class="fl">0.26</span>)</span>
+<span id="cb38-3"><a href="#cb38-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-4"><a href="#cb38-4"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">470</span>, <span class="at">size =</span> <span class="dv">800</span>, <span class="at">prob =</span> pi),</span>
+<span id="cb38-5"><a href="#cb38-5"></a>         <span class="at">posteriro_num =</span> prior<span class="sc">*</span>likelihood,</span>
+<span id="cb38-6"><a href="#cb38-6"></a>         <span class="at">posteriro =</span> posteriro_num<span class="sc">/</span><span class="fu">sum</span>(posteriro_num)) </span>
+<span id="cb38-7"><a href="#cb38-7"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+     pi prior likelihood posteriro_num posteriro
+  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+1   0.4  0.1    4.91e-27      4.91e-28  5.06e-26
+2   0.5  0.2    1.29e- 7      2.57e- 8  2.65e- 6
+3   0.6  0.44   2.21e- 2      9.72e- 3  1.00e+ 0
+4   0.7  0.26   3.80e-12      9.87e-13  1.02e-10</code></pre>
+</div>
+</div>
+<p>Exercise 2.14 (Late bus) Li Qiang takes the 8:30am bus to work every morning. If the bus is late, Li Qiang will be late to work. To learn about the probability that her bus will be late (<span class="math inline">\(\pi\)</span>), Li Qiang first surveys 20 other commuters: 3 think <span class="math inline">\(\pi\)</span> is 0.15, 3 think <span class="math inline">\(\pi\)</span> is 0.25, 8 think <span class="math inline">\(\pi\)</span> is 0.5, 3 think <span class="math inline">\(\pi\)</span> is 0.75, and 3 think <span class="math inline">\(\pi\)</span> is 0.85.</p>
+</section>
 </section>
 
 </main>

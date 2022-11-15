@@ -45,6 +45,8 @@ title-block-banner-color: black
 library(bayesrules)
 library(tidyverse)
 library(janitor)
+library(patchwork)
+
 ```
 
 ## data
@@ -155,6 +157,24 @@ fake_news %>%
   adorn_totals("row") 
 ```
 
+
+## now include more info
+
+```{r}
+df <- fake_news %>% 
+  select(type, title_has_excl, text_words) %>% 
+  transmute(type, title_has_excl, test_words_dummy = if_else(text_words > median(text_words), 'high', 'low')) %>% 
+  tibble()
+df
+
+
+df %>% 
+  filter(title_has_excl == TRUE) %>% 
+  count(test_words_dummy, type)
+```
+
+
+
 # section  2.2
 
 ```{r}
@@ -223,5 +243,119 @@ pop_vs_soda %>%
   bind_cols(pop_vs_soda %>% count(region) %>% transmute(prior = n/sum(n))) %>% 
   mutate(posterior = likelihood*prior/sum(likelihood*prior))
   
+```
+
+
+# section 2.3
+
+Kasparov
+
+## pi has prior discrete distribution
+
+```{r}
+pi <- c(0.2, 0.5, 0.8)
+prior <- c(0.10, 0.25, 0.65)
+df <- tibble(pi, prior)
+df %>% 
+  mutate(likelihood = dbinom(1, 6, pi)) %>% 
+  mutate(posterior_num = prior*likelihood) %>% 
+  mutate(posterior = posterior_num/sum(posterior_num))
+```
+
+
+
+## pi has prior Uniform distribution
+
+```{r}
+n = 1000
+pi <- seq(0, 1, length.out = n)
+prior <- rep(1/n, n)
+df <- tibble(pi, prior)
+df <- df %>% 
+  mutate(likelihood = dbinom(1, 6, pi)) %>% 
+  mutate(posterior_num = prior*likelihood) %>% 
+  mutate(posterior = posterior_num/sum(posterior_num))
+
+p1 <- df %>% 
+  ggplot(aes(x = pi, y = prior)) +
+  geom_line()
+
+p2 <- df %>% 
+  ggplot(aes(x = pi, y = posterior)) +
+  geom_line()
+
+p1+p2
+```
+
+
+## pi has prior beta distribution
+
+```{r}
+n = 10000
+pi <- seq(0, 1, length.out = n)
+prior <- dbeta(pi, 3, 2)
+prior <- prior/sum(prior)
+df <- tibble(pi, prior)
+df <- df %>% 
+  mutate(likelihood = dbinom(1, 6, pi)) %>% 
+  mutate(posterior_num = prior*likelihood) %>% 
+  mutate(posterior = posterior_num/sum(posterior_num))
+
+p1 <- df %>% 
+  ggplot(aes(x = pi, y = prior)) +
+  geom_line()
+
+p2 <- df %>% 
+  ggplot(aes(x = pi, y = posterior)) +
+  geom_line()
+
+p1+p2
+```
+
+
+
+# section 2.5 - exercises
+
+
+## Exercise 2.13 (Lactose intolerance)
+
+
+Fatima wants to learn more about the proportion of adults who are lactose intolerant, $\pi$. Fatima surveys a random sample of 80 adults and 47 are lactose intolerant. 
+
+
+So, $Y:=$ number of people who are lactore intolerant among 80 people, i.e., $Y$~ Binomial(n = 80, $\pi$).
+
+```{r}
+pi <- c(0.4, 0.5, 0.6, 0.7)
+prior <- c(0.1,	0.2,	0.44,	0.26)
+df <- tibble(pi, prior) %>% 
+  mutate(likelihood = dbinom(x = 47, size = 80, prob = pi),
+         posteriro_num = prior*likelihood,
+         posteriro = posteriro_num/sum(posteriro_num)) 
+df
+
+
+pi <- c(0.4, 0.5, 0.6, 0.7)
+prior <- c(0.1,	0.2,	0.44,	0.26)
+df <- tibble(pi, prior) %>% 
+  mutate(likelihood = dbinom(x = 470, size = 800, prob = pi),
+         posteriro_num = prior*likelihood,
+         posteriro = posteriro_num/sum(posteriro_num)) 
+df
+```
+
+
+## Exercise 2.14 (Late bus) 
+
+Li Qiang takes the 8:30am bus to work every morning. If the bus is late, Li Qiang will be late to work. To learn about the probability that her bus will be late ($\pi$), Li Qiang first surveys 20 other commuters: 3 think $\pi$ is 0.15, 3 think $\pi$ is 0.25, 8 think $\pi$ is 0.5, 3 think $\pi$ is 0.75, and 3 think $\pi$ is 0.85.
+
+```{r}
+pi <- c(0.15, 0.25, 0.50, 0.75, 0.85)
+prior <- c(3/20, 3/20, 8/20, 3/20, 3/20)
+df <- tibble(pi, prior) %>% 
+  mutate(likelihood = dbinom(x = 3, size = 13, prob = pi),
+         posteriro_num = prior*likelihood,
+         posteriro = posteriro_num/sum(posteriro_num)) 
+df
 ```
 
