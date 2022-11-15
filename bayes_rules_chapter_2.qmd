@@ -1,0 +1,227 @@
+---
+title: "Bayes Rules - Chapter 2"
+author: "Tural Sadigov"
+date: today
+format: 
+    html:
+      theme: 
+        light: united
+        dark: darkly
+      smooth-scroll: true
+always_allow_html: true
+editor: visual
+toc: true
+toc-location: right
+number-sections: true
+cap-location: bottom
+fig-cap-location: bottom
+tbl-cap-location: top
+page-layout: article
+code-fold: show
+code-summary: "Collapse/show the code below"
+code-overflow: scroll
+code-line-numbers: true
+code-copy: true
+execute:
+  echo: true
+  warning: false
+  eval: true
+  output: true
+  error: false
+  cache: true
+  freeze: true
+  out.width: "100%"
+fig-align: center
+title-block-banner: true
+title-block-banner-color: black
+---
+
+# section  2.1
+
+## libraries
+
+```{r}
+# Load packages
+library(bayesrules)
+library(tidyverse)
+library(janitor)
+```
+
+## data
+
+```{r}
+# Import article data
+data(fake_news)
+```
+
+
+## EDA
+
+```{r}
+fake_news %>% 
+  count(type) %>% 
+  mutate(prior_pribabilities = n/sum(n)) %>% 
+  adorn_totals("row") 
+```
+
+Null probability model (probability of an article being FAKE)
+
+$$P(B) = 0.4$$
+
+
+With 0.5 threshold, we would classify every article as real at the expense of 40% fake ones. 
+
+Let A =  an article has exclamation point in the title, and B = article is fake. Then,
+
+```{r}
+fake_news %>% 
+  count(type, title_has_excl) %>% 
+  group_by(type) %>% 
+  mutate(percent = n/sum(n)) %>% 
+  adorn_totals("row") 
+```
+
+i.e.,
+
+$P(A|B)$ =  P(an article has exclamation point in the title | article is fake) = 26.6%
+
+and 
+
+$P(A|B^c)$ =  P(an article has exclamation point in the title | article is real) = 2.22%
+
+We define likelihood function, $L(. | A)$, when conditioned event is NOT certain, we are evaluating the relative compatibility of data with the uncertain event B. 
+
+$$L(B|A) = P(A|B)$$
+
+On the other hand,
+
+```{r}
+fake_news %>% 
+  count(title_has_excl, type) %>% 
+  group_by(title_has_excl) %>% 
+  mutate(percent = n/sum(n)) %>% 
+  adorn_totals("row") 
+
+```
+
+i.e., 
+
+Pr(B|A) = 89%, and Pr(B^c|A) = 11%
+
+Note: 
+
+$$P(B|A) + P(B^c|A) = 100%$$ 
+
+but
+
+$$P(A|B) + P(A|B^c) = 28.89% \neq 100%.$$
+
+What if we want to have $P(A) = P(article has excl in its title)$.
+
+```{r}
+fake_news %>% 
+  count(title_has_excl) %>% 
+  mutate(percent = n/sum(n)) %>% 
+  adorn_totals("row") 
+
+```
+
+$$P(A) = 12\%, p(A^c) = 88\%$$
+
+Create joint distribution
+
+```{r}
+fake_news %>% 
+  count(title_has_excl, type) %>% 
+  mutate(percent = n/sum(n)) %>% 
+  pivot_wider(names_from = type, values_from = percent, id_cols = title_has_excl) %>% 
+  adorn_totals('row') %>% 
+  adorn_totals('col')
+  
+```
+
+
+## Now we include data (features to udpate out model)
+
+We want to calculate posterior probability (probability of the same event after observing more evidence that might affect that event)
+
+$$Pr[B| evidence] = Pr[B|A]$$
+
+```{r}
+fake_news %>% 
+  filter(title_has_excl == TRUE) %>% 
+  count(title_has_excl, type) %>% 
+  mutate(percent = n/sum(n)) %>% 
+  adorn_totals("row") 
+```
+
+# section  2.2
+
+```{r}
+data("pop_vs_soda")
+
+pop_vs_soda %>% 
+  count(state, sort = TRUE) %>% 
+  mutate(state = fct_reorder(state, n)) %>% 
+  ggplot(aes(state, n)) +
+  geom_col() +
+  coord_flip()
+
+pop_vs_soda %>% 
+  count(region, sort = TRUE) %>% 
+  transmute(region, prior = n/sum(n))
+
+pop_vs_soda %>% 
+  group_by(region) %>% 
+  count(word_for_cola) %>% 
+  filter(word_for_cola == 'pop') %>% 
+  ungroup() %>% 
+  mutate(percent = n/sum(n)) %>% 
+  arrange(percent)
+
+
+pop_vs_soda %>% 
+  mutate(pop_dummy = if_else(word_for_cola == 'pop', TRUE, FALSE)) %>% 
+  group_by(pop_dummy) %>% 
+  count(region) %>% 
+  group_by(region) %>% 
+  mutate(percent = n/sum(n)) %>% 
+  pivot_wider(names_from = region, values_from = percent, id_cols = pop_dummy) %>% 
+  adorn_totals('col') %>% 
+  adorn_totals('row')
+
+pop_vs_soda %>% 
+  tabyl(pop, region) %>% 
+  adorn_percentages("col")
+
+pop_vs_soda %>% 
+  tabyl(region) %>% 
+  adorn_percentages("col")
+```
+
+
+A = someone uses the word 'pop'
+L(M|A) = Pr(A|M) = 0.645 
+L(N|A) = Pr(A|N) = 0.273
+L(S|A) = Pr(A|S) = 0.0792 
+L(W|A) = Pr(A|W) = 0.294 
+
+PRIOR VS Posterior probability
+P(S) = 0.241
+Pr(S|A) = prior * likelihood/(normalization constant) = 0.241 * 0.0792/0.2826
+
+```{r}
+pop_vs_soda %>% 
+  mutate(pop_dummy = if_else(word_for_cola == 'pop', TRUE, FALSE)) %>% 
+  group_by(pop_dummy) %>% 
+  count(region) %>% 
+  group_by(region) %>% 
+  mutate(percent = n/sum(n)) %>% 
+  filter(pop_dummy == TRUE) %>% 
+  transmute(region, likelihood = percent) %>% 
+  ungroup() %>% 
+  bind_cols(pop_vs_soda %>% count(region) %>% transmute(prior = n/sum(n))) %>% 
+  mutate(posterior = likelihood*prior/sum(likelihood*prior))
+  
+```
+
