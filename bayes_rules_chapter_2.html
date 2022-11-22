@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tural Sadigov">
-<meta name="dcterms.date" content="2022-11-15">
+<meta name="dcterms.date" content="2022-11-21">
 
 <title>Bayes Rules - Chapter 2</title>
 <style>
@@ -133,7 +133,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">November 15, 2022</p>
+        <p class="date">November 21, 2022</p>
       </div>
     </div>
       
@@ -151,7 +151,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries"><span class="toc-section-number">1.1</span>  libraries</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="toc-section-number">1.2</span>  data</a></li>
   <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda"><span class="toc-section-number">1.3</span>  EDA</a></li>
-  <li><a href="#now-we-include-data-features-to-udpate-out-model" id="toc-now-we-include-data-features-to-udpate-out-model" class="nav-link" data-scroll-target="#now-we-include-data-features-to-udpate-out-model"><span class="toc-section-number">1.4</span>  Now we include data (features to udpate out model)</a></li>
+  <li><a href="#now-we-include-data-features-to-update-out-model" id="toc-now-we-include-data-features-to-update-out-model" class="nav-link" data-scroll-target="#now-we-include-data-features-to-update-out-model"><span class="toc-section-number">1.4</span>  Now we include data (features to update out model)</a></li>
   <li><a href="#now-include-more-info" id="toc-now-include-more-info" class="nav-link" data-scroll-target="#now-include-more-info"><span class="toc-section-number">1.5</span>  now include more info</a></li>
   </ul></li>
   <li><a href="#section-2.2" id="toc-section-2.2" class="nav-link" data-scroll-target="#section-2.2"><span class="toc-section-number">2</span>  section 2.2</a></li>
@@ -163,7 +163,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </ul></li>
   <li><a href="#section-2.5---exercises" id="toc-section-2.5---exercises" class="nav-link" data-scroll-target="#section-2.5---exercises"><span class="toc-section-number">4</span>  section 2.5 - exercises</a>
   <ul class="collapse">
-  <li><a href="#ex-2.13-lactose-intolerance" id="toc-ex-2.13-lactose-intolerance" class="nav-link" data-scroll-target="#ex-2.13-lactose-intolerance"><span class="toc-section-number">4.1</span>  ex 2.13: Lactose intolerance:</a></li>
+  <li><a href="#exercise-2.13-lactose-intolerance" id="toc-exercise-2.13-lactose-intolerance" class="nav-link" data-scroll-target="#exercise-2.13-lactose-intolerance"><span class="toc-section-number">4.1</span>  Exercise 2.13 (Lactose intolerance)</a></li>
+  <li><a href="#exercise-2.14-late-bus" id="toc-exercise-2.14-late-bus" class="nav-link" data-scroll-target="#exercise-2.14-late-bus"><span class="toc-section-number">4.2</span>  Exercise 2.14 (Late bus)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -219,22 +220,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="math display">\[P(B) = 0.4\]</span></p>
 <p>With 0.5 threshold, we would classify every article as real at the expense of 40% fake ones.</p>
 <p>Let A = an article has exclamation point in the title, and B = article is fake. Then,</p>
-<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-4_077ff2e1b5dff875e9ed7b5795cc11bd">
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-4_9e821d3a8f25b615d5102f82a55634c0">
 <details open="">
 <summary>Collapse/show the code below</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>fake_news <span class="sc">%&gt;%</span> </span>
-<span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">count</span>(type, title_has_excl) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">count</span>(title_has_excl, type) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">group_by</span>(title_has_excl) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-5"><a href="#cb5-5"></a>  <span class="fu">adorn_totals</span>(<span class="st">"row"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>  type title_has_excl   n    percent
-  fake          FALSE  44 0.73333333
-  fake           TRUE  16 0.26666667
-  real          FALSE  88 0.97777778
-  real           TRUE   2 0.02222222
- Total              - 150 2.00000000</code></pre>
+<pre><code> title_has_excl type   n   percent
+          FALSE fake  44 0.3333333
+          FALSE real  88 0.6666667
+           TRUE fake  16 0.8888889
+           TRUE real   2 0.1111111
+          Total    - 150 2.0000000</code></pre>
 </div>
 </div>
 <p>i.e.,</p>
@@ -244,22 +245,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>We define likelihood function, <span class="math inline">\(L(. | A)\)</span>, when conditioned event is NOT certain, we are evaluating the relative compatibility of data with the uncertain event B.</p>
 <p><span class="math display">\[L(B|A) = P(A|B)\]</span></p>
 <p>On the other hand,</p>
-<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-5_ca084ffac15ece55e0dd720c13978505">
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-5_f05a916297f4d094e2b46fcd23f850ed">
 <details open="">
 <summary>Collapse/show the code below</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>fake_news <span class="sc">%&gt;%</span> </span>
-<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">count</span>(title_has_excl, type) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">group_by</span>(title_has_excl) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">count</span>(type, title_has_excl) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span> </span>
 <span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span> </span>
 <span id="cb7-5"><a href="#cb7-5"></a>  <span class="fu">adorn_totals</span>(<span class="st">"row"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> title_has_excl type   n   percent
-          FALSE fake  44 0.3333333
-          FALSE real  88 0.6666667
-           TRUE fake  16 0.8888889
-           TRUE real   2 0.1111111
-          Total    - 150 2.0000000</code></pre>
+<pre><code>  type title_has_excl   n    percent
+  fake          FALSE  44 0.73333333
+  fake           TRUE  16 0.26666667
+  real          FALSE  88 0.97777778
+  real           TRUE   2 0.02222222
+ Total              - 150 2.00000000</code></pre>
 </div>
 </div>
 <p>i.e.,</p>
@@ -304,8 +305,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
-<section id="now-we-include-data-features-to-udpate-out-model" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="now-we-include-data-features-to-udpate-out-model"><span class="header-section-number">1.4</span> Now we include data (features to udpate out model)</h2>
+<section id="now-we-include-data-features-to-update-out-model" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="now-we-include-data-features-to-update-out-model"><span class="header-section-number">1.4</span> Now we include data (features to update out model)</h2>
 <p>We want to calculate posterior probability (probability of the same event after observing more evidence that might affect that event)</p>
 <p><span class="math display">\[Pr[B| evidence] = Pr[B|A]\]</span></p>
 <div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-8_d3f416ac179fbffa256be09f2e1ad304">
@@ -496,50 +497,110 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Kasparov</p>
 <section id="pi-has-prior-discrete-distribution" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="pi-has-prior-discrete-distribution"><span class="header-section-number">3.1</span> pi has prior discrete distribution</h2>
-<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-12_a3eacdd70a7f53f22b29fb33ac241edf">
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-12_fb40048117f25277f4c05cea80f8f346">
 <details open="">
 <summary>Collapse/show the code below</summary>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>)</span>
 <span id="cb32-2"><a href="#cb32-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.25</span>, <span class="fl">0.65</span>)</span>
 <span id="cb32-3"><a href="#cb32-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior)</span>
-<span id="cb32-4"><a href="#cb32-4"></a>df <span class="sc">%&gt;%</span> </span>
-<span id="cb32-5"><a href="#cb32-5"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">6</span>, pi)) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-6"><a href="#cb32-6"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-7"><a href="#cb32-7"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-4"><a href="#cb32-4"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 5
-     pi prior likelihood posterior_num posterior
-  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;
-1   0.2  0.1     0.393        0.0393      0.617 
-2   0.5  0.25    0.0937       0.0234      0.368 
-3   0.8  0.65    0.00154      0.000998    0.0157</code></pre>
+<pre><code># A tibble: 3 × 2
+     pi prior
+  &lt;dbl&gt; &lt;dbl&gt;
+1   0.2  0.1 
+2   0.5  0.25
+3   0.8  0.65</code></pre>
+</div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2"><a href="#cb34-2"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">6</span>, pi)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-3"><a href="#cb34-3"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-4"><a href="#cb34-4"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-5"><a href="#cb34-5"></a>  <span class="fu">mutate</span>(<span class="at">new_likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">6</span>, <span class="dv">10</span>, pi)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-6"><a href="#cb34-6"></a>  <span class="fu">mutate</span>(<span class="at">new_posterior_num =</span> posterior<span class="sc">*</span>new_likelihood) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-7"><a href="#cb34-7"></a>  <span class="fu">mutate</span>(<span class="at">new_posetior =</span> new_posterior_num <span class="sc">/</span><span class="fu">sum</span>(new_posterior_num)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-8"><a href="#cb34-8"></a>  <span class="fu">mutate</span>(<span class="at">new_new_ll =</span> <span class="fu">dbinom</span>(<span class="dv">14</span>, <span class="dv">16</span>, pi)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-9"><a href="#cb34-9"></a>  <span class="fu">mutate</span>(<span class="at">new_new_post =</span> new_posetior<span class="sc">*</span>new_new_ll<span class="sc">/</span><span class="fu">sum</span>( new_posetior<span class="sc">*</span>new_new_ll))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 10
+     pi prior likelihood poste…¹ poste…² new_l…³ new_p…⁴ new_p…⁵ new_n…⁶ new_n…⁷
+  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1   0.2  0.1     0.393   3.93e-2  0.617  0.00551 0.00340  0.0424 1.26e-8 9.95e-8
+2   0.5  0.25    0.0937  2.34e-2  0.368  0.205   0.0754   0.940  1.83e-3 3.22e-1
+3   0.8  0.65    0.00154 9.98e-4  0.0157 0.0881  0.00138  0.0172 2.11e-1 6.78e-1
+# … with abbreviated variable names ¹​posterior_num, ²​posterior,
+#   ³​new_likelihood, ⁴​new_posterior_num, ⁵​new_posetior, ⁶​new_new_ll,
+#   ⁷​new_new_post</code></pre>
 </div>
 </div>
 </section>
 <section id="pi-has-prior-uniform-distribution" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="pi-has-prior-uniform-distribution"><span class="header-section-number">3.2</span> pi has prior Uniform distribution</h2>
-<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-13_12fc98aa1c23ff729255c4e368819021">
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-13_a2254b7ec538932be680e094880420ac">
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb34-2"><a href="#cb34-2"></a>pi <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> n)</span>
-<span id="cb34-3"><a href="#cb34-3"></a>prior <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span>n, n)</span>
-<span id="cb34-4"><a href="#cb34-4"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior)</span>
-<span id="cb34-5"><a href="#cb34-5"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb34-6"><a href="#cb34-6"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">6</span>, pi)) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-7"><a href="#cb34-7"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-8"><a href="#cb34-8"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num))</span>
-<span id="cb34-9"><a href="#cb34-9"></a></span>
-<span id="cb34-10"><a href="#cb34-10"></a>p1 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb34-11"><a href="#cb34-11"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> prior)) <span class="sc">+</span></span>
-<span id="cb34-12"><a href="#cb34-12"></a>  <span class="fu">geom_line</span>()</span>
-<span id="cb34-13"><a href="#cb34-13"></a></span>
-<span id="cb34-14"><a href="#cb34-14"></a>p2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb34-15"><a href="#cb34-15"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> posterior)) <span class="sc">+</span></span>
-<span id="cb34-16"><a href="#cb34-16"></a>  <span class="fu">geom_line</span>()</span>
-<span id="cb34-17"><a href="#cb34-17"></a></span>
-<span id="cb34-18"><a href="#cb34-18"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a>pi <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> n)</span>
+<span id="cb36-3"><a href="#cb36-3"></a>prior <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span>n, n)</span>
+<span id="cb36-4"><a href="#cb36-4"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior)</span>
+<span id="cb36-5"><a href="#cb36-5"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,000 × 2
+        pi prior
+     &lt;dbl&gt; &lt;dbl&gt;
+ 1 0       0.001
+ 2 0.00100 0.001
+ 3 0.00200 0.001
+ 4 0.00300 0.001
+ 5 0.00400 0.001
+ 6 0.00501 0.001
+ 7 0.00601 0.001
+ 8 0.00701 0.001
+ 9 0.00801 0.001
+10 0.00901 0.001
+# … with 990 more rows</code></pre>
+</div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb38-2"><a href="#cb38-2"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">100</span>, <span class="dv">600</span>, pi)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-3"><a href="#cb38-3"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-4"><a href="#cb38-4"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num))</span>
+<span id="cb38-5"><a href="#cb38-5"></a></span>
+<span id="cb38-6"><a href="#cb38-6"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,000 × 5
+        pi prior likelihood posterior_num posterior
+     &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+ 1 0       0.001  0             0         0        
+ 2 0.00100 0.001  7.44e-185     7.44e-188 4.48e-185
+ 3 0.00200 0.001  5.72e-155     5.72e-158 3.44e-155
+ 4 0.00300 0.001  1.41e-137     1.41e-140 8.47e-138
+ 5 0.00400 0.001  2.66e-125     2.66e-128 1.60e-125
+ 6 0.00501 0.001  7.88e-116     7.88e-119 4.74e-116
+ 7 0.00601 0.001  3.95e-108     3.95e-111 2.37e-108
+ 8 0.00701 0.001  1.18e-101     1.18e-104 7.10e-102
+ 9 0.00801 0.001  4.49e- 96     4.49e- 99 2.70e- 96
+10 0.00901 0.001  3.54e- 91     3.54e- 94 2.13e- 91
+# … with 990 more rows</code></pre>
+</div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a>p1 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb40-2"><a href="#cb40-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> prior)) <span class="sc">+</span></span>
+<span id="cb40-3"><a href="#cb40-3"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb40-4"><a href="#cb40-4"></a></span>
+<span id="cb40-5"><a href="#cb40-5"></a>p2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb40-6"><a href="#cb40-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> posterior)) <span class="sc">+</span></span>
+<span id="cb40-7"><a href="#cb40-7"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb40-8"><a href="#cb40-8"></a></span>
+<span id="cb40-9"><a href="#cb40-9"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="bayes_rules_chapter_2_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
@@ -548,51 +609,124 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="pi-has-prior-beta-distribution" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="pi-has-prior-beta-distribution"><span class="header-section-number">3.3</span> pi has prior beta distribution</h2>
-<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-14_9821f49f85f706d8c3c45df8ae1cadbb">
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-14_c32b2c056422917b60578255416da950">
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>n <span class="ot">=</span> <span class="dv">10000</span></span>
-<span id="cb35-2"><a href="#cb35-2"></a>pi <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> n)</span>
-<span id="cb35-3"><a href="#cb35-3"></a>prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(pi, <span class="dv">3</span>, <span class="dv">2</span>)</span>
-<span id="cb35-4"><a href="#cb35-4"></a>prior <span class="ot">&lt;-</span> prior<span class="sc">/</span><span class="fu">sum</span>(prior)</span>
-<span id="cb35-5"><a href="#cb35-5"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior)</span>
-<span id="cb35-6"><a href="#cb35-6"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb35-7"><a href="#cb35-7"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">6</span>, pi)) <span class="sc">%&gt;%</span> </span>
-<span id="cb35-8"><a href="#cb35-8"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
-<span id="cb35-9"><a href="#cb35-9"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num))</span>
-<span id="cb35-10"><a href="#cb35-10"></a></span>
-<span id="cb35-11"><a href="#cb35-11"></a>p1 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb35-12"><a href="#cb35-12"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> prior)) <span class="sc">+</span></span>
-<span id="cb35-13"><a href="#cb35-13"></a>  <span class="fu">geom_line</span>()</span>
-<span id="cb35-14"><a href="#cb35-14"></a></span>
-<span id="cb35-15"><a href="#cb35-15"></a>p2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb35-16"><a href="#cb35-16"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> posterior)) <span class="sc">+</span></span>
-<span id="cb35-17"><a href="#cb35-17"></a>  <span class="fu">geom_line</span>()</span>
-<span id="cb35-18"><a href="#cb35-18"></a></span>
-<span id="cb35-19"><a href="#cb35-19"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb41-2"><a href="#cb41-2"></a>pi <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> n)</span>
+<span id="cb41-3"><a href="#cb41-3"></a>prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(pi, <span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb41-4"><a href="#cb41-4"></a>prior <span class="ot">&lt;-</span> prior<span class="sc">/</span><span class="fu">sum</span>(prior)</span>
+<span id="cb41-5"><a href="#cb41-5"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior)</span>
+<span id="cb41-6"><a href="#cb41-6"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,000 × 2
+        pi        prior
+     &lt;dbl&gt;        &lt;dbl&gt;
+ 1 0       0           
+ 2 0.00100 0.0000000120
+ 3 0.00200 0.0000000480
+ 4 0.00300 0.000000108 
+ 5 0.00400 0.000000192 
+ 6 0.00501 0.000000299 
+ 7 0.00601 0.000000431 
+ 8 0.00701 0.000000586 
+ 9 0.00801 0.000000764 
+10 0.00901 0.000000966 
+# … with 990 more rows</code></pre>
+</div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb43-2"><a href="#cb43-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> prior)) <span class="sc">+</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="bayes_rules_chapter_2_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a>df <span class="ot">&lt;-</span>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb44-2"><a href="#cb44-2"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">10</span>, <span class="dv">60</span>, pi)) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-3"><a href="#cb44-3"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-4"><a href="#cb44-4"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num))</span>
+<span id="cb44-5"><a href="#cb44-5"></a></span>
+<span id="cb44-6"><a href="#cb44-6"></a>p1 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb44-7"><a href="#cb44-7"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> prior)) <span class="sc">+</span></span>
+<span id="cb44-8"><a href="#cb44-8"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb44-9"><a href="#cb44-9"></a></span>
+<span id="cb44-10"><a href="#cb44-10"></a>p2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb44-11"><a href="#cb44-11"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi, <span class="at">y =</span> posterior)) <span class="sc">+</span></span>
+<span id="cb44-12"><a href="#cb44-12"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb44-13"><a href="#cb44-13"></a></span>
+<span id="cb44-14"><a href="#cb44-14"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="bayes_rules_chapter_2_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-15_d850826cac591f91192f33a70dcd2691">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a>pi <span class="ot">=</span> <span class="fu">c</span>(.<span class="dv">1</span>, .<span class="dv">3</span>, .<span class="dv">5</span>, .<span class="dv">8</span>, .<span class="dv">9</span>)</span>
+<span id="cb45-3"><a href="#cb45-3"></a>prior <span class="ot">=</span> <span class="fu">c</span>(.<span class="dv">3</span>, .<span class="dv">1</span>, .<span class="dv">4</span>, .<span class="dv">1</span>, .<span class="dv">1</span>)</span>
+<span id="cb45-4"><a href="#cb45-4"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior)</span>
+<span id="cb45-5"><a href="#cb45-5"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+     pi prior
+  &lt;dbl&gt; &lt;dbl&gt;
+1   0.1   0.3
+2   0.3   0.1
+3   0.5   0.4
+4   0.8   0.1
+5   0.9   0.1</code></pre>
+</div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb47-2"><a href="#cb47-2"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="dv">5</span>, pi)) <span class="sc">%&gt;%</span> </span>
+<span id="cb47-3"><a href="#cb47-3"></a>  <span class="fu">mutate</span>(<span class="at">posterior_num =</span> prior<span class="sc">*</span>likelihood) <span class="sc">%&gt;%</span> </span>
+<span id="cb47-4"><a href="#cb47-4"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> posterior_num<span class="sc">/</span><span class="fu">sum</span>(posterior_num))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 5
+     pi prior likelihood posterior_num posterior
+  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+1   0.1   0.3    0.328        0.0984    0.498   
+2   0.3   0.1    0.360        0.0360    0.182   
+3   0.5   0.4    0.156        0.0625    0.316   
+4   0.8   0.1    0.0064       0.00064   0.00324 
+5   0.9   0.1    0.00045      0.000045  0.000228</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-16_f89189ff5e4c9721b83c101e5f85a3db">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a>mu <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">7</span>)</span>
+<span id="cb49-2"><a href="#cb49-2"></a>prior <span class="ot">=</span> <span class="fu">c</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 </section>
 <section id="section-2.5---exercises" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> section 2.5 - exercises</h1>
-<section id="ex-2.13-lactose-intolerance" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="ex-2.13-lactose-intolerance"><span class="header-section-number">4.1</span> ex 2.13: Lactose intolerance:</h2>
+<section id="exercise-2.13-lactose-intolerance" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="exercise-2.13-lactose-intolerance"><span class="header-section-number">4.1</span> Exercise 2.13 (Lactose intolerance)</h2>
 <p>Fatima wants to learn more about the proportion of adults who are lactose intolerant, <span class="math inline">\(\pi\)</span>. Fatima surveys a random sample of 80 adults and 47 are lactose intolerant.</p>
-<p>So, <span class="math inline">\(Y:=\)</span> number of people who are lactore intolerant among 80 people, i.e., <span class="math inline">\(Y\)</span>~ Binomial(n = 80, <span class="math inline">\(\pi\)</span>).</p>
-<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-15_cefb20460a5a788d0097ae6ff18d488c">
+<p>So, <span class="math inline">\(Y:=\)</span> number of people who are lactose intolerant among 80 people, i.e., <span class="math inline">\(Y\)</span>~ Binomial(n = 80, <span class="math inline">\(\pi\)</span>).</p>
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-17_339fb6f9202cc6374173ff6fb8f8d767">
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>)</span>
-<span id="cb36-2"><a href="#cb36-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>,    <span class="fl">0.44</span>,   <span class="fl">0.26</span>)</span>
-<span id="cb36-3"><a href="#cb36-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior) <span class="sc">%&gt;%</span> </span>
-<span id="cb36-4"><a href="#cb36-4"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">47</span>, <span class="at">size =</span> <span class="dv">80</span>, <span class="at">prob =</span> pi),</span>
-<span id="cb36-5"><a href="#cb36-5"></a>         <span class="at">posteriro_num =</span> prior<span class="sc">*</span>likelihood,</span>
-<span id="cb36-6"><a href="#cb36-6"></a>         <span class="at">posteriro =</span> posteriro_num<span class="sc">/</span><span class="fu">sum</span>(posteriro_num)) </span>
-<span id="cb36-7"><a href="#cb36-7"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>)</span>
+<span id="cb50-2"><a href="#cb50-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>,    <span class="fl">0.44</span>,   <span class="fl">0.26</span>)</span>
+<span id="cb50-3"><a href="#cb50-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-4"><a href="#cb50-4"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">47</span>, <span class="at">size =</span> <span class="dv">80</span>, <span class="at">prob =</span> pi),</span>
+<span id="cb50-5"><a href="#cb50-5"></a>         <span class="at">posteriro_num =</span> prior<span class="sc">*</span>likelihood,</span>
+<span id="cb50-6"><a href="#cb50-6"></a>         <span class="at">posteriro =</span> posteriro_num<span class="sc">/</span><span class="fu">sum</span>(posteriro_num)) </span>
+<span id="cb50-7"><a href="#cb50-7"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 5
@@ -605,13 +739,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <details open="">
 <summary>Collapse/show the code below</summary>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>)</span>
-<span id="cb38-2"><a href="#cb38-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>,    <span class="fl">0.44</span>,   <span class="fl">0.26</span>)</span>
-<span id="cb38-3"><a href="#cb38-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior) <span class="sc">%&gt;%</span> </span>
-<span id="cb38-4"><a href="#cb38-4"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">470</span>, <span class="at">size =</span> <span class="dv">800</span>, <span class="at">prob =</span> pi),</span>
-<span id="cb38-5"><a href="#cb38-5"></a>         <span class="at">posteriro_num =</span> prior<span class="sc">*</span>likelihood,</span>
-<span id="cb38-6"><a href="#cb38-6"></a>         <span class="at">posteriro =</span> posteriro_num<span class="sc">/</span><span class="fu">sum</span>(posteriro_num)) </span>
-<span id="cb38-7"><a href="#cb38-7"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>)</span>
+<span id="cb52-2"><a href="#cb52-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>,    <span class="fl">0.44</span>,   <span class="fl">0.26</span>)</span>
+<span id="cb52-3"><a href="#cb52-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-4"><a href="#cb52-4"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">470</span>, <span class="at">size =</span> <span class="dv">800</span>, <span class="at">prob =</span> pi),</span>
+<span id="cb52-5"><a href="#cb52-5"></a>         <span class="at">posteriro_num =</span> prior<span class="sc">*</span>likelihood,</span>
+<span id="cb52-6"><a href="#cb52-6"></a>         <span class="at">posteriro =</span> posteriro_num<span class="sc">/</span><span class="fu">sum</span>(posteriro_num)) </span>
+<span id="cb52-7"><a href="#cb52-7"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 5
@@ -623,7 +757,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 4   0.7  0.26   3.80e-12      9.87e-13  1.02e-10</code></pre>
 </div>
 </div>
-<p>Exercise 2.14 (Late bus) Li Qiang takes the 8:30am bus to work every morning. If the bus is late, Li Qiang will be late to work. To learn about the probability that her bus will be late (<span class="math inline">\(\pi\)</span>), Li Qiang first surveys 20 other commuters: 3 think <span class="math inline">\(\pi\)</span> is 0.15, 3 think <span class="math inline">\(\pi\)</span> is 0.25, 8 think <span class="math inline">\(\pi\)</span> is 0.5, 3 think <span class="math inline">\(\pi\)</span> is 0.75, and 3 think <span class="math inline">\(\pi\)</span> is 0.85.</p>
+</section>
+<section id="exercise-2.14-late-bus" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="exercise-2.14-late-bus"><span class="header-section-number">4.2</span> Exercise 2.14 (Late bus)</h2>
+<p>Li Qiang takes the 8:30am bus to work every morning. If the bus is late, Li Qiang will be late to work. To learn about the probability that her bus will be late (<span class="math inline">\(\pi\)</span>), Li Qiang first surveys 20 other commuters: 3 think <span class="math inline">\(\pi\)</span> is 0.15, 3 think <span class="math inline">\(\pi\)</span> is 0.25, 8 think <span class="math inline">\(\pi\)</span> is 0.5, 3 think <span class="math inline">\(\pi\)</span> is 0.75, and 3 think <span class="math inline">\(\pi\)</span> is 0.85.</p>
+<div class="cell" data-hash="bayes_rules_chapter_2_cache/html/unnamed-chunk-18_5a60c59d052635f374b037076d66b798">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a>pi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.15</span>, <span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">0.85</span>)</span>
+<span id="cb54-2"><a href="#cb54-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span><span class="sc">/</span><span class="dv">20</span>, <span class="dv">3</span><span class="sc">/</span><span class="dv">20</span>, <span class="dv">8</span><span class="sc">/</span><span class="dv">20</span>, <span class="dv">3</span><span class="sc">/</span><span class="dv">20</span>, <span class="dv">3</span><span class="sc">/</span><span class="dv">20</span>)</span>
+<span id="cb54-3"><a href="#cb54-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(pi, prior) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-4"><a href="#cb54-4"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">3</span>, <span class="at">size =</span> <span class="dv">13</span>, <span class="at">prob =</span> pi),</span>
+<span id="cb54-5"><a href="#cb54-5"></a>         <span class="at">posteriro_num =</span> prior<span class="sc">*</span>likelihood,</span>
+<span id="cb54-6"><a href="#cb54-6"></a>         <span class="at">posteriro =</span> posteriro_num<span class="sc">/</span><span class="fu">sum</span>(posteriro_num)) </span>
+<span id="cb54-7"><a href="#cb54-7"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 5
+     pi prior likelihood posteriro_num  posteriro
+  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;
+1  0.15  0.15 0.190        0.0285      0.355     
+2  0.25  0.15 0.252        0.0377      0.470     
+3  0.5   0.4  0.0349       0.0140      0.174     
+4  0.75  0.15 0.000115     0.0000173   0.000215  
+5  0.85  0.15 0.00000101   0.000000152 0.00000189</code></pre>
+</div>
+</div>
 </section>
 </section>
 

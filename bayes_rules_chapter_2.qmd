@@ -36,7 +36,7 @@ title-block-banner: true
 title-block-banner-color: black
 ---
 
-# section  2.1
+# section 2.1
 
 ## libraries
 
@@ -56,7 +56,6 @@ library(patchwork)
 data(fake_news)
 ```
 
-
 ## EDA
 
 ```{r}
@@ -70,32 +69,9 @@ Null probability model (probability of an article being FAKE)
 
 $$P(B) = 0.4$$
 
+With 0.5 threshold, we would classify every article as real at the expense of 40% fake ones.
 
-With 0.5 threshold, we would classify every article as real at the expense of 40% fake ones. 
-
-Let A =  an article has exclamation point in the title, and B = article is fake. Then,
-
-```{r}
-fake_news %>% 
-  count(type, title_has_excl) %>% 
-  group_by(type) %>% 
-  mutate(percent = n/sum(n)) %>% 
-  adorn_totals("row") 
-```
-
-i.e.,
-
-$P(A|B)$ =  P(an article has exclamation point in the title | article is fake) = 26.6%
-
-and 
-
-$P(A|B^c)$ =  P(an article has exclamation point in the title | article is real) = 2.22%
-
-We define likelihood function, $L(. | A)$, when conditioned event is NOT certain, we are evaluating the relative compatibility of data with the uncertain event B. 
-
-$$L(B|A) = P(A|B)$$
-
-On the other hand,
+Let A = an article has exclamation point in the title, and B = article is fake. Then,
 
 ```{r}
 fake_news %>% 
@@ -103,16 +79,38 @@ fake_news %>%
   group_by(title_has_excl) %>% 
   mutate(percent = n/sum(n)) %>% 
   adorn_totals("row") 
+```
+
+i.e.,
+
+$P(A|B)$ = P(an article has exclamation point in the title \| article is fake) = 26.6%
+
+and
+
+$P(A|B^c)$ = P(an article has exclamation point in the title \| article is real) = 2.22%
+
+We define likelihood function, $L(. | A)$, when conditioned event is NOT certain, we are evaluating the relative compatibility of data with the uncertain event B.
+
+$$L(B|A) = P(A|B)$$
+
+On the other hand,
+
+```{r}
+fake_news %>% 
+  count(type, title_has_excl) %>% 
+  group_by(type) %>% 
+  mutate(percent = n/sum(n)) %>% 
+  adorn_totals("row") 
 
 ```
 
-i.e., 
+i.e.,
 
-Pr(B|A) = 89%, and Pr(B^c|A) = 11%
+Pr(B\|A) = 89%, and Pr(B\^c\|A) = 11%
 
-Note: 
+Note:
 
-$$P(B|A) + P(B^c|A) = 100%$$ 
+$$P(B|A) + P(B^c|A) = 100%$$
 
 but
 
@@ -142,8 +140,7 @@ fake_news %>%
   
 ```
 
-
-## Now we include data (features to udpate out model)
+## Now we include data (features to update out model)
 
 We want to calculate posterior probability (probability of the same event after observing more evidence that might affect that event)
 
@@ -156,7 +153,6 @@ fake_news %>%
   mutate(percent = n/sum(n)) %>% 
   adorn_totals("row") 
 ```
-
 
 ## now include more info
 
@@ -173,9 +169,7 @@ df %>%
   count(test_words_dummy, type)
 ```
 
-
-
-# section  2.2
+# section 2.2
 
 ```{r}
 data("pop_vs_soda")
@@ -219,16 +213,9 @@ pop_vs_soda %>%
   adorn_percentages("col")
 ```
 
+A = someone uses the word 'pop' L(M\|A) = Pr(A\|M) = 0.645 L(N\|A) = Pr(A\|N) = 0.273 L(S\|A) = Pr(A\|S) = 0.0792 L(W\|A) = Pr(A\|W) = 0.294
 
-A = someone uses the word 'pop'
-L(M|A) = Pr(A|M) = 0.645 
-L(N|A) = Pr(A|N) = 0.273
-L(S|A) = Pr(A|S) = 0.0792 
-L(W|A) = Pr(A|W) = 0.294 
-
-PRIOR VS Posterior probability
-P(S) = 0.241
-Pr(S|A) = prior * likelihood/(normalization constant) = 0.241 * 0.0792/0.2826
+PRIOR VS Posterior probability P(S) = 0.241 Pr(S\|A) = prior \* likelihood/(normalization constant) = 0.241 \* 0.0792/0.2826
 
 ```{r}
 pop_vs_soda %>% 
@@ -245,7 +232,6 @@ pop_vs_soda %>%
   
 ```
 
-
 # section 2.3
 
 Kasparov
@@ -256,13 +242,17 @@ Kasparov
 pi <- c(0.2, 0.5, 0.8)
 prior <- c(0.10, 0.25, 0.65)
 df <- tibble(pi, prior)
+df
 df %>% 
   mutate(likelihood = dbinom(1, 6, pi)) %>% 
   mutate(posterior_num = prior*likelihood) %>% 
-  mutate(posterior = posterior_num/sum(posterior_num))
+  mutate(posterior = posterior_num/sum(posterior_num)) %>% 
+  mutate(new_likelihood = dbinom(6, 10, pi)) %>% 
+  mutate(new_posterior_num = posterior*new_likelihood) %>% 
+  mutate(new_posetior = new_posterior_num /sum(new_posterior_num)) %>% 
+  mutate(new_new_ll = dbinom(14, 16, pi)) %>% 
+  mutate(new_new_post = new_posetior*new_new_ll/sum( new_posetior*new_new_ll))
 ```
-
-
 
 ## pi has prior Uniform distribution
 
@@ -271,11 +261,13 @@ n = 1000
 pi <- seq(0, 1, length.out = n)
 prior <- rep(1/n, n)
 df <- tibble(pi, prior)
+df
 df <- df %>% 
-  mutate(likelihood = dbinom(1, 6, pi)) %>% 
+  mutate(likelihood = dbinom(100, 600, pi)) %>% 
   mutate(posterior_num = prior*likelihood) %>% 
   mutate(posterior = posterior_num/sum(posterior_num))
 
+df
 p1 <- df %>% 
   ggplot(aes(x = pi, y = prior)) +
   geom_line()
@@ -286,18 +278,23 @@ p2 <- df %>%
 
 p1+p2
 ```
-
 
 ## pi has prior beta distribution
 
 ```{r}
-n = 10000
+n = 1000
 pi <- seq(0, 1, length.out = n)
 prior <- dbeta(pi, 3, 2)
 prior <- prior/sum(prior)
 df <- tibble(pi, prior)
-df <- df %>% 
-  mutate(likelihood = dbinom(1, 6, pi)) %>% 
+df
+
+df %>% 
+  ggplot(aes(x = pi, y = prior)) +
+  geom_line()
+
+df <-  df %>% 
+  mutate(likelihood = dbinom(10, 60, pi)) %>% 
   mutate(posterior_num = prior*likelihood) %>% 
   mutate(posterior = posterior_num/sum(posterior_num))
 
@@ -312,18 +309,30 @@ p2 <- df %>%
 p1+p2
 ```
 
+```{r}
+n = 1000
+pi = c(.1, .3, .5, .8, .9)
+prior = c(.3, .1, .4, .1, .1)
+df <- tibble(pi, prior)
+df
+df %>% 
+  mutate(likelihood = dbinom(1, 5, pi)) %>% 
+  mutate(posterior_num = prior*likelihood) %>% 
+  mutate(posterior = posterior_num/sum(posterior_num))
+```
 
+```{r}
+mu = c(2,3,5,7)
+prior = c()
+```
 
 # section 2.5 - exercises
 
-
 ## Exercise 2.13 (Lactose intolerance)
 
+Fatima wants to learn more about the proportion of adults who are lactose intolerant, $\pi$. Fatima surveys a random sample of 80 adults and 47 are lactose intolerant.
 
-Fatima wants to learn more about the proportion of adults who are lactose intolerant, $\pi$. Fatima surveys a random sample of 80 adults and 47 are lactose intolerant. 
-
-
-So, $Y:=$ number of people who are lactore intolerant among 80 people, i.e., $Y$~ Binomial(n = 80, $\pi$).
+So, $Y:=$ number of people who are lactose intolerant among 80 people, i.e., $Y$\~ Binomial(n = 80, $\pi$).
 
 ```{r}
 pi <- c(0.4, 0.5, 0.6, 0.7)
@@ -344,8 +353,7 @@ df <- tibble(pi, prior) %>%
 df
 ```
 
-
-## Exercise 2.14 (Late bus) 
+## Exercise 2.14 (Late bus)
 
 Li Qiang takes the 8:30am bus to work every morning. If the bus is late, Li Qiang will be late to work. To learn about the probability that her bus will be late ($\pi$), Li Qiang first surveys 20 other commuters: 3 think $\pi$ is 0.15, 3 think $\pi$ is 0.25, 8 think $\pi$ is 0.5, 3 think $\pi$ is 0.75, and 3 think $\pi$ is 0.85.
 
@@ -358,4 +366,3 @@ df <- tibble(pi, prior) %>%
          posteriro = posteriro_num/sum(posteriro_num)) 
 df
 ```
-
