@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tural Sadigov">
-<meta name="dcterms.date" content="2022-11-21">
+<meta name="dcterms.date" content="2022-11-22">
 
 <title>Bayes Rules - Chapter 2</title>
 <style>
@@ -85,6 +85,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -133,7 +152,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">November 21, 2022</p>
+        <p class="date">November 22, 2022</p>
       </div>
     </div>
       
@@ -174,6 +193,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+<p>This markdown file is created following the book titled “Bayes Rules! An Introduction to Applied Bayesian Modeling” by <em>Alicia A. Johnson, Miles Q. Ott and Mine Dogucu (see</em> <span class="citation" data-cites="bayesrulesbook">Dogucu, Johnson, and Ott (<a href="#ref-bayesrulesbook" role="doc-biblioref">2021a</a>)</span><em>).</em>Throughout the report, we use <code>tidyverse</code> package (<span class="citation" data-cites="tidyverse">Wickham et al. (<a href="#ref-tidyverse" role="doc-biblioref">2019</a>)</span>) for data wrangling, <code>bayesrules</code> package (<span class="citation" data-cites="bayesrules">Dogucu, Johnson, and Ott (<a href="#ref-bayesrules" role="doc-biblioref">2021b</a>)</span>) to use book specific functions, <code>janitor</code> package (<span class="citation" data-cites="janitor">Firke (<a href="#ref-janitor" role="doc-biblioref">2021</a>)</span>) for some summary functions and <code>patchwork</code> package (<span class="citation" data-cites="patchwork">Pedersen (<a href="#ref-patchwork" role="doc-biblioref">2020</a>)</span>) extended visualizations from <code>ggplot2</code> package (<span class="citation" data-cites="ggplot2">Wickham (<a href="#ref-ggplot2" role="doc-biblioref">2016</a>)</span>).</p>
 <section id="section-2.1" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> section 2.1</h1>
 <section id="libraries" class="level2" data-number="1.1">
@@ -783,10 +803,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 5  0.85  0.15 0.00000101   0.000000152 0.00000189</code></pre>
 </div>
 </div>
+
 </section>
 </section>
 
-</main>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-bayesrulesbook" class="csl-entry" role="doc-biblioentry">
+Dogucu, Mine, Alicia Johnson, and Miles Ott. 2021a. <span>“Bayes Rules! An Introduction to Applied Bayesian Modeling.”</span> <a href="https://www.bayesrulesbook.com/index.html">https://www.bayesrulesbook.com/index.html</a>.
+</div>
+<div id="ref-bayesrules" class="csl-entry" role="doc-biblioentry">
+———. 2021b. <span>“Bayesrules: Datasets and Supplemental Functions from Bayes Rules! Book.”</span> <a href="https://github.com/bayes-rules/bayesrules">https://github.com/bayes-rules/bayesrules</a>.
+</div>
+<div id="ref-janitor" class="csl-entry" role="doc-biblioentry">
+Firke, Sam. 2021. <span>“Janitor: Simple Tools for Examining and Cleaning Dirty Data.”</span> <a href="https://CRAN.R-project.org/package=janitor">https://CRAN.R-project.org/package=janitor</a>.
+</div>
+<div id="ref-patchwork" class="csl-entry" role="doc-biblioentry">
+Pedersen, Thomas Lin. 2020. <span>“Patchwork: The Composer of Plots.”</span> <a href="https://CRAN.R-project.org/package=patchwork">https://CRAN.R-project.org/package=patchwork</a>.
+</div>
+<div id="ref-ggplot2" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley. 2016. <span>“Ggplot2: Elegant Graphics for Data Analysis.”</span> <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-tidyverse" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019. <span>“Welcome to the <span></span>Tidyverse<span></span>”</span> 4: 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

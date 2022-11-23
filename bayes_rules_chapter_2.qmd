@@ -34,7 +34,11 @@ execute:
 fig-align: center
 title-block-banner: true
 title-block-banner-color: black
+bibliography: references.bib
+cls: the-annals-of-statistics.csl
 ---
+
+This markdown file is created following the book titled "Bayes Rules! An Introduction to Applied Bayesian Modeling" by *Alicia A. Johnson, Miles Q. Ott and Mine Dogucu (see* @bayesrulesbook*).*Throughout the report, we use `tidyverse` package (@tidyverse) for data wrangling, `bayesrules` package (@bayesrules) to use book specific functions, `janitor` package (@janitor) for some summary functions and `patchwork` package (@patchwork) extended visualizations from `ggplot2` package (@ggplot2).
 
 # section 2.1
 
