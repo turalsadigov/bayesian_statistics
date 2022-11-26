@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tural Sadigov">
-<meta name="dcterms.date" content="2022-11-22">
+<meta name="dcterms.date" content="2022-11-25">
 
 <title>Bayesian Statistics - some experiments</title>
 <style>
@@ -152,7 +152,7 @@ div.csl-indent {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">November 22, 2022</p>
+        <p class="date">November 25, 2022</p>
       </div>
     </div>
       
@@ -170,6 +170,8 @@ div.csl-indent {
   <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">libraries</a></li>
   <li><a href="#discrete-normal-model" id="toc-discrete-normal-model" class="nav-link" data-scroll-target="#discrete-normal-model">discrete-normal model</a></li>
   <li><a href="#uniform-normal-model" id="toc-uniform-normal-model" class="nav-link" data-scroll-target="#uniform-normal-model">uniform-normal model</a></li>
+  <li><a href="#stubburn-prior-1" id="toc-stubburn-prior-1" class="nav-link" data-scroll-target="#stubburn-prior-1">STUBBURN prior 1</a></li>
+  <li><a href="#stubburn-prior-2" id="toc-stubburn-prior-2" class="nav-link" data-scroll-target="#stubburn-prior-2">STUBBURN prior 2</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -394,6 +396,86 @@ div.csl-indent {
 </details>
 <div class="cell-output-display">
 <p><img src="bayes_rules_chapter_4_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="stubburn-prior-1" class="level2">
+<h2 class="anchored" data-anchor-id="stubburn-prior-1">STUBBURN prior 1</h2>
+<div class="cell" data-hash="bayes_rules_chapter_4_cache/html/unnamed-chunk-9_6424e4ebf6fbe0c3525e641c41f25b8b">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.10</span>, <span class="dv">0</span>, <span class="fl">0.50</span>)</span>
+<span id="cb15-2"><a href="#cb15-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb15-3"><a href="#cb15-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(mu, prior)</span>
+<span id="cb15-4"><a href="#cb15-4"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+     mu prior
+  &lt;dbl&gt; &lt;dbl&gt;
+1  -0.1     0
+2   0       0
+3   0.5     1</code></pre>
+</div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">set.seed</span>(<span class="dv">2022</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a>data <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>)</span>
+<span id="cb17-3"><a href="#cb17-3"></a>ll <span class="ot">&lt;-</span> <span class="cf">function</span>(mu){</span>
+<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">return</span>(<span class="fu">prod</span>(<span class="fu">dnorm</span>(data, <span class="at">mean =</span> mu, <span class="at">sd =</span> <span class="dv">1</span>)))</span>
+<span id="cb17-5"><a href="#cb17-5"></a>}</span>
+<span id="cb17-6"><a href="#cb17-6"></a></span>
+<span id="cb17-7"><a href="#cb17-7"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb17-8"><a href="#cb17-8"></a>  <span class="fu">mutate</span>(<span class="at">l =</span> <span class="fu">as.numeric</span>(<span class="fu">map</span>(mu, ll))) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-9"><a href="#cb17-9"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> l<span class="sc">*</span>prior<span class="sc">/</span><span class="fu">sum</span>(l<span class="sc">*</span>prior)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-10"><a href="#cb17-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(mu))) <span class="sc">+</span></span>
+<span id="cb17-11"><a href="#cb17-11"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> prior, <span class="at">size =</span> <span class="dv">2</span>), <span class="at">color=</span><span class="st">'red'</span>) <span class="sc">+</span></span>
+<span id="cb17-12"><a href="#cb17-12"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> prior)) <span class="sc">+</span></span>
+<span id="cb17-13"><a href="#cb17-13"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> posterior, <span class="at">size =</span> <span class="dv">2</span>), , <span class="at">color=</span><span class="st">'darkgreen'</span>) <span class="sc">+</span></span>
+<span id="cb17-14"><a href="#cb17-14"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> posterior))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="bayes_rules_chapter_4_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="stubburn-prior-2" class="level2">
+<h2 class="anchored" data-anchor-id="stubburn-prior-2">STUBBURN prior 2</h2>
+<div class="cell" data-hash="bayes_rules_chapter_4_cache/html/unnamed-chunk-10_6a253694e8a6670d607d933d10f99507">
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.10</span>, <span class="dv">0</span>, <span class="fl">0.50</span>)</span>
+<span id="cb18-2"><a href="#cb18-2"></a>prior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb18-3"><a href="#cb18-3"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(mu, prior)</span>
+<span id="cb18-4"><a href="#cb18-4"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+     mu prior
+  &lt;dbl&gt; &lt;dbl&gt;
+1  -0.1   0.5
+2   0     0  
+3   0.5   0.5</code></pre>
+</div>
+<details open="">
+<summary>Collapse/show the code below</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">set.seed</span>(<span class="dv">2022</span>)</span>
+<span id="cb20-2"><a href="#cb20-2"></a>data <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb20-3"><a href="#cb20-3"></a>ll <span class="ot">&lt;-</span> <span class="cf">function</span>(mu){</span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">return</span>(<span class="fu">prod</span>(<span class="fu">dnorm</span>(data, <span class="at">mean =</span> mu, <span class="at">sd =</span> <span class="dv">1</span>)))</span>
+<span id="cb20-5"><a href="#cb20-5"></a>}</span>
+<span id="cb20-6"><a href="#cb20-6"></a></span>
+<span id="cb20-7"><a href="#cb20-7"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb20-8"><a href="#cb20-8"></a>  <span class="fu">mutate</span>(<span class="at">l =</span> <span class="fu">as.numeric</span>(<span class="fu">map</span>(mu, ll))) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-9"><a href="#cb20-9"></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> l<span class="sc">*</span>prior<span class="sc">/</span><span class="fu">sum</span>(l<span class="sc">*</span>prior)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-10"><a href="#cb20-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(mu))) <span class="sc">+</span></span>
+<span id="cb20-11"><a href="#cb20-11"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> prior, <span class="at">size =</span> <span class="dv">2</span>), <span class="at">color=</span><span class="st">'red'</span>) <span class="sc">+</span></span>
+<span id="cb20-12"><a href="#cb20-12"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> prior)) <span class="sc">+</span></span>
+<span id="cb20-13"><a href="#cb20-13"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> posterior, <span class="at">size =</span> <span class="dv">2</span>), , <span class="at">color=</span><span class="st">'darkgreen'</span>) <span class="sc">+</span></span>
+<span id="cb20-14"><a href="#cb20-14"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> posterior))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="bayes_rules_chapter_4_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 

@@ -1,0 +1,42 @@
+---
+title: Bayes Rules! - Chapter 5
+author: Your Name
+date: today
+format: 
+    html:
+      theme: 
+        light: united
+        dark: darkly
+editor: visual
+chunk_output_type: console
+fig-align: center
+always_allow_html: true
+toc: true
+toc-location: right
+number-sections: true
+page-layout: article
+code-overflow: scroll
+code-line-numbers: false
+code-copy: true
+execute:
+  echo: true
+  warning: false
+  eval: true
+  output: true
+  error: false
+  freeze: true
+  out.width: "100%"
+  cache: true
+title-block-banner: true
+---
+
+## Libraries
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(infer)
+library(stats2data)
+```
+
+## 

@@ -191,3 +191,57 @@ df_results %>%
   xlab('')
 
 ```
+
+
+## STUBBURN prior 1
+ 
+```{r}
+mu <- c(-0.10, 0, 0.50)
+prior <- c(0, 0, 1)
+df <- tibble(mu, prior)
+df
+
+set.seed(2022)
+data <- rnorm(1000)
+ll <- function(mu){
+  return(prod(dnorm(data, mean = mu, sd = 1)))
+}
+
+df %>% 
+  mutate(l = as.numeric(map(mu, ll))) %>% 
+  mutate(posterior = l*prior/sum(l*prior)) %>% 
+  ggplot(aes(x = factor(mu))) +
+  geom_point(aes(y = prior, size = 2), color='red') +
+  geom_linerange(aes(ymin = 0, ymax = prior)) +
+  geom_point(aes(y = posterior, size = 2), , color='darkgreen') +
+  geom_linerange(aes(ymin = 0, ymax = posterior))
+
+```
+
+
+## STUBBURN prior 2
+ 
+```{r}
+mu <- c(-0.10, 0.50)
+prior <- c(0.5, 0.5)
+df <- tibble(mu, prior)
+df
+
+set.seed(2022)
+data <- rnorm(1000)
+ll <- function(mu){
+  return(prod(dnorm(data, mean = mu, sd = 1)))
+}
+
+df %>% 
+  mutate(l = as.numeric(map(mu, ll))) %>% 
+  mutate(posterior = l*prior/sum(l*prior)) %>% 
+  ggplot(aes(x = factor(mu))) +
+  geom_point(aes(y = prior, size = 2), color='red') +
+  geom_linerange(aes(ymin = 0, ymax = prior)) +
+  geom_point(aes(y = posterior, size = 2), , color='darkgreen') +
+  geom_linerange(aes(ymin = 0, ymax = posterior))
+
+```
+
+
