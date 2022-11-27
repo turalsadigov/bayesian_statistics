@@ -1,0 +1,237 @@
+---
+title: Bayes Rules! - Chapter 6
+author: Your Name
+date: today
+format: 
+    html:
+      theme: 
+        light: united
+        dark: darkly
+editor: visual
+chunk_output_type: console
+fig-align: center
+always_allow_html: true
+toc: true
+toc-location: right
+number-sections: true
+page-layout: article
+code-overflow: scroll
+code-line-numbers: false
+code-copy: true
+execute:
+  echo: true
+  warning: false
+  eval: true
+  output: true
+  error: false
+  freeze: true
+  out.width: "100%"
+  cache: true
+title-block-banner: true
+bibliography: references.bib
+---
+
+In addition to usual packages, `tidyverse` (@tidyverse), `stats2data` (@stats2data), `janitor` (@janitor), `bayesrules` (@bayesrules) and `bayesplot` (@bayesplot), we also use `rstan` @rstan in this chapter.
+
+## Libraries
+
+```{r}
+library(tidyverse)
+library(stats2data)
+library(rstan)
+library(janitor)
+library(bayesplot)
+library(bayesrules)
+```
+
+## Grid Approximation
+
+Take beta prior
+
+$$
+\pi \sim Beta(2,2)
+$$
+
+and binomial data model
+
+$$
+Y|\pi \sim Binomial(10, \pi)
+$$
+
+Observe evidence/data of 9 successes out of 10 trials. Then we know the posterior will
+
+$$
+\pi \sim Beta(2+9,2+1) = Beta(11, 3)
+$$
+
+Now we approximate this posterior using the following steps.
+
+1.  Define a discrete grid of possible values.
+
+2.  Evaluate the prior pdf and likelihood function at each grid value.
+
+3.  Obtain a discrete approximation of the posterior pdf by:
+
+    -   calculating the product of prior and likelihood at each grid value;
+
+    -   *normalizing* the products so that they sum to 1 across all grid values
+
+4.  Randomly sample grid values with respect to their corresponding normalized posterior probabilities.
+
+First we do this for only few possible points:
+
+$$
+\pi \in \{0, 0.2, 0.4, 0.8, 1 \}
+$$
+
+```{r}
+grid_data <- 
+  tibble(pi_grid = seq(from = 0, to = 1, length = 6)) %>% #step1
+  mutate(prior = dbeta(pi_grid, 2, 2),
+         likelihood = dbinom(9, 10, pi_grid)) %>% #step2
+   mutate(unnormalized = likelihood * prior,
+         posterior = unnormalized / sum(unnormalized)) #step3
+grid_data %>% 
+  round(2)
+
+grid_data %>% 
+  ggplot(aes(x = pi_grid)) + 
+  geom_point(aes(y = prior, size = 2), color = 'red') + 
+  geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = prior)) +
+  geom_point(aes(y = posterior, size = 2), color='darkgreen') + 
+  geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = posterior)) 
+
+
+# step4: sample from the discretized posterior
+set.seed(84735)
+post_sample <- 
+  grid_data %>% 
+  select(pi_grid, posterior) %>% 
+  sample_n(size = 10000, 
+           weight = posterior, 
+           replace = TRUE) %>% 
+  select(pi_grid)
+
+post_sample
+
+post_sample %>% 
+  count(pi_grid) %>% 
+  mutate(perc = n/sum(n))
+
+grid_data %>% 
+  round(2)
+
+# Histogram of the grid simulation with posterior pdf
+post_sample %>% 
+  ggplot(aes(x = pi_grid)) + 
+  geom_histogram(aes(y = ..density..), color = "white", fill = "darkgreen") + 
+  geom_density(linewidth = 1, color = 'red') +
+  stat_function(fun = dbeta, args = list(11, 3), color = 'blue', linewidth = 1) + 
+  lims(x = c(0, 1))
+```
+
+Lets do it again for 100 values.
+
+```{r}
+grid_data <- 
+  tibble(pi_grid = seq(from = 0, to = 1, length = 100)) %>% #step1
+  mutate(prior = dbeta(pi_grid, 2, 2),
+         likelihood = dbinom(9, 10, pi_grid)) %>% #step2
+   mutate(unnormalized = likelihood * prior,
+         posterior = unnormalized / sum(unnormalized)) #step3
+grid_data %>% 
+  round(2)
+
+grid_data %>% 
+  ggplot(aes(x = pi_grid)) + 
+  geom_point(aes(y = prior), color = 'red') + 
+  geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = prior)) +
+  geom_point(aes(y = posterior), color='darkgreen') + 
+  geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = posterior)) 
+
+
+# step4: sample from the discretized posterior
+set.seed(84735)
+post_sample <- 
+  grid_data %>% 
+  select(pi_grid, posterior) %>% 
+  sample_n(size = 10000, 
+           weight = posterior, 
+           replace = TRUE) %>% 
+  select(pi_grid)
+
+
+post_sample %>% 
+  ggplot(aes(pi_grid)) +
+  geom_density()
+
+# Histogram of the grid simulation with posterior pdf
+post_sample %>% 
+  ggplot(aes(x = pi_grid)) + 
+  geom_histogram(aes(y = ..density..), color = "white", fill = "darkgreen") + 
+  geom_density(linewidth = 1, color = 'red') +
+  stat_function(fun = dbeta, args = list(11, 3), color = 'blue', linewidth = 1) + 
+  lims(x = c(0, 1))
+```
+
+## Gamma-Poisson example
+
+Take Gamma prior
+
+$$
+\lambda \sim Gamma(3,1)
+$$
+
+and Poisson data model
+
+$$
+Y|\lambda \sim Poisson(\lambda)
+$$
+
+Observe evidence/data of $Y_1 = 2, Y_2 = 8$. Then we know the posterior will
+
+$$
+\lambda | \{Y_1, Y_2\} \sim Gamma(3 + Y_1 + Y_2, 1 + 2) = Gamma(13, 3)
+$$
+
+```{r}
+grid_data <- 
+  tibble(lambda_grid = seq(from = 0, to = 15, length = 100)) %>% #step1
+  mutate(prior = dgamma(lambda_grid, 3, 1),
+         likelihood = dpois(2, lambda_grid)*dpois(2, lambda_grid)) %>% #step2
+   mutate(unnormalized = likelihood * prior,
+         posterior = unnormalized / sum(unnormalized)) #step3
+grid_data %>% 
+  round(2)
+
+grid_data %>% 
+  ggplot(aes(x = lambda_grid)) + 
+  geom_point(aes(y = prior), color = 'red') + 
+  geom_segment(aes(x = lambda_grid, xend = lambda_grid, y = 0, yend = prior)) +
+  geom_point(aes(y = posterior), color='darkgreen') + 
+  geom_segment(aes(x = lambda_grid, xend = lambda_grid, y = 0, yend = posterior)) 
+
+
+# step4: sample from the discretized posterior
+set.seed(84735)
+post_sample <- 
+  grid_data %>% 
+  select(lambda_grid, posterior) %>% 
+  sample_n(size = 10000, 
+           weight = posterior, 
+           replace = TRUE) %>% 
+  select(lambda_grid)
+
+
+post_sample %>% 
+  ggplot(aes(lambda_grid)) +
+  geom_density()
+
+# Histogram of the grid simulation with posterior pdf
+post_sample %>% 
+  ggplot(aes(x = lambda_grid)) + 
+  geom_histogram(aes(y = ..density..), color = "white", fill = "darkgreen") + 
+  geom_density(linewidth = 1, color = 'red') +
+  stat_function(fun = dgamma, args = list(13, 3), color = 'blue', linewidth = 1) + 
+  lims(x = c(0, 15))
+```

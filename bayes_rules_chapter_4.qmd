@@ -52,7 +52,7 @@ library(janitor)
 library(patchwork)
 ```
 
-Assume we have $\pi$ ~ Beta(1, 10) prior. We collect data and got $y = 1$ success out of $n = 10$ trials. Thus posterior is $\pi$ ~ Beta(a+y, b+n-y) = Beta(2, 19).
+Assume we have $\pi$ \~ Beta(1, 10) prior. We collect data and got $y = 1$ success out of $n = 10$ trials. Thus posterior is $\pi$ \~ Beta(a+y, b+n-y) = Beta(2, 19).
 
 ```{r}
 p1 <- plot_beta(1, 10)
@@ -69,7 +69,8 @@ plot_beta_binomial(alpha = 1, beta = 10, y = 1, n = 10,
                    posterior = TRUE)
 ```
 
-We collect more data: y = 17 and n = 20. Then new prior Beta(2, 19) and new posterior would be Beta(19, 22). 
+We collect more data: y = 17 and n = 20. Then new prior Beta(2, 19) and new posterior would be Beta(19, 22).
+
 ```{r}
 plot_beta_binomial(alpha = 2, beta = 19, y = 17, n = 20,
                    prior = TRUE, 
@@ -77,15 +78,13 @@ plot_beta_binomial(alpha = 2, beta = 19, y = 17, n = 20,
                    posterior = TRUE)
 ```
 
-
 ## discrete-normal model
 
 Assume we have a data coming from a normal distribution with standard deviation of 1, and we would like to create a model for its mean: $\mu$. We assume first that mu can have only one of three values:
 
-- -0.10
-- 0
-- 0.50
-
+-   -0.10
+-   0
+-   0.50
 
 ```{r}
 mu <- c(-0.10, 0, 0.50)
@@ -132,7 +131,7 @@ df %>%
 
 ## uniform-normal model
 
-Assume that $\mu$ can take any value from -1 and 5 with equal probability (so uniform prior, techncially discrete uniform prior). Generate data with mean 3 and see if posteriror will produce a distribution around 3. 
+Assume that $\mu$ can take any value from -1 and 5 with equal probability (so uniform prior, techncially discrete uniform prior). Generate data with mean 3 and see if posteriror will produce a distribution around 3.
 
 ```{r}
 mu <- seq(-1, 5, length.out = 100)
@@ -163,7 +162,6 @@ df_results %>%
 
 ```
 
-
 Lets assume we collect 100 data points instead of 10.
 
 ```{r}
@@ -192,9 +190,8 @@ df_results %>%
 
 ```
 
-
 ## STUBBURN prior 1
- 
+
 ```{r}
 mu <- c(-0.10, 0, 0.50)
 prior <- c(0, 0, 1)
@@ -218,9 +215,8 @@ df %>%
 
 ```
 
-
 ## STUBBURN prior 2
- 
+
 ```{r}
 mu <- c(-0.10, 0.50)
 prior <- c(0.5, 0.5)
@@ -243,5 +239,3 @@ df %>%
   geom_linerange(aes(ymin = 0, ymax = posterior))
 
 ```
-
-
