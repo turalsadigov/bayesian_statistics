@@ -1,0 +1,2553 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.189">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Your Name">
+<meta name="dcterms.date" content="2022-11-29">
+
+<title>Markov Chain</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="understanding_markov_chain_files/libs/clipboard/clipboard.min.js"></script>
+<script src="understanding_markov_chain_files/libs/quarto-html/quarto.js"></script>
+<script src="understanding_markov_chain_files/libs/quarto-html/popper.min.js"></script>
+<script src="understanding_markov_chain_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="understanding_markov_chain_files/libs/quarto-html/anchor.min.js"></script>
+<link href="understanding_markov_chain_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="understanding_markov_chain_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="understanding_markov_chain_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="understanding_markov_chain_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="understanding_markov_chain_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="understanding_markov_chain_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="understanding_markov_chain_files/libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Markov Chain</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Your Name </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 29, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#create-time-series-for-pc" id="toc-create-time-series-for-pc" class="nav-link active" data-scroll-target="#create-time-series-for-pc"><span class="toc-section-number">1</span>  create time series for P(c)</a></li>
+  <li><a href="#mcmc-algorithm-creation-metrapolis---hasting" id="toc-mcmc-algorithm-creation-metrapolis---hasting" class="nav-link" data-scroll-target="#mcmc-algorithm-creation-metrapolis---hasting"><span class="toc-section-number">2</span>  MCMC algorithm creation (Metrapolis - hasting)</a></li>
+  <li><a href="#mcmc-example-non-stationary-not-metropolis" id="toc-mcmc-example-non-stationary-not-metropolis" class="nav-link" data-scroll-target="#mcmc-example-non-stationary-not-metropolis"><span class="toc-section-number">3</span>  MCMC example (non-stationary, not metropolis)</a></li>
+  <li><a href="#thin-out-the-time-series" id="toc-thin-out-the-time-series" class="nav-link" data-scroll-target="#thin-out-the-time-series"><span class="toc-section-number">4</span>  Thin out the time series</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>Markov chain example</p>
+<p>Image the following scenario:</p>
+<div class="cell" data-hash="understanding_markov_chain_cache/html/unnamed-chunk-1_9d03eb901a9e40364b9b370298779d74">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'heemod'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'diagram'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mat_dim <span class="ot">&lt;-</span> <span class="fu">define_transition</span>(<span class="at">state_names =</span> <span class="fu">c</span>(<span class="st">'City'</span>, <span class="st">'Rural'</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  .<span class="dv">5</span>, .<span class="dv">5</span>, </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  .<span class="dv">5</span>, .<span class="dv">5</span>);</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mat_dim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="understanding_markov_chain_cache/html/unnamed-chunk-2_72234ee291fed7f5bdb605a1e74f6366">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mc by hand</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>c <span class="ot">=</span> <span class="dv">50</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>r <span class="ot">=</span> <span class="dv">50</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>){</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(c, r, <span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  c_old <span class="ot">=</span> c</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  r_old <span class="ot">=</span> r</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">=</span> <span class="fl">0.90</span><span class="sc">*</span>c_old <span class="sc">+</span> <span class="fl">0.60</span><span class="sc">*</span>r_old</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fl">0.10</span><span class="sc">*</span>c_old <span class="sc">+</span> <span class="fl">0.40</span><span class="sc">*</span>r_old</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>50 50 
+75 25 
+82.5 17.5 
+84.75 15.25 
+85.425 14.575 
+85.6275 14.3725 
+85.68825 14.31175 
+85.70648 14.29353 
+85.71194 14.28806 
+85.71358 14.28642 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mc using matrix</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">5</span>, .<span class="dv">5</span>, .<span class="dv">5</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]  0.5  0.5
+[2,]  0.5  0.5</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>){</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">as.vector</span>(x))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> m <span class="sc">%*%</span> x</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0 1
+[1] 0.5 0.5
+[1] 0.5 0.5
+[1] 0.5 0.5
+[1] 0.5 0.5
+[1] 0.5 0.5
+[1] 0.5 0.5
+[1] 0.5 0.5
+[1] 0.5 0.5
+[1] 0.5 0.5</code></pre>
+</div>
+</div>
+<section id="create-time-series-for-pc" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="create-time-series-for-pc"><span class="header-section-number">1</span> create time series for P(c)</h2>
+<div class="cell" data-hash="understanding_markov_chain_cache/html/unnamed-chunk-3_c4bd0ae9fc2b1cb42c32f542190c1bf5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mc using matrix</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(.<span class="dv">9</span>, .<span class="dv">1</span>, .<span class="dv">6</span>, .<span class="dv">4</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">5</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>pc <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>){</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  pc <span class="ot">&lt;-</span> <span class="fu">c</span>(pc, <span class="fu">as.vector</span>(x)[<span class="dv">1</span>])</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> m <span class="sc">%*%</span> x</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(pc) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr =</span> <span class="dv">1</span> <span class="sc">-</span> pc) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> pc)) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> pc), <span class="at">color =</span> <span class="st">'blue'</span>) <span class="sc">+</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> pr)) <span class="sc">+</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> pr), <span class="at">color =</span> <span class="st">'red'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(pc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="mcmc-algorithm-creation-metrapolis---hasting" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="mcmc-algorithm-creation-metrapolis---hasting"><span class="header-section-number">2</span> MCMC algorithm creation (Metrapolis - hasting)</h2>
+<p>If <span class="math inline">\(0&lt;k&lt;1\)</span>, where <span class="math inline">\(k\)</span> depends on prior, data (likelihood) and chosen ‘easy’ distribution, then</p>
+<div class="cell" data-hash="understanding_markov_chain_cache/html/unnamed-chunk-4_641e3c159d1fd1f8e5c47db700064f84">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mat_dim <span class="ot">&lt;-</span> <span class="fu">define_transition</span>(<span class="at">state_names =</span> <span class="fu">c</span>(<span class="st">'a'</span>, <span class="st">'b'</span>),</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"1-k"</span>, <span class="st">"k"</span>, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="dv">0</span>);</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mat_dim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>If <span class="math inline">\(k\geq 1\)</span>, then</p>
+<div class="cell" data-hash="understanding_markov_chain_cache/html/unnamed-chunk-5_75f5d5c9cedb6ba9151d59036b564943">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mat_dim <span class="ot">&lt;-</span> <span class="fu">define_transition</span>(<span class="at">state_names =</span> <span class="fu">c</span>(<span class="st">'a'</span>, <span class="st">'b'</span>),</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span>, <span class="dv">1</span>, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">'1/k'</span>, <span class="st">'1 - 1/k'</span>);</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mat_dim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Or better,in either case</p>
+<div class="cell" data-hash="understanding_markov_chain_cache/html/unnamed-chunk-6_7602c4759ac440931efd19f0dd5eb1b2">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mat_dim <span class="ot">&lt;-</span> <span class="fu">define_transition</span>(<span class="at">state_names =</span> <span class="fu">c</span>(<span class="st">'a'</span>, <span class="st">'b'</span>),</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">-</span><span class="fu">min</span>(<span class="dv">1</span>, <span class="st">'k'</span>), <span class="fu">min</span>(<span class="dv">1</span>, <span class="st">'k'</span>), </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">max</span>(<span class="dv">1</span>, <span class="st">'1/k'</span>), <span class="dv">1</span><span class="sc">-</span>  <span class="fu">max</span>(<span class="dv">1</span>, <span class="st">'1/k'</span>));</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mat_dim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="mcmc-example-non-stationary-not-metropolis" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="mcmc-example-non-stationary-not-metropolis"><span class="header-section-number">3</span> MCMC example (non-stationary, not metropolis)</h2>
+<div class="cell" data-hash="understanding_markov_chain_cache/html/unnamed-chunk-7_531f1466f0e22844a91c414913560bd2">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># some algo</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">1</span>))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>pi</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.6264538</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10000</span>){</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean =</span> pi[<span class="fu">length</span>(pi)])</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">abs</span>(pi[<span class="fu">length</span>(pi)]) <span class="sc">&gt;=</span> <span class="fu">abs</span>(x)) {</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">=</span> <span class="fu">c</span>(pi, <span class="fu">sample</span>(<span class="fu">c</span>(pi[<span class="fu">length</span>(pi)], x),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">size =</span> <span class="dv">1</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fu">c</span>( <span class="dv">1</span><span class="sc">-</span><span class="fu">abs</span>(x)<span class="sc">/</span><span class="fu">abs</span>(pi[<span class="fu">length</span>(pi)]), <span class="fu">abs</span>(x)<span class="sc">/</span><span class="fu">abs</span>(pi[<span class="fu">length</span>(pi)]))))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    pi <span class="ot">=</span> <span class="fu">c</span>(pi, <span class="fu">sample</span>(<span class="fu">c</span>(pi[<span class="fu">length</span>(pi)], x),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">size =</span> <span class="dv">1</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                      <span class="at">prob =</span> <span class="fu">c</span>( <span class="dv">1</span><span class="sc">-</span><span class="fu">abs</span>(pi[<span class="fu">length</span>(pi)])<span class="sc">/</span><span class="fu">abs</span>(x), <span class="fu">abs</span>(pi[<span class="fu">length</span>(pi)])<span class="sc">/</span><span class="fu">abs</span>(x))))}</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>pi</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    [1]  -0.62645381  -0.44281049  -0.44281049  -0.44281049  -0.44281049
+    [6]  -0.44281049   1.96184290   1.96184290   1.96184290   1.96184290
+   [11]   1.55033207   1.53414181   1.96982511   1.96982511   2.34722075
+   [16]   2.42178574   2.36467896   2.30855022   1.61759638   1.13944633
+   [21]   0.90373977   0.80095204   0.80095204  -0.57610751   0.41605285
+   [26]   0.41605285   0.13670657   0.13670657   0.13670657   0.13670657
+   [31]   0.13670657   0.50128853   0.50128853   1.38239626   1.38239626
+   [36]   1.72351595   1.66863848   1.66863848   1.49601497   2.06573460
+   [41]   2.42446350   2.38522349   2.26939817   1.52612496   1.52612496
+   [46]   1.52612496   1.59141314   2.06692267   1.41791260   1.41791260
+   [51]   2.51888170   2.07558982   1.16352146   1.16352146   2.41760456
+   [56]   3.59569156   3.17088128   3.50383165   3.22805362   3.59807243
+   [61]   4.89738473   4.89738473   4.01651301   5.60334646   5.32117259
+   [66]   4.74790717   5.74445110   5.12408442   4.50809452   4.66612329
+   [71]   5.24284207   5.95954955   5.95954955   7.64172563   6.66943879
+   [76]   8.10172103   8.10172103   7.70891310   8.04453031   8.53871864
+   [81]   8.41992662   9.76296544   8.95975222   8.85956148  10.35738024
+   [86]  10.31974607  10.31602254  10.37618298  11.17409942   9.65570533
+   [91]   8.69986623   8.39889010   7.52910723   7.47221045   7.54072199
+   [96]   5.87574955   4.85982060   4.85982060   4.41164637   3.12534584
+  [101]   4.59560283   4.57704300   4.57704300   3.08958269   3.08958269
+  [106]   2.46831599   2.09346123   2.51856161   5.17721964   6.06364229
+  [111]   6.77688281   6.52185578   6.17326109   6.17326109   5.24429001
+  [116]   5.70128882   4.75421303   4.71948700   4.51329800   4.51329800
+  [121]   4.44288062   5.42677619   6.40789235   6.92891509   7.08540558
+  [126]   6.31932358   7.42150017   7.24439621   9.26915760  10.09953077
+  [131]  11.89001583  13.33117353  12.94126490  12.56018885  11.66397759
+  [136]  13.25056602  14.02620034  16.52386193  17.34041838  17.32701886
+  [141]  18.25308158  18.67377622  18.43531987  19.42315814  17.96545093
+  [146]  16.71216117  16.71216117  14.97894277  15.25760749  14.91663891
+  [151]  13.44109127  13.10995924  13.10995924  13.37313488  13.31142746
+  [156]  12.67094576  11.68909009  11.59091135  11.33017504  12.42695208
+  [161]  12.92827391  13.96238165  13.96802363  15.13098819  16.67855512
+  [166]  16.42288441  16.46553466  16.60175655  17.02335992  16.77569558
+  [171]  16.85750589  14.45440967  13.56698953  13.14172180  13.69211516
+  [176]  13.40778450  13.40778450  13.67783940  13.08802661  12.75699363
+  [181]  13.06713501  13.46151418  12.26291709  12.41892877  12.60083096
+  [186]  13.34183212  11.69361038  12.09174053  12.70870701  12.00747534
+  [191]  13.73136947  13.06319086  13.12666496  14.13182418  15.76646846
+  [196]  16.01063339  16.08099953  16.21544719  16.60601313  16.55544743
+  [201]  16.43101244  16.43101244  18.38743771  18.38743771  17.99173478
+  [206]  18.55895570  18.14712774  19.19074020  18.09450342  17.43872157
+  [211]  18.97836965  18.49439472  18.01513914  18.50945197  17.98991530
+  [216]  18.80461804  19.89412153  20.35025713  20.07709914  19.21306319
+  [221]  20.32649637  18.75741419  18.97963226  18.64535089  18.70114800
+  [226]  18.70554671  17.54753145  18.28712068  18.32604880  18.03654943
+  [231]  19.43714026  20.35315959  20.50238032  20.50238032  21.78930236
+  [236]  22.16926505  22.24660733  22.84284144  23.62553913  21.70662931
+  [241]  22.43608059  23.75008276  24.79114306  24.62182473  24.74286496
+  [246]  25.31081693  26.26449672  25.87577448  25.26710598  25.19826505
+  [251]  25.65427372  25.78312912  24.91366877  26.67722077  25.67541943
+  [256]  24.75221248  25.35652189  25.30000047  27.96156683  26.05661139
+  [261]  29.32302591  29.93866275  28.96621982  28.85606106  27.28368836
+  [266]  27.32869896  27.36912664  27.36912664  28.02830735  27.63743953
+  [271]  25.78124903  25.41461809  25.53103170  24.83349341  24.96998422
+  [276]  26.09475667  25.75487603  26.27849662  27.04578390  27.04578390
+  [281]  27.05964871  26.34927756  26.18560423  26.75532720  26.75532720
+  [286]  25.97575868  26.55983581  24.52655021  22.71034416  22.68534652
+  [291]  22.68534652  23.57735491  21.29857877  21.94493819  23.54125899
+  [296]  23.52299928  23.98446466  20.97641606  18.75346993  18.99027359
+  [301]  18.00235445  17.39792872  15.85948730  14.40559356  15.20935110
+  [306]  13.11146814  13.69092676  13.69092676  11.93070041  12.52619845
+  [311]  12.34561431  11.63970818  12.31907061  13.40250052  14.81315991
+  [316]  14.70350421  15.39988268  14.08127320  15.22814646  16.42210172
+  [321]  14.08896504  12.94215090  12.23468091  12.23468091  12.33458398
+  [326]  11.29091654  11.57655701  11.57655701  11.31970288  11.31970288
+  [331]  11.38939798  11.69696461  12.45850896  11.58524443  12.06657975
+  [336]  10.88333751  11.08135053  12.67531798  12.67531798  13.83474251
+  [341]  13.20951508  12.27361252  12.99290434  12.58916755  12.51233666
+  [346]  12.88645506  12.91909235  12.18176483  12.18586679  12.39387326
+  [351]  13.94358623  13.79935967  12.81813555  12.96138318  14.40227633
+  [356]  14.48147804  13.49028079  12.72068847  12.47382237  13.07604517
+  [361]  12.78823142  13.14336695  14.04195589  15.36040487  15.92467303
+  [366]  16.46199916  16.59098091  17.08794186  15.92728686  15.53229226
+  [371]  15.23701025  12.90529813  12.92408263  12.41319607  13.24678510
+  [376]  13.94802440  13.81147338  14.90811360  14.67046053  14.04468228
+  [381]  13.84581770  14.69506809  14.75580334  15.60422365  14.19417645
+  [386]  16.21901849  15.45684499  14.08032577  13.63638390  15.31427286
+  [391]  14.22033814  14.07546326  12.63166533  11.87062505  11.46930474
+  [396]  12.86315056  13.15081770  13.91909592  14.28650527  15.19121030
+  [401]  13.50340927  15.00583381  16.03213597  15.89546261  16.52704937
+  [406]  16.30366373  14.53967079  14.70404370  15.61371414  15.61371414
+  [411]  15.69644898  15.39784746  16.56543443  16.31813051  16.32303930
+  [416]  16.32303930  17.13849894  16.03775830  17.33931323  17.01952707
+  [421]  15.59152187  15.08030264  14.80998739  13.23712348  12.94528074
+  [426]  13.41049565  14.26240369  11.82976394  12.47918588  11.82014849
+  [431]  11.51094804  12.35874084  12.38884201  12.13359389  12.13359389
+  [436]  13.96332438  14.00299936  11.06322566  11.50204758  10.41732757
+  [441]  10.27574184  11.25206932  11.76084558   9.98931423  11.16786121
+  [446]  11.85601724  13.19804611  12.04033851  10.88818145   9.43155344
+  [451]   9.80346592   8.74828090   8.90274939   7.90382867   9.22752927
+  [456]   9.44416630   9.07095452   8.64233111   8.26613437   9.82218701
+  [461]  10.05147149   9.97602555   9.53281887   9.99396803   9.99396803
+  [466]  10.57428672  11.70422272  11.70422272  11.39348184  11.37946459
+  [471]  10.39090085   8.86774508   8.96979704   8.96979704   9.43927410
+  [476]   9.20167784   9.20553252   6.79308224   6.50135747   6.63231057
+  [481]   5.98870150   5.98870150   5.34351907   4.36796528   3.64455744
+  [486]   4.50833648   4.50833648   4.01990759   3.58494685   2.60112598
+  [491]   2.60112598   3.52621077   3.38836881   3.88391351   2.10746420
+  [496]   2.10746420   2.10746420   0.76167051   1.08857607   2.89030155
+  [501]   2.80168463   1.95603032   1.66102528   1.66102528   1.66102528
+  [506]   1.66102528   1.42368539   1.41240416   3.36268195   3.23842062
+  [511]   5.00729424   5.00729424   3.89692780   2.78442512   2.78442512
+  [516]   2.78442512   2.72775236   2.72775236   2.72775236   2.72775236
+  [521]   3.41527743   4.56423653   4.56423653   5.45561377   5.64385263
+  [526]   5.53226582   5.53226582   5.44527949   6.36009054   7.18328149
+  [531]   7.34817293   7.33724724   6.11491527   7.28403786   7.28403786
+  [536]   8.27931967   7.77482963   7.59688164   8.12487042   8.85253113
+  [541]  10.09360042  10.82041409  10.82041409  10.58505666  10.15451972
+  [546]   8.44524354   7.09952175   6.92546626   6.62644660   6.70744596
+  [551]   8.02305102   8.02305102   8.58923410   8.57227260   8.51026478
+  [556]   9.52170496   9.62427881   9.62427881   8.35190913   7.30940253
+  [561]   6.14369557   6.14369557   6.14369557   5.68930231   5.88947962
+  [566]   6.19230789   6.88741251   7.33783702   6.18291836   3.81189548
+  [571]   3.22226752   2.45637752   3.87281837   3.56160131   3.56160131
+  [576]   2.76706965   2.76706965   4.16586075   4.68131672   4.91316927
+  [581]   4.91316927   5.25659143   5.25659143   4.75129464   4.99685416
+  [586]   5.91270236   5.74517851   4.80456721   4.83214619   5.01498405
+  [591]   4.75346564   4.75346564   3.37161093   3.63796312   2.89548088
+  [596]   4.28973392   4.28973392   4.27647822   4.53758431   2.44924394
+  [601]   1.85735972   2.05168079   2.01695445   2.66790740   1.91894415
+  [606]   2.15677355   4.75254539   4.84789939   5.05574934   5.20843585
+  [611]   5.20843585   5.00861837   4.78658333   4.78658333   4.78658333
+  [616]   5.13549267   5.11740582   4.19284956   4.19284956   5.12676626
+  [621]   5.62693900   6.54228000   5.84839061   5.84839061   5.91874311
+  [626]   4.56382866   3.88636356   3.84472434   3.45249343   3.68766845
+  [631]   2.93683786   2.93683786   3.62806284   4.10215544   4.10215544
+  [636]   4.62701400   5.75555276   5.92406186   4.90340108   4.43696286
+  [641]   4.43696286   4.41700775   3.85146993   2.36270770   2.13495273
+  [646]   2.13495273   2.13495273   2.59082947   2.59082947   1.88498462
+  [651]   1.13721792   1.51740617   0.96305556   1.02768259   1.02768259
+  [656]   1.02768259   0.38985708   0.51927753   0.51927753   1.30069451
+  [661]   1.30069451   0.63158104   0.43760073   0.55865890   0.55865890
+  [666]   0.55865890   0.55865890   1.69362399   1.53685968   1.74759126
+  [671]   1.67807233   2.48891231   2.22448836   3.22264280   4.14910846
+  [676]   2.52717117   2.52717117   2.35262424   3.17325264   3.17325264
+  [681]   2.37310054   2.37310054   1.21715743   1.51196619   2.08162605
+  [686]   2.83301724   1.83224282   1.29870324   1.29870324   1.06856211
+  [691]   1.06856211   1.06856211  -0.55468381  -0.56105274  -0.44219949
+  [696]  -0.44219949  -0.44219949   0.43907829   0.43907829   0.92446686
+  [701]   1.11505548   1.33847779   1.33847779   2.14043958   1.87890758
+  [706]   1.87890758   1.87890758  -0.44258327  -0.44258327  -0.44258327
+  [711]  -0.44258327  -0.71159681  -0.71159681  -0.71159681  -0.71159681
+  [716]  -0.83519957  -0.83519957  -0.83519957  -0.83519957  -0.83519957
+  [721]  -0.83519957  -0.97603896  -0.97603896  -0.95249697  -0.95249697
+  [726]  -0.95249697  -0.79429748   0.98722699   0.98722699   0.97807804
+  [731]  -0.94575571  -0.94575571  -2.10326060  -1.72125304  -1.72125304
+  [736]  -1.72125304  -2.06498882  -1.66011781  -1.66224895  -1.71079150
+  [741]  -2.14127751  -1.43533194  -2.38811577  -2.38811577  -3.34139019
+  [746]  -3.80711908  -3.80711908  -3.90665603  -4.29067547  -4.29067547
+  [751]  -3.57578828  -3.79117276  -5.66829686  -5.66829686  -5.68859041
+  [756]  -6.56076994  -6.56076994  -5.40667795  -5.40667795  -4.04036935
+  [761]  -4.04036935  -3.65086580  -2.01000384  -1.21482982  -1.14015870
+  [766]  -1.14015870  -1.14015870  -1.14015870  -0.80280400  -0.80280400
+  [771]  -0.80280400  -0.68599779  -0.92827917  -1.55060559  -0.66042466
+  [776]  -0.55528664  -0.19511711  -0.19511711  -0.19511711  -0.19511711
+  [781]   0.31974888   0.31974888   0.31974888   1.30784071   1.30784071
+  [786]   2.15218542   3.74580264   5.93124055   5.74627045   5.16205699
+  [791]   5.75100674   6.16316377   6.31206593   5.53323571   6.03359476
+  [796]   6.03359476   4.94426089   4.63601095   4.21796055   2.57995282
+  [801]   1.62063640   1.62063640   1.72934907   1.72934907   1.72934907
+  [806]   1.52252858   2.06036649   0.46981134   0.99943881   0.99943881
+  [811]   0.39335819   0.39335819   0.39335819   0.68908382   0.68908382
+  [816]   0.85081064   0.85081064   1.24054516   2.33899219   2.33899219
+  [821]   1.68818155   2.42251189   2.42251189   2.42251189   1.99718206
+  [826]   2.47942928   1.70072907   1.70072907   1.70072907   1.70072907
+  [831]   2.10256921   3.48402345   3.48402345   2.19539635   2.19539635
+  [836]   4.45561214   2.36997898   1.86684894   3.54721080   3.82254110
+  [841]   5.07766692   4.15126267   4.54481924   4.13002867   4.30599903
+  [846]   3.79681825   4.83731539   5.83118179   5.69572806   5.69572806
+  [851]   4.64607602   4.95309903   5.63301241   5.52218661   5.35929834
+  [856]   5.35929834   3.56445949   3.45658170   3.45658170   4.93388053
+  [861]   4.41632827   4.38925243   4.83550193   8.47507556   6.30763653
+  [866]   6.75344449   6.17137468   6.51262308   6.73052168   6.73052168
+  [871]   6.73052168   5.80811102   4.52303358   5.11349498   4.27080317
+  [876]   4.51464780   4.40028891   4.10271158   3.41164700   3.41164700
+  [881]   4.37596007   5.11068332   7.17819377   7.52509904   7.05393651
+  [886]   6.22620348   4.13135566   3.55933294   3.55933294   2.96400644
+  [891]   2.96400644   2.96400644   2.31874651   2.28051874   1.98238316
+  [896]   1.98238316   1.15507514   1.15507514   1.15507514   1.06555527
+  [901]   2.18287436   2.97422502   2.74800054   1.54493279   1.54493279
+  [906]   0.71551802   0.71551802   0.71551802   0.71551802  -0.14732992
+  [911]  -0.14732992  -0.14732992  -0.14732992  -0.14732992  -0.14732992
+  [916]  -0.14732992  -0.14732992  -0.14732992  -0.14732992  -0.14732992
+  [921]  -0.14732992  -0.14732992  -0.14732992  -0.14732992  -0.14732992
+  [926]  -1.04566598  -2.21547015  -3.46427357  -3.46427357  -2.63123248
+  [931]  -2.63123248  -2.63123248  -2.41240154  -2.41240154  -2.26500862
+  [936]  -2.54755521  -3.31953478  -4.23439062  -2.47956978  -4.22493175
+  [941]  -5.45897584  -5.33614419  -5.33614419  -5.68762305  -5.25128379
+  [946]  -5.25128379  -5.25128379  -4.27222767  -4.42547699  -4.42547699
+  [951]  -4.42547699  -5.46552442  -5.44361214  -5.16862125  -5.45854906
+  [956]  -5.45854906  -6.17577959  -6.13842303  -6.40015962  -6.40015962
+  [961]  -7.55450714 -10.80772722 -12.17505126 -13.47915501 -12.65678196
+  [966] -15.45274345 -15.45274345 -16.11128851 -16.22668191 -15.97967259
+  [971] -15.67359959 -15.41511699 -13.05316818 -11.55611873 -11.55611873
+  [976] -11.05276021 -10.93576280  -9.06547912  -9.31715224  -9.58332460
+  [981]  -9.58332460 -10.78963446 -12.27485700 -11.30145102 -10.93522252
+  [986] -11.10789784 -11.57468976 -12.16370786 -11.90659248 -11.82435953
+  [991] -13.35491378 -12.57826613 -11.51966878 -11.07031869 -12.49019470
+  [996] -12.87828298 -12.73511952 -12.62071398 -12.44890077 -13.69259838
+ [1001] -13.61383667 -14.53914966 -12.97288147 -12.43392938 -13.53278592
+ [1006] -12.20357771 -12.20357771 -14.00335011 -15.03003793 -14.82556067
+ [1011] -15.18325939 -15.37157804 -15.73245892 -13.87821441 -14.24592980
+ [1016] -12.13139485 -12.76383095 -13.16140040 -13.75667883 -13.75667883
+ [1021] -14.96786207 -13.87581150 -14.33228167 -13.02028154 -15.25141000
+ [1026] -13.58364469 -12.95882642 -12.37118349 -11.39329497 -12.81319394
+ [1031] -14.02552295 -13.75575199 -13.64910481 -13.17453960 -15.01276753
+ [1036] -13.71750434 -14.06758330 -13.58152441 -13.58627872 -14.57611580
+ [1041] -14.27470847 -14.54410574 -14.90392537 -15.67947628 -14.05667031
+ [1046] -13.62145979 -12.60097660 -12.50735898 -11.15878868 -10.69092387
+ [1051] -10.82982059  -9.48624387  -9.15495581  -8.78585209  -9.90869922
+ [1056] -11.81743556 -11.88397010 -10.73164835 -11.53336335 -11.19171304
+ [1061] -10.52054540 -11.37651661 -11.49550701 -12.98408490 -11.90234158
+ [1066] -13.10967576 -12.59061759 -12.24642357 -10.74611315 -10.40331286
+ [1071]  -9.96149787  -9.66055346  -9.49581036  -9.08775934  -8.35660873
+ [1076]  -7.83877047  -7.41892667  -6.10417411  -4.99486826  -5.08113676
+ [1081]  -4.99012504  -4.84136283  -4.88242080  -5.02229236  -5.36734070
+ [1086]  -5.70279555  -5.47399365  -5.71496054  -6.45020226  -7.56741987
+ [1091]  -5.99056499  -4.95733756  -3.87876090  -3.87876090  -4.16556098
+ [1096]  -4.06455527  -4.06455527  -4.79707058  -5.32092042  -5.32092042
+ [1101]  -4.43668818  -4.92713088  -4.92713088  -4.86366041  -3.51909998
+ [1106]  -4.33165211  -3.61477211  -3.28098880  -1.74506368  -1.48670255
+ [1111]  -1.91666729  -3.36187696  -3.64554442  -2.93088657  -3.40542873
+ [1116]  -4.55118551  -2.58625392  -2.42702184  -4.30606436  -4.30606436
+ [1121]  -4.16207965  -3.00581622  -2.65571028  -2.47791791  -4.26677438
+ [1126]  -4.80482229  -4.59552318  -5.81423055  -6.25293895  -4.13106304
+ [1131]  -4.65917235  -6.75175612  -6.57939032  -6.57939032  -8.04600672
+ [1136]  -8.04600672  -8.04600672  -8.55236768  -6.78449057  -8.30315820
+ [1141]  -8.30315820  -9.01158015  -7.83344517  -8.61261172  -7.05235991
+ [1146]  -5.15248337  -6.20525540  -7.56921021  -9.44839080  -9.22100335
+ [1151]  -8.80341814  -7.31271705  -6.36424755  -6.36424755  -8.27137450
+ [1156]  -9.49714825  -9.63365849  -9.63365849 -10.46782265 -10.47596073
+ [1161]  -8.96908574  -7.99324073  -7.99324073  -7.43565951  -8.26208243
+ [1166]  -7.04583896  -7.78102189  -7.52788408  -7.42706753  -7.85339426
+ [1171]  -7.19543143  -8.46623924  -9.07113377  -8.07458518  -8.50851783
+ [1176]  -9.07170937  -9.07170937  -9.30587047  -8.76746347 -10.35803349
+ [1181]  -9.78818165 -10.06662075  -9.08307090  -8.78958721  -8.01690157
+ [1186]  -7.83271651  -6.80851578  -8.05120939  -9.38755427  -9.40608166
+ [1191]  -9.81061043 -10.47843929 -10.27737101 -10.65140573 -10.19367420
+ [1196] -10.19367420 -10.60314745  -8.66675014  -8.76288708  -7.68676744
+ [1201]  -7.87044703  -7.28906240  -6.61019722  -6.61019722  -7.59985330
+ [1206]  -6.28753541  -7.03946691  -7.11114140  -8.04136872  -7.12357979
+ [1211]  -7.12357979  -7.01008494  -5.49455904  -5.91931707  -6.86397962
+ [1216]  -6.05012174  -6.06313649  -5.70609446  -5.49428917  -5.55835878
+ [1221]  -4.06878324  -4.72329786  -4.72329786  -5.31718353  -5.31718353
+ [1226]  -5.72047002  -6.26204012  -3.34281131  -3.34281131  -3.34281131
+ [1231]  -3.34281131  -2.72983625  -2.61165544  -2.15961983  -2.37392782
+ [1236]  -2.37392782  -2.37392782  -3.70139161  -4.35618866  -4.92420147
+ [1241]  -4.94901157  -5.24758960  -5.68343152  -5.75671352  -5.75671352
+ [1246]  -5.96256615  -7.01852636  -7.44960503  -7.44960503  -7.64619998
+ [1251]  -7.79621580  -8.90954107  -8.95082491  -7.22819290  -7.22819290
+ [1256]  -4.44680576  -6.20998124  -5.54548244  -6.39358350  -5.58814621
+ [1261]  -7.63442688  -7.31107673  -7.48744869  -7.33617051  -7.05403923
+ [1266]  -6.20527159  -6.20527159  -6.77626588  -6.74417194  -6.60461324
+ [1271]  -7.35056180  -8.56778263  -7.96711006  -8.07949272  -8.79427149
+ [1276]  -9.64551398  -9.64551398 -11.55287192 -11.14143817 -12.10667259
+ [1281]  -9.06763919  -9.04954041  -9.67476766  -9.78606851  -9.61238154
+ [1286]  -9.58164132 -10.84779289  -9.84542624  -7.59366436  -8.50215558
+ [1291]  -7.70851481  -7.70851481  -8.41643842  -7.35600165  -7.45339004
+ [1296]  -7.92871817  -7.11759924  -7.50134882  -8.19685501  -7.74439889
+ [1301]  -8.42842723  -8.66710855  -7.78236526  -9.55793371 -10.10602187
+ [1306] -10.10602187  -8.94088391  -9.27084175  -9.55016775  -8.65639001
+ [1311]  -8.65639001  -8.65639001  -9.03572309  -7.60982472  -8.50621006
+ [1316]  -8.00793906  -7.04336936  -7.04336936  -8.09364403  -7.53449253
+ [1321]  -6.74586383  -8.13605482  -7.25597365  -8.75220913 -11.00416307
+ [1326]  -9.00502064  -8.07525724  -7.57253859  -6.61125694  -7.01331201
+ [1331]  -7.01110653  -5.97732229  -5.76058498  -6.07255834  -6.06062896
+ [1336]  -4.44092822  -3.94857319  -3.25215558  -2.96541835  -5.08848440
+ [1341]  -5.91059812  -6.96883383  -6.33884975  -6.33884975  -6.33884975
+ [1346]  -7.21399650  -7.44218648  -9.17693590  -9.17693590  -9.17693590
+ [1351]  -8.27241202  -8.69891242  -7.93612037  -7.16738541  -6.12644837
+ [1356]  -6.47948781  -7.16139741  -7.16139741  -8.65394561  -9.11665999
+ [1361]  -9.15022125  -8.83214055  -7.09954040  -7.09954040  -6.05348267
+ [1366]  -6.05348267  -5.65328799  -4.02975575  -4.02975575  -4.34303688
+ [1371]  -4.41048399  -6.49333862  -6.08099251  -5.83947171  -5.18969238
+ [1376]  -5.57423228  -5.90469459  -5.65557828  -5.60741557  -5.78511988
+ [1381]  -5.57699520  -5.99321196  -4.90187596  -4.90187596  -4.48209221
+ [1386]  -3.61326458  -2.81989345  -3.02892020  -2.56839587  -3.60203604
+ [1391]  -3.37908043  -3.47355234  -3.90272333  -4.55750894  -4.21534111
+ [1396]  -5.43186742  -5.65649292  -5.65649292  -6.33955122  -6.30836673
+ [1401]  -5.61355551  -5.65926274  -6.79913956  -6.61589254  -4.78538288
+ [1406]  -5.01987408  -5.64949865  -5.64949865  -4.38573381  -3.82820548
+ [1411]  -3.82820548  -2.73640693  -2.49766928  -2.44558859  -2.44558859
+ [1416]  -2.44558859  -2.44558859  -2.39611844  -2.99780406  -2.99780406
+ [1421]  -3.29025686  -6.31256008  -8.48466406  -6.49544579  -6.49544579
+ [1426]  -6.78231684  -6.89377608  -7.56209101  -6.76147146  -6.48322473
+ [1431]  -5.59930133  -4.30363402  -4.68797836  -4.79571622  -5.47796838
+ [1436]  -5.64161748  -3.84261432  -4.14178991  -5.06949551  -5.56749361
+ [1441]  -5.56749361  -5.93238094  -6.72679288  -6.58161899  -5.80277308
+ [1446]  -6.09079374  -6.75100240  -5.14423462  -6.36131423  -4.38262157
+ [1451]  -4.38262157  -4.38262157  -3.89916358  -4.32826114  -4.32826114
+ [1456]  -5.39326725  -5.39326725  -4.64299557  -6.23010600  -7.39183924
+ [1461]  -7.00431647  -6.00277638  -4.85756332  -4.85756332  -2.26531123
+ [1466]  -1.86416840  -1.85794935  -1.85794935  -0.51821690  -0.51821690
+ [1471]  -0.51821690  -0.70850844  -0.49589099  -0.49589099  -0.49589099
+ [1476]  -0.40898217  -0.40898217  -0.40898217  -0.40898217  -0.40898217
+ [1481]  -0.40898217  -0.78736283  -0.78736283  -0.47934971  -0.47934971
+ [1486]   0.70794885  -1.20668500  -1.20668500  -2.35675215  -2.37842415
+ [1491]  -1.70737807  -1.04336488  -0.65948546  -0.65948546  -0.34477474
+ [1496]   0.60824156   0.60824156   1.52899725   1.52899725   1.04591343
+ [1501]   0.81650999   0.81650999   1.35153322   1.35153322   3.01017142
+ [1506]   3.07004633   1.71879849   2.53010752   3.11308016   3.92006726
+ [1511]   4.91817185   5.46006962   5.46006962   6.34665825   8.35940082
+ [1516]   7.23228737   6.59309767   6.46519455   6.22076468   6.64139534
+ [1521]   6.64139534   7.36053707   7.36053707   7.24713815   7.23652753
+ [1526]   7.23652753   6.33580837   6.34756040   6.11414928   7.40296736
+ [1531]   9.20138781   9.86883814   9.28357218   9.51610459  10.39545612
+ [1536]   9.74146920  10.13605341  11.52997252  11.68840777  11.39394239
+ [1541]  10.56856932  11.97298057  12.72216623  13.22181202  12.96259588
+ [1546]  15.11437782  16.70581920  15.46989517  15.28181074  14.08415367
+ [1551]  13.71355235  13.87041571  14.25865454  12.56706532  13.00959289
+ [1556]  14.95202423  13.86342075  12.60094920  11.89639245  11.00236128
+ [1561]  11.00236128  11.91913313  14.00964453  13.73781190  14.04859082
+ [1566]  14.30724703  15.26649419  15.26649419  16.06698245  15.96479774
+ [1571]  13.80559737  13.30402262  12.77720897  13.13069637  13.58961223
+ [1576]  14.98116791  15.65718059  16.24259403  16.59607216  16.59607216
+ [1581]  18.84661950  18.84661950  19.74652798  19.74066202  19.79185234
+ [1586]  18.58081990  18.66353984  18.56462224  20.28515667  20.76753743
+ [1591]  21.30577959  22.54793306  23.31392842  23.44088520  23.99225258
+ [1596]  24.37546907  22.98993803  24.11712650  25.33420956  24.35347690
+ [1601]  25.71107752  26.70643134  26.74465608  27.30470476  26.47863979
+ [1606]  26.99703759  28.60203018  28.43698503  28.07423230  27.85138347
+ [1611]  28.06596354  29.24437545  30.35025050  29.26491129  28.66897917
+ [1616]  26.97159081  27.69180278  25.88134631  25.77603731  25.36400064
+ [1621]  24.10295109  22.87613381  24.86946891  25.11602839  25.11602839
+ [1626]  25.03959500  25.84519731  25.01733598  25.78974916  27.11069734
+ [1631]  26.26831272  25.96804211  27.05180642  25.78239896  26.63953392
+ [1636]  26.17848108  26.81344015  25.74244930  24.71873317  24.90896665
+ [1641]  24.16443072  24.45531454  24.55514410  25.98997495  25.21416091
+ [1646]  25.13585973  23.41631255  23.34483546  23.64708981  25.74329005
+ [1651]  24.48464535  24.61004008  24.13520061  25.48289754  25.70511692
+ [1656]  27.22094403  26.75709510  28.42274364  29.46000450  27.51506850
+ [1661]  27.18153055  26.34403093  27.00350125  28.22010139  28.98252825
+ [1666]  29.12408897  28.92617657  27.12069301  28.29159232  29.31900940
+ [1671]  30.71038029  29.37715341  29.34439528  27.89327878  26.07349780
+ [1676]  25.35312693  25.03709198  25.99060137  26.74859474  25.59959285
+ [1681]  25.94564013  25.27885370  25.17096818  25.23632223  24.85048167
+ [1686]  26.14913597  25.70049211  25.50554863  23.85272938  24.02087621
+ [1691]  23.56488376  22.71245436  21.48736733  22.02362534  22.64223439
+ [1696]  22.13582953  22.92100476  21.71400325  21.59677985  20.60355559
+ [1701]  20.78001400  20.54690604  20.95297769  20.11781860  20.45501536
+ [1706]  20.92170027  20.58191366  20.63215140  21.50554618  20.44576512
+ [1711]  20.70410310  20.70410310  20.50155958  20.09946556  21.92294858
+ [1716]  21.83281297  21.68537710  21.31369311  21.31369311  21.90144530
+ [1721]  23.30287932  23.42892539  22.90816111  20.66522994  21.80090860
+ [1726]  21.72550344  22.65147347  22.66481525  21.80573798  21.58067206
+ [1731]  21.25441874  21.78394755  21.00160022  20.99024087  21.98141122
+ [1736]  22.06835316  21.32869501  18.92381697  18.43844095  16.69259725
+ [1741]  17.30277962  16.84454166  18.49294064  17.38233627  17.93719285
+ [1746]  16.74500393  17.59608000  18.09911989  17.37153322  17.49857028
+ [1751]  16.69817979  16.70754865  14.76149882  13.93895113  12.71935356
+ [1756]  13.50624456  14.37579523  13.47427003  12.87322670  12.27994612
+ [1761]  12.53130437  14.20234977  14.57547078  14.87756183  14.97033540
+ [1766]  14.66022894  15.76623433  17.74252227  17.88651225  19.12005847
+ [1771]  17.63578777  19.01110820  19.46571753  17.83185829  18.52348283
+ [1776]  18.01229924  17.23478052  16.61260566  16.29517101  15.10984076
+ [1781]  15.40634953  15.18525438  15.64037023  15.64037023  15.10993703
+ [1786]  15.41365994  14.68455078  15.25808553  15.34976306  15.86116881
+ [1791]  15.62724807  15.62724807  16.95171308  16.91342386  16.72916353
+ [1796]  16.29183039  17.61565036  17.31391569  17.26934692  18.72900376
+ [1801]  17.79159782  19.73226933  20.50270514  19.33307656  19.76666150
+ [1806]  19.96445059  20.37908984  20.27138260  20.73162665  22.30409174
+ [1811]  22.06284408  21.59653096  21.73508844  22.69582399  23.40151886
+ [1816]  24.81294685  26.88227212  24.09625739  22.14556037  24.33409188
+ [1821]  24.92492334  24.94757170  26.22349472  26.21836938  27.51341133
+ [1826]  26.35474339  26.69905690  26.53505515  27.32181457  26.75014456
+ [1831]  27.24525702  27.95999175  28.80081383  27.77549087  29.29533248
+ [1836]  28.93220502  28.46090682  27.17635379  27.10779212  28.43039934
+ [1841]  28.48136433  28.38577051  28.87559984  30.16143070  31.19206375
+ [1846]  31.49449165  31.61804219  29.08665403  29.94496174  29.59598334
+ [1851]  28.22325067  28.45815487  28.06503108  26.49189993  27.17700075
+ [1856]  27.17700075  27.50965475  27.93815643  28.24151114  29.44109919
+ [1861]  32.36073748  32.05665221  30.91352853  31.00585181  31.00585181
+ [1866]  32.28069423  31.84808373  29.74402356  31.22897387  29.64825782
+ [1871]  30.97550207  31.23464340  30.55694591  32.30157468  31.01756478
+ [1876]  31.73555093  31.24750061  30.70017246  31.22502552  31.22558874
+ [1881]  31.01143946  30.69661152  29.03692844  29.62127037  31.01525001
+ [1886]  32.05645213  31.13031231  31.75672010  30.64416801  32.63373126
+ [1891]  31.61258901  31.37994733  29.62378576  29.44373408  28.39649049
+ [1896]  28.34814728  28.56904914  28.67862979  28.95402178  29.00424132
+ [1901]  29.70381049  30.47452910  31.35957920  31.41740298  31.15389315
+ [1906]  30.70445809  32.53532369  32.29266640  31.80034282  33.49825855
+ [1911]  33.18588702  33.60809594  33.69378135  35.64290719  35.34613385
+ [1916]  34.84029468  34.61164348  33.04433891  32.99363462  33.39673156
+ [1921]  34.71446180  36.57001012  37.71730045  36.77970547  36.87232363
+ [1926]  35.03409582  35.17726556  33.97909939  33.87930162  35.01761903
+ [1931]  35.12386379  35.56391734  36.29442079  36.48346534  36.79025076
+ [1936]  36.88601669  35.92178092  34.01653740  33.17355598  34.60030701
+ [1941]  33.24945367  31.45131155  31.38787037  34.03499041  34.45511749
+ [1946]  35.16866809  35.94299283  35.46601603  34.89757720  34.64762577
+ [1951]  33.85919581  33.63160116  33.93176462  32.76281518  33.69533529
+ [1956]  35.54778361  36.15153998  37.07804133  37.68763298  38.90343744
+ [1961]  39.17555852  39.48858483  40.06766872  41.11893182  39.56309934
+ [1966]  38.12716652  37.24310792  37.26759861  36.47127847  37.69157602
+ [1971]  38.66694767  39.02862806  40.34069790  42.22569553  43.22343008
+ [1976]  44.84525551  45.34261540  43.25393466  41.26682419  41.05093111
+ [1981]  40.15123057  40.79663554  40.84029047  40.53295125  40.41336283
+ [1986]  40.32051394  41.49134713  43.35503952  42.61641035  43.05914980
+ [1991]  45.32010306  46.03651690  46.12021316  45.58654480  46.33134377
+ [1996]  43.63957607  43.49465455  43.30789675  44.45867788  42.29400644
+ [2001]  41.75594263  42.14255136  41.02994904  39.42732337  39.21327222
+ [2006]  39.15676859  40.51582919  41.01811382  41.03578299  43.27201533
+ [2011]  44.63543910  43.90084528  44.29333488  43.25774840  43.05255947
+ [2016]  44.01700572  44.41351109  43.38010905  43.53376277  42.14031917
+ [2021]  41.32428180  39.54844542  39.75099727  39.61824678  40.08846019
+ [2026]  39.98328624  40.57608521  41.01929015  40.96014002  39.53721403
+ [2031]  39.60880333  40.35181396  41.18622488  40.29829292  40.59767952
+ [2036]  41.15883356  41.11584811  41.59534966  41.23149230  41.12406327
+ [2041]  40.00900682  40.00900682  39.88924024  40.08319140  38.75773179
+ [2046]  38.75773179  39.40031254  40.38907064  41.11595489  41.07209695
+ [2051]  40.12514121  39.94873801  40.59560602  39.75091719  38.63430466
+ [2056]  37.40991566  38.26719096  39.62279557  38.50459694  39.42177904
+ [2061]  38.80733044  38.55376571  38.17459178  38.76849741  38.24825947
+ [2066]  38.86296839  37.70715614  38.02286088  37.00082071  36.86972438
+ [2071]  36.86972438  36.92581864  35.31577352  36.08919818  35.20624950
+ [2076]  35.74513500  35.74513500  37.14745251  37.87954304  37.48403626
+ [2081]  38.96197331  38.48057541  37.15032015  37.14589997  38.25562121
+ [2086]  39.45340733  39.60580454  40.94549982  40.37071454  40.04840838
+ [2091]  40.28270114  38.96445474  38.53279802  38.53279802  39.52449922
+ [2096]  36.84784100  36.88775407  37.27326039  36.57483538  38.41535806
+ [2101]  39.12654749  39.29270402  40.47954161  39.29616613  39.29616613
+ [2106]  38.62444264  38.59371511  39.51398573  39.11235560  36.96448636
+ [2111]  37.13676904  38.88754494  38.83066939  40.10200400  40.45051391
+ [2116]  41.98028639  41.41192607  40.54705481  39.12122728  39.24229832
+ [2121]  37.87067113  37.57328630  38.32917801  39.31694864  39.82327107
+ [2126]  38.83424764  38.28380478  37.68936148  36.14333931  37.17849514
+ [2131]  36.60831938  37.63074758  39.54832907  39.47411005  40.56991405
+ [2136]  40.38432995  38.01252032  37.44503021  37.69463482  38.41279667
+ [2141]  38.54332683  38.70978561  39.01164247  39.35141659  39.38871968
+ [2146]  37.99838366  38.64680440  39.38362258  38.60774869  39.50366807
+ [2151]  40.58436482  39.91428497  39.18695936  38.99944545  40.37586465
+ [2156]  40.35327815  39.98352766  39.80185598  41.21590030  41.21590030
+ [2161]  41.84865221  40.95623209  42.16148281  43.65476656  43.65753217
+ [2166]  45.59055458  44.97613092  45.61759944  45.42507950  46.04246350
+ [2171]  45.03474540  45.56311825  45.27034939  46.37053027  46.85562241
+ [2176]  46.46924928  45.01224543  44.29433923  43.03406116  41.75587232
+ [2181]  41.38187988  39.87928737  40.12316942  40.80033922  41.10658922
+ [2186]  40.51613766  39.28408344  39.26638687  38.96321494  38.96321494
+ [2191]  39.54694745  41.96111093  42.25736290  42.49007698  41.62575906
+ [2196]  40.16235098  40.27900049  41.42298504  41.61606778  41.87370093
+ [2201]  43.51438044  42.83798649  42.49767268  41.22330507  39.52668301
+ [2206]  41.42671277  42.52807604  42.70527472  41.76967633  42.71946946
+ [2211]  41.47939732  42.56645029  43.09095569  42.80119833  42.02494880
+ [2216]  41.91973400  42.03902926  42.42522269  43.77611322  42.63521825
+ [2221]  43.43179901  44.86860365  44.86735856  44.81582573  45.37122352
+ [2226]  44.82672114  45.78534657  46.75502379  47.80735604  47.98720926
+ [2231]  48.96876772  48.31476774  47.83805007  48.40481861  48.10845281
+ [2236]  48.01553040  48.93211935  48.42149388  48.98144088  50.11829946
+ [2241]  49.02727734  50.94901268  48.10830094  46.70912016  46.32231648
+ [2246]  47.51332145  49.26869537  50.94622297  50.83567475  50.57152316
+ [2251]  49.27779135  49.59999559  49.65271364  48.54392102  47.97607481
+ [2256]  48.56597483  48.40835581  48.93520425  48.76119175  49.85542204
+ [2261]  49.48350285  49.55877429  47.76057804  48.59390935  49.01005072
+ [2266]  48.32580127  47.14235211  46.09416645  46.74783523  47.93812432
+ [2271]  48.44198665  47.72981740  48.99862169  46.41492849  47.38002756
+ [2276]  46.93723579  46.36865527  48.39794990  47.71200567  49.06848976
+ [2281]  50.50148674  50.77573222  51.17966934  51.35201953  50.27519233
+ [2286]  49.60496889  49.74912186  48.78823031  50.39157714  51.19941958
+ [2291]  52.35562870  53.45754316  52.02324834  52.04024624  52.22562097
+ [2296]  53.10822937  54.34316889  54.23478450  53.95587780  53.63949507
+ [2301]  55.17213748  54.78451117  56.02105617  56.48322369  56.56744142
+ [2306]  56.72607898  56.13445901  56.89072409  55.27152322  55.23939215
+ [2311]  56.05250176  55.66428801  56.82971240  55.72077574  56.50010487
+ [2316]  57.87142059  56.95029579  57.20222968  58.08521614  57.24696717
+ [2321]  56.65613607  57.45609987  59.82052836  59.74904351  59.07828023
+ [2326]  58.74019208  60.41734460  60.41734460  61.62138077  59.61113158
+ [2331]  59.35637887  60.38099638  62.24807212  62.69414772  62.58046166
+ [2336]  61.95680285  62.94600396  62.23857613  62.49945163  61.99412902
+ [2341]  62.85863314  64.91097729  65.73593340  67.40259681  66.74196731
+ [2346]  65.18001774  64.74791776  64.39606753  65.55052935  63.68505764
+ [2351]  62.59529046  63.79282258  63.06995890  62.82209754  61.36920454
+ [2356]  62.66535045  62.70478137  63.30907791  62.56979010  61.68353848
+ [2361]  61.89395949  62.93137206  63.17980930  63.10999672  64.22767523
+ [2366]  63.09998324  62.00703047  61.41945745  60.27971003  60.78619168
+ [2371]  60.21911365  60.21911365  59.55710054  59.94852818  60.39187208
+ [2376]  59.63792808  59.87610227  59.88934627  58.81577614  58.31667812
+ [2381]  58.31667812  57.82413882  58.74770191  58.25054149  58.67735869
+ [2386]  60.59647012  59.48754130  60.50912217  62.50417202  62.91545022
+ [2391]  63.91292522  62.28063531  61.65663057  61.65663057  61.91248434
+ [2396]  63.90959284  65.66135968  65.13188311  63.83318388  64.70845002
+ [2401]  64.43891288  63.62392061  63.62392061  64.32755368  63.45432972
+ [2406]  63.45345230  62.77652433  62.77024762  62.97237923  62.97237923
+ [2411]  62.86867469  61.50790636  61.35604282  61.55687155  64.12062554
+ [2416]  63.90684272  63.21974081  62.96673411  61.87046142  61.47767543
+ [2421]  62.03518612  60.27587467  60.36835441  60.75849141  62.79272426
+ [2426]  62.70358151  62.83162086  62.29493174  61.02873299  60.66873054
+ [2431]  60.20913557  61.28006036  59.64967091  59.40355035  59.58740427
+ [2436]  58.59365769  60.05243898  57.54512337  57.99148789  57.59479593
+ [2441]  57.25304207  58.33310384  58.12620566  57.61590839  56.26476880
+ [2446]  58.32582320  58.59879569  57.81789824  59.63323291  61.05303567
+ [2451]  61.60363716  62.31701641  61.34192030  58.13386343  56.26223420
+ [2456]  56.22727385  56.71218065  56.85921176  57.93613230  57.39322307
+ [2461]  59.69462270  60.80129816  61.86788613  60.91398176  61.25519454
+ [2466]  61.84478282  62.21974135  63.08790632  63.89071418  63.25136650
+ [2471]  66.03422778  68.02219646  66.99455853  65.68139501  64.16382901
+ [2476]  61.66050126  61.75254762  62.91766484  62.40086834  61.49060635
+ [2481]  63.59683703  64.34751957  64.93918459  65.99859998  65.68540958
+ [2486]  67.00507860  66.20078501  66.34292187  67.24409769  66.09340583
+ [2491]  65.23763345  63.80180485  64.55157026  63.53357281  63.88492637
+ [2496]  64.90934506  63.51191019  62.24269115  62.50955656  61.94518004
+ [2501]  61.45342760  60.13896150  60.81068667  59.83169873  57.82847177
+ [2506]  57.18127614  56.87677267  57.14118711  56.66312566  55.67578537
+ [2511]  54.94862083  56.53511131  58.21820774  57.25315876  56.90819723
+ [2516]  58.20473349  58.67216442  59.24365005  58.90990957  59.15016619
+ [2521]  58.38387176  58.50652341  60.22899838  61.01158537  59.70458290
+ [2526]  59.86136504  59.64577712  58.44314683  57.55475365  58.17176381
+ [2531]  56.24611449  55.73211555  56.11770992  54.00585622  55.99817689
+ [2536]  55.38456122  55.43128678  56.75499069  56.69005423  55.82330250
+ [2541]  57.17622575  58.00275055  57.30007583  58.07409082  57.15075061
+ [2546]  56.78257674  55.80677948  53.54412890  52.78000036  55.17885524
+ [2551]  55.91525222  57.90373779  59.09565786  57.43718034  56.90715150
+ [2556]  58.27615027  58.22642649  59.23506984  58.16130876  57.85597586
+ [2561]  57.85211349  58.16639415  58.25787295  58.24317060  58.63315784
+ [2566]  59.74879739  58.35456409  58.84564335  58.91235994  58.55325079
+ [2571]  59.56395555  60.99126106  58.85339508  60.27818846  61.20546459
+ [2576]  60.17419943  61.40505187  60.73783654  60.60045260  60.54429949
+ [2581]  61.21450469  61.40772193  60.26643597  58.74632932  58.51233683
+ [2586]  58.47805658  59.95281022  60.68302191  60.15876119  59.90040549
+ [2591]  59.77896662  61.44816251  61.30117076  61.79125793  61.79125793
+ [2596]  62.70910307  62.01000840  63.62445680  64.41028996  64.20776831
+ [2601]  64.03828689  64.14598595  64.47961477  64.80992402  65.02377741
+ [2606]  65.52082003  64.06596524  63.65562693  63.40678649  63.43174877
+ [2611]  62.66553355  62.11082031  62.62666763  61.19222493  61.41889180
+ [2616]  61.44091066  64.04220819  63.64066939  61.58251837  62.47975014
+ [2621]  62.63458598  61.23169124  59.66460650  58.25848755  56.83303706
+ [2626]  57.75847319  56.80778259  56.93319781  56.87108165  58.42976211
+ [2631]  58.76660743  58.50840007  58.15497093  58.33675535  58.52031428
+ [2636]  58.12526340  56.63033388  56.44132345  56.05391370  56.44832939
+ [2641]  56.34823316  56.28664209  57.06666556  57.06666556  56.52119969
+ [2646]  57.51281556  57.64100700  56.98810482  56.45188877  56.46269647
+ [2651]  56.66888457  55.80744745  55.91396437  55.77821630  56.62635137
+ [2656]  56.90813917  55.57125497  54.77677779  55.03400459  54.48124863
+ [2661]  54.94917524  54.82121277  53.95849884  54.96364716  54.62420936
+ [2666]  54.60230476  56.15795815  55.02332797  54.82181915  53.47012522
+ [2671]  53.71158729  52.29851732  52.00930778  53.37760569  52.10050368
+ [2676]  52.08092400  52.42451656  52.33971792  53.49841023  52.92170849
+ [2681]  51.16785216  50.36190589  51.56382120  51.46398980  51.84094912
+ [2686]  53.15246168  52.17950221  50.53970475  50.93770190  51.80979200
+ [2691]  51.82505826  51.66986452  51.50087819  51.68434552  51.09110717
+ [2696]  53.08439362  53.54708249  55.68170101  55.65649525  57.70936998
+ [2701]  59.15564823  58.69804499  58.12773398  57.10688042  58.24735384
+ [2706]  58.94483649  59.31865342  59.29167679  57.65556793  57.02476687
+ [2711]  57.46523651  58.66575270  56.36956383  55.83341520  56.91004473
+ [2716]  57.43120337  56.09176318  56.41659235  57.48913354  57.42947611
+ [2721]  58.40060873  58.86472195  60.55789356  60.77156494  61.34373024
+ [2726]  61.26593313  61.38545170  62.23960686  61.09542756  61.44833700
+ [2731]  60.51861496  61.23185955  60.87962818  60.85784982  59.12599196
+ [2736]  58.02482612  58.21541186  57.04425846  58.67827008  59.02622129
+ [2741]  57.86750213  58.49447544  59.91509456  57.17444189  57.20720752
+ [2746]  55.93524538  55.93535139  55.47285577  54.35112482  54.50009011
+ [2751]  54.96307468  54.73321071  54.97631900  53.22544963  53.06934124
+ [2756]  53.48503301  53.05852059  52.11021547  50.42987656  50.76363420
+ [2761]  52.24647190  52.73601591  52.29669207  54.68134835  55.90095874
+ [2766]  55.02143072  55.06995855  55.06995855  54.74663444  53.84883851
+ [2771]  53.64789183  53.69798501  53.69798501  54.17846140  52.89362787
+ [2776]  51.62059505  50.03810183  48.38124805  49.06586345  49.44908979
+ [2781]  49.67547839  49.25685599  47.08657860  46.93475318  46.08229939
+ [2786]  45.50532621  45.34196177  44.46129786  45.06945457  45.00299322
+ [2791]  46.21954427  45.92092014  46.18941731  44.94872253  44.28031033
+ [2796]  44.52257813  46.33292692  45.71691324  45.69604599  46.10817448
+ [2801]  47.02032218  48.04866876  49.32660412  49.68384355  47.67044888
+ [2806]  48.47856066  48.68314890  47.71109863  46.27413851  47.34231932
+ [2811]  46.73089894  47.35264942  48.29418381  47.69308879  48.45218913
+ [2816]  48.48600040  47.67510257  46.97364903  49.56230269  49.37765265
+ [2821]  49.37765265  49.93379756  50.23558287  47.95365140  48.04375236
+ [2826]  48.15366541  47.49286334  48.09985923  47.42116459  47.39261124
+ [2831]  48.54135059  48.54135059  46.70715609  46.90335225  46.26566768
+ [2836]  46.26566768  46.77562397  45.82734711  46.82054851  46.14247759
+ [2841]  46.33019799  42.65889806  43.98848119  44.91233424  44.66996874
+ [2846]  45.95880219  45.40707546  45.55854651  44.46968465  42.44914744
+ [2851]  40.46506965  39.34362529  40.38022873  39.68692499  39.43882972
+ [2856]  38.87332477  37.93380344  38.25260381  37.53858256  37.17757407
+ [2861]  38.66411014  38.86930170  37.63911908  36.78366193  38.45380145
+ [2866]  40.66029556  40.66029556  40.25254791  41.38844357  42.14706867
+ [2871]  40.70902533  41.71554242  41.45560571  41.45560571  42.18723243
+ [2876]  42.16621717  41.25734263  40.21686316  41.13976464  42.05886839
+ [2881]  41.81892697  42.71885595  42.14183860  40.29352806  40.97008882
+ [2886]  40.13346435  40.55050040  40.26088851  40.91751103  41.35028302
+ [2891]  41.38298978  42.02363370  43.14144285  44.00618070  44.00352856
+ [2896]  43.85125561  43.85355703  43.19216957  42.51996831  41.80276008
+ [2901]  42.32761086  42.34029329  42.05275576  42.36693788  42.36693788
+ [2906]  42.68640174  43.43669219  42.27260563  42.04443468  42.16218841
+ [2911]  42.28940664  42.32721837  41.92297782  41.57034012  40.90486028
+ [2916]  39.97657875  39.37143143  39.57088686  39.07580925  39.31477577
+ [2921]  38.14028017  38.71424264  38.48505729  38.29269345  36.89543879
+ [2926]  38.30569673  36.66564956  37.56693393  36.57730698  37.67323799
+ [2931]  36.80233794  37.29625583  36.68820234  37.09543016  37.45897182
+ [2936]  37.09355512  34.55980002  34.07538871  34.93219664  33.23696352
+ [2941]  32.56044569  31.85158977  32.73050115  33.73360145  33.08838063
+ [2946]  34.38091711  34.58188599  34.36949028  34.57658886  35.48243683
+ [2951]  35.39190334  34.61279692  34.26932954  34.20863680  33.73540236
+ [2956]  35.93526813  36.21689999  36.34545747  36.45891467  36.04316425
+ [2961]  35.26349504  35.12302651  36.90932119  37.87398845  36.92996729
+ [2966]  35.57062491  36.98084527  38.17862398  38.91358576  38.60060472
+ [2971]  37.52713128  36.82311828  36.47468876  35.66768011  35.24715978
+ [2976]  33.34338925  33.75251550  33.75251550  31.86099287  31.42721323
+ [2981]  31.93333239  32.79317260  32.80252920  31.53693543  31.57557248
+ [2986]  31.24117043  32.69422965  33.56537626  32.37715389  31.98977243
+ [2991]  31.98660907  31.70639130  31.97527870  32.09904632  32.45072589
+ [2996]  32.36466816  30.73846053  32.13154504  33.01257335  32.49136273
+ [3001]  32.49136273  31.76206572  32.38350452  30.27905090  30.92328186
+ [3006]  30.92328186  29.63176094  30.30099362  31.29001489  31.17146184
+ [3011]  31.96246443  31.85528476  33.06286348  33.31754489  34.79787340
+ [3016]  34.90222784  34.90294353  34.90294353  32.98400798  31.46496657
+ [3021]  29.00246093  29.30134183  29.68418577  29.56215998  30.60778796
+ [3026]  31.28969320  30.13012541  30.03933224  29.03942697  29.90566579
+ [3031]  29.81217887  29.17704549  30.05833651  30.18521451  29.85021900
+ [3036]  29.20060541  29.72767779  30.16223209  31.14788939  29.33723561
+ [3041]  28.80800272  28.03742215  27.93068006  27.95958196  29.13406298
+ [3046]  28.96504114  29.98323542  29.08158757  29.31241814  30.73899481
+ [3051]  31.28956101  31.28836057  31.78146038  32.31957797  32.20733475
+ [3056]  32.68273925  32.62089513  31.04694574  30.76684389  32.64871476
+ [3061]  31.07261195  31.69069445  31.69069445  32.09314180  33.37130901
+ [3066]  33.04648833  34.01332953  33.38780494  33.38780494  32.81145184
+ [3071]  32.66505123  32.74751441  31.24220407  32.07104519  32.61679519
+ [3076]  32.32083355  30.73551648  29.88756044  30.08653229  31.30972569
+ [3081]  32.00160815  32.46081523  34.06783259  34.50775497  33.48940789
+ [3086]  32.51419705  31.00679965  30.69665131  31.35132172  31.10560103
+ [3091]  32.55133463  34.27666715  36.19717616  36.95650600  37.10946804
+ [3096]  37.10946804  36.93882750  37.13491258  35.95732110  35.93691824
+ [3101]  36.56643644  37.04487274  35.99834648  36.36331201  35.44134825
+ [3106]  35.62840636  35.80178445  36.72852283  35.14986456  34.78495774
+ [3111]  36.13872368  37.08209564  39.16273575  38.13414480  39.19158212
+ [3116]  39.19158212  39.55593367  38.49266051  37.71065250  37.10108190
+ [3121]  36.98299485  36.02664383  35.63358925  34.31200198  34.86879295
+ [3126]  33.93193888  33.52347305  35.71616323  36.18630260  37.23852697
+ [3131]  37.23852697  38.69665490  40.10102230  40.68670061  42.74754430
+ [3136]  43.44294604  44.17094353  43.93605478  44.65915151  44.04634446
+ [3141]  43.41044758  42.87101876  44.39420792  42.73476279  44.12293117
+ [3146]  42.17633403  42.57480648  43.73339048  43.52386138  44.14007630
+ [3151]  42.48055504  41.29449710  40.76178825  40.92430183  41.79178263
+ [3156]  41.54639289  40.60750946  42.53778949  41.97079048  43.48937754
+ [3161]  43.48937754  44.50721415  43.19602889  44.12324120  42.79384794
+ [3166]  41.15516748  41.47847620  43.33956120  42.77788541  45.14362847
+ [3171]  44.42579905  43.64796839  43.29816017  42.12341718  41.87867112
+ [3176]  43.02071022  42.75627545  42.56532101  41.90222908  40.41975206
+ [3181]  40.14409139  39.63199768  38.98621049  38.33589485  37.44429876
+ [3186]  38.52620955  39.11846838  38.09371324  37.54015133  37.77589975
+ [3191]  38.59801248  37.50051223  37.74788991  36.62937988  35.91060202
+ [3196]  36.30094125  36.12796546  35.95718233  37.76708193  37.90456644
+ [3201]  37.33493705  38.51039771  36.81918392  36.49073028  35.15802495
+ [3206]  36.08730169  35.39812332  36.05863253  37.18272240  38.70137744
+ [3211]  38.85541296  39.41392736  38.69693794  37.48780663  38.02971167
+ [3216]  37.28214895  38.62542452  38.02962413  38.70782936  37.30530001
+ [3221]  37.30245997  38.16610522  37.60194314  37.98709723  37.97299614
+ [3226]  37.29435333  37.18486094  37.78843188  36.65628902  37.29966973
+ [3231]  36.15269915  36.53930186  35.93952916  36.39100318  36.59055934
+ [3236]  35.58630437  34.87651864  35.12266839  35.04951969  35.47739184
+ [3241]  35.83095089  36.69635760  36.81539521  35.79757404  35.51109848
+ [3246]  33.88478204  33.47668384  33.64272052  32.81297333  33.37666554
+ [3251]  32.68054432  33.33118914  34.42613771  33.97746764  33.65152741
+ [3256]  33.41689868  34.37129173  34.05135017  34.55206889  33.97533446
+ [3261]  34.08727111  33.47799641  34.24732125  33.25642425  33.56624695
+ [3266]  34.07210117  34.95861682  32.83873245  32.17465076  32.07627235
+ [3271]  31.79354505  31.24842866  30.13564112  30.13564112  30.67121605
+ [3276]  29.74598949  32.17286038  33.44837080  33.37943204  31.80153771
+ [3281]  33.36064065  34.54211095  34.79320738  34.33150630  36.05387689
+ [3286]  34.80922576  34.40304653  32.98313177  32.18585465  33.88613834
+ [3291]  33.92649020  32.93973311  31.38773364  31.25371071  30.58395083
+ [3296]  30.96179220  30.96179220  32.37646612  31.02296738  30.10058690
+ [3301]  28.95691480  29.21132506  30.05036464  29.11519319  28.04764386
+ [3306]  27.41737270  28.57844452  28.35666925  28.09989468  27.80702231
+ [3311]  26.89983149  26.38965247  26.06060438  25.41525513  25.93681502
+ [3316]  26.00844165  24.73855151  25.06157511  26.14789525  27.40060473
+ [3321]  29.01543811  30.22569825  30.38183305  30.92003345  29.67026006
+ [3326]  29.63659748  29.42460565  28.74723031  29.74733392  27.94969171
+ [3331]  27.94969171  28.93042894  29.54950602  29.72108628  30.17933301
+ [3336]  28.50113898  29.49446928  28.25673334  28.84728784  29.14615224
+ [3341]  27.32989946  27.44443863  27.93028420  29.22942404  30.61534550
+ [3346]  30.09299404  29.50861206  29.85143078  31.08298693  31.55776582
+ [3351]  32.65549120  31.67181527  30.70761124  32.65763379  32.19808325
+ [3356]  31.95545744  30.93282182  29.92882573  30.12860353  28.60469835
+ [3361]  28.41919302  29.22975854  30.31057514  28.70299566  27.42180514
+ [3366]  26.60731543  25.36567818  24.74150642  22.18365810  22.04321790
+ [3371]  23.74660073  23.24923844  24.97229239  23.34757723  24.21488634
+ [3376]  23.93708743  24.10572635  24.44518224  22.71269041  22.42643664
+ [3381]  22.93258887  24.85054781  24.57272945  24.84552564  25.30304527
+ [3386]  25.34703673  24.79983605  24.77295575  25.55847065  25.59164670
+ [3391]  25.95403221  25.01214705  24.80200717  23.84346696  24.91765479
+ [3396]  24.59026010  22.30337613  22.71081393  23.50325492  24.63984021
+ [3401]  25.67101215  27.04972493  27.84156403  27.54249709  28.71459301
+ [3406]  28.40343183  29.11718298  28.24428809  26.72381397  26.59712730
+ [3411]  26.27728848  25.98930551  26.04265672  25.59937718  25.55055905
+ [3416]  25.47142292  24.49157650  24.02743708  24.40512011  24.84254181
+ [3421]  23.19456335  24.51247663  24.91107964  24.78243998  23.84412884
+ [3426]  23.84412884  25.54402957  26.04597389  25.61049545  24.18941935
+ [3431]  24.96541925  26.34894439  25.57565675  24.36987732  26.29212800
+ [3436]  25.69257981  27.58010141  28.05603029  28.25154423  29.09163538
+ [3441]  29.00480239  28.11327921  27.99261320  28.90829813  27.53532795
+ [3446]  27.49701274  27.57233212  27.77977936  27.66327009  29.94797883
+ [3451]  30.61961440  30.06760051  30.04854791  30.36540719  27.55395272
+ [3456]  27.89423674  28.74548924  29.76104666  30.13532505  31.26398662
+ [3461]  30.07832811  29.17413458  30.03046539  29.94364844  27.28771882
+ [3466]  27.77285623  27.09434612  27.55214036  28.93729351  29.11314080
+ [3471]  28.04700605  27.25602610  27.59181582  26.77443693  26.43925530
+ [3476]  26.25603013  26.54606961  26.32280681  25.98330523  26.16453662
+ [3481]  26.74017749  25.81177933  26.48941583  25.67171773  25.91004927
+ [3486]  25.97615474  25.99864455  26.34860395  27.52540516  27.57139992
+ [3491]  26.50480837  25.64375598  26.49203303  26.09236183  27.15694517
+ [3496]  27.06923071  29.39107883  30.27063546  30.57164075  29.95519385
+ [3501]  29.83126205  30.25737250  30.79045779  32.10468250  34.02220401
+ [3506]  32.75119856  32.00701496  30.81142163  31.85963812  32.87713872
+ [3511]  31.24725348  30.74948597  32.05388516  32.69024049  33.19411262
+ [3516]  33.32242218  32.90754100  32.80962990  32.87615974  33.36454833
+ [3521]  33.23457900  33.71316603  34.07268988  34.44602146  35.15050861
+ [3526]  35.49340320  36.44750492  35.92694790  35.18923523  35.93741393
+ [3531]  36.97168956  37.87432931  38.34536296  37.21246929  38.52718279
+ [3536]  38.57642272  35.90025969  36.63415952  36.39824395  36.29102173
+ [3541]  37.61048481  38.85688294  38.12966004  38.09689315  39.71922001
+ [3546]  40.12471498  40.18300952  38.91345804  39.43097718  41.15734567
+ [3551]  39.71516132  39.70443545  39.81677651  40.74877244  41.56781145
+ [3556]  41.58390407  41.56987929  40.74296303  40.81368498  41.29873062
+ [3561]  40.30733373  39.86361654  39.14490160  38.88369828  39.24331145
+ [3566]  38.37008067  38.30958216  39.56251712  38.32576890  37.50463116
+ [3571]  37.85456084  38.83795572  38.23465433  37.71543892  38.16878785
+ [3576]  37.10925444  37.79407458  39.35575337  39.83771867  39.79147220
+ [3581]  39.06041272  40.47612806  39.05941379  37.34764355  37.89853521
+ [3586]  39.57084395  39.87096893  39.13007933  39.96626816  39.36750675
+ [3591]  39.47650726  38.92911378  38.47254042  38.51262671  38.26464047
+ [3596]  36.86031765  37.17324344  36.94729765  36.98264084  37.05415879
+ [3601]  37.81745119  38.77059570  39.68112447  39.61079281  38.15873542
+ [3606]  37.29051631  38.09737698  39.57820608  39.04293976  38.53904608
+ [3611]  39.73811820  39.38905040  39.38747849  39.76545788  40.59124611
+ [3616]  40.45058934  38.76581016  37.90954389  38.48440887  38.02250692
+ [3621]  38.53854311  39.11112993  36.33530330  35.76372354  36.93396668
+ [3626]  38.23176572  38.07075799  37.79351916  37.32164117  38.33317970
+ [3631]  40.17311202  40.52691460  40.94820682  41.13694314  41.22963887
+ [3636]  40.93308459  42.64397946  40.16206025  40.52779533  40.78206299
+ [3641]  40.55636122  40.61467057  39.65512175  40.05140687  39.36506530
+ [3646]  39.74983353  39.83350197  39.40275155  38.58292082  38.43762302
+ [3651]  38.34737148  38.52706649  38.94716418  39.03847662  38.74068328
+ [3656]  38.34066005  40.28363126  39.49809547  39.63020870  39.04162896
+ [3661]  39.69396526  39.51479618  39.66971044  39.51159719  40.24788938
+ [3666]  41.40412184  42.22174599  41.08387614  41.40279837  41.57061196
+ [3671]  41.42847435  41.45051779  38.78646511  37.75856657  38.58799289
+ [3676]  38.30296333  36.92645983  38.16519873  37.24102787  36.06716849
+ [3681]  35.96917652  35.24284891  34.46809811  34.30566029  34.12235880
+ [3686]  36.39243953  36.49600406  36.13315687  35.59148329  36.16380748
+ [3691]  34.64234280  33.91406822  34.66459295  37.52618476  36.88177743
+ [3696]  36.60389104  36.16094399  35.09476008  34.74828886  34.43991501
+ [3701]  34.97870116  33.83373888  33.53534589  32.91379093  32.91379093
+ [3706]  31.67266332  30.80825758  28.91775863  28.87405451  30.74142379
+ [3711]  31.18648318  31.19498351  31.65754681  29.24464100  32.03669789
+ [3716]  32.43878499  30.98948111  30.98281232  30.13800832  31.16257149
+ [3721]  30.86232259  31.37308694  32.55736833  32.55736833  32.34173704
+ [3726]  32.80076755  32.31899744  30.05639556  29.01518815  30.59995042
+ [3731]  30.06554659  29.55155355  31.28623317  31.85641355  33.07978886
+ [3736]  33.50752750  32.88236980  33.27557989  33.41853486  33.87647011
+ [3741]  33.06137775  32.66562446  31.73383683  32.21621355  29.89166898
+ [3746]  31.64670481  31.22920288  32.41118332  32.55035377  30.78344977
+ [3751]  30.43378353  28.79035381  27.47417527  27.44646578  27.97420238
+ [3756]  29.97538922  29.08283719  28.69197879  28.69197879  27.94982939
+ [3761]  28.53577096  28.98314195  28.98314195  27.64019985  28.95233966
+ [3766]  30.94582226  30.84593212  30.39677875  31.76130347  33.28995536
+ [3771]  33.03956027  32.46364125  33.05562926  32.81222122  33.68799509
+ [3776]  31.41165610  32.53102709  34.17373476  34.14806691  33.51544093
+ [3781]  33.98311819  33.80607836  35.12122813  34.48347259  34.05877998
+ [3786]  34.82485354  34.06217762  34.02347095  33.97524508  35.97018085
+ [3791]  36.53500284  36.46013519  38.01925737  37.05105818  35.83102120
+ [3796]  34.85503839  36.21056539  36.21056539  36.32094118  36.75038068
+ [3801]  36.15463956  35.39824267  35.08145630  34.27402947  35.36798178
+ [3806]  35.23187775  35.05540175  35.24083127  36.55613603  35.23500833
+ [3811]  35.62774438  37.54262349  35.62530788  37.53990519  36.96758562
+ [3816]  37.53510501  36.14141774  35.45987674  35.28187002  35.39366225
+ [3821]  35.59639912  35.04993910  35.00854539  35.02779880  36.53465643
+ [3826]  36.35643722  36.92509162  37.11843109  38.43975466  38.80600630
+ [3831]  40.71359994  41.04803913  41.29256195  40.57840286  41.00293715
+ [3836]  42.03702884  40.87233936  40.83323486  40.12629600  39.14196955
+ [3841]  38.77499588  39.21583672  38.66899391  38.23629041  38.62352624
+ [3846]  38.52680894  38.55047264  39.16968335  37.85195899  38.03687262
+ [3851]  37.83786563  39.69551646  38.93216197  39.92262020  37.73145965
+ [3856]  38.76909438  38.89012594  39.65628131  40.83166886  41.19751288
+ [3861]  40.72101610  39.71606706  39.64335560  39.05670751  39.38487077
+ [3866]  39.39093094  40.21193906  40.07948359  38.21031151  38.50027451
+ [3871]  37.47798880  38.64151607  38.88742332  38.94991009  39.34548958
+ [3876]  38.58989655  39.38833521  38.85644986  38.89736523  38.93739825
+ [3881]  38.13254919  38.87319365  38.75966668  38.21774520  36.52428743
+ [3886]  36.17507466  37.26706174  38.37475396  37.14626441  37.55173650
+ [3891]  37.74969259  37.26556645  36.55879094  35.87815624  36.39417985
+ [3896]  36.21813273  35.58374143  35.52392529  35.97485537  35.31104991
+ [3901]  34.16790787  34.49243290  32.61861207  31.85849918  32.10586862
+ [3906]  31.60817242  30.67612646  30.65873534  31.50235777  30.75526098
+ [3911]  31.33919642  31.81238469  31.73073818  30.99067902  30.45594743
+ [3916]  30.14215122  29.05628892  30.24153403  29.93840126  27.88371991
+ [3921]  28.51370446  27.33369255  28.18489985  27.72375863  28.01435375
+ [3926]  27.20827380  26.39343370  25.58917340  26.20828262  25.52527140
+ [3931]  25.93358361  26.41560616  26.96443528  24.35920452  25.88562969
+ [3936]  25.02847944  26.30346277  25.94168905  26.10740993  26.31113821
+ [3941]  26.62712306  25.92057109  25.37319573  25.36613296  25.85477402
+ [3946]  27.30430453  27.30430453  28.51258704  28.41813609  28.09297126
+ [3951]  26.95795326  25.72113533  26.64699875  25.11425439  24.03400782
+ [3956]  23.02714058  21.87721093  21.52125674  22.14601285  23.09235556
+ [3961]  23.94755954  23.97835676  24.56863020  25.33592667  25.78331448
+ [3966]  25.40917180  25.98436839  24.44683889  24.37393483  24.91393023
+ [3971]  24.92798699  25.40607556  24.25362594  23.93043187  25.01849210
+ [3976]  25.80838373  27.93467039  28.45994008  29.96039472  31.38765528
+ [3981]  31.00870739  30.05639699  29.26706846  28.80770796  28.17286425
+ [3986]  29.89135522  29.53961978  30.50117130  30.74296795  31.28699334
+ [3991]  32.18955526  33.08504851  34.07709204  33.83176367  33.56680222
+ [3996]  33.11665874  32.50802851  31.31645570  32.41491807  32.24144144
+ [4001]  31.82040355  30.71098159  31.25099452  30.99059604  30.24558718
+ [4006]  31.85395736  32.58665658  31.54724827  32.77227127  32.23679853
+ [4011]  33.15387905  32.98338324  32.17727908  33.19077051  31.75903084
+ [4016]  30.10124009  30.18199278  28.74009723  27.64578186  26.95921174
+ [4021]  27.41337401  25.54119236  25.07274057  23.67960782  23.06940084
+ [4026]  22.79379315  22.48029986  23.99144263  23.10200314  21.49157991
+ [4031]  21.92689546  22.13649131  21.73268466  23.57008879  22.99286869
+ [4036]  23.79937266  24.40550622  23.76849153  25.39137604  25.39137604
+ [4041]  26.21584469  25.91084082  25.49412310  24.29793355  24.54058544
+ [4046]  23.50457909  24.18407482  25.31150837  27.17070483  25.93541308
+ [4051]  25.64716815  25.19776896  25.52244461  27.02050817  27.34290917
+ [4056]  27.30954705  28.35391494  28.18961228  27.40777093  26.77532103
+ [4061]  25.95318065  26.92985605  25.29903114  24.79394829  25.88690522
+ [4066]  25.32227072  24.37932533  24.37932533  24.65068680  24.57131389
+ [4071]  23.24255550  23.24255550  22.19846408  19.66773722  19.66773722
+ [4076]  21.07715414  21.33947394  20.65624676  20.23704866  20.23704866
+ [4081]  19.90385842  19.06939684  17.58779677  16.77867470  17.75042778
+ [4086]  20.08078623  19.79307290  22.07608892  22.61089312  22.84648479
+ [4091]  22.55178732  22.53035912  25.46605456  23.72870440  23.98186408
+ [4096]  24.62693712  24.36882161  22.85683527  22.83024139  23.35234884
+ [4101]  23.93190921  23.51004424  22.80000455  23.84475700  24.47867715
+ [4106]  25.51622450  25.73528980  26.04217552  25.40449489  24.34020683
+ [4111]  25.15335961  23.28744891  23.68865356  23.56070643  22.12712321
+ [4116]  23.60566172  24.02393715  25.16493844  24.26214071  24.95945225
+ [4121]  24.64602102  23.95011363  24.60559858  24.43545670  24.49292531
+ [4126]  24.62918574  23.95418128  23.89892451  23.13796317  23.14862463
+ [4131]  24.15994155  24.15994155  24.23099375  23.76716608  23.90747550
+ [4136]  23.37774424  24.27697808  25.78875833  26.64886066  27.36454485
+ [4141]  27.43190677  30.21809985  29.92465693  28.52418797  28.43714287
+ [4146]  27.83272576  26.43267879  26.97549462  25.45821998  24.59532788
+ [4151]  23.36872691  23.30547755  22.64698496  21.60919753  22.52251254
+ [4156]  22.49490109  23.21734687  23.35694248  24.22520062  24.79175186
+ [4161]  25.42194674  25.32549647  26.68966435  25.46224187  25.97076376
+ [4166]  25.97076376  26.62281116  26.32791989  25.83903761  25.43247409
+ [4171]  23.44264677  23.61577447  24.37928603  23.52651778  23.71364702
+ [4176]  23.16235974  23.12053431  24.20830093  23.65752349  22.85416941
+ [4181]  23.91705871  23.15520742  24.22362841  25.38635420  25.38635420
+ [4186]  23.54631479  23.49268000  23.96464829  26.54511794  25.57811535
+ [4191]  25.92144592  26.07917622  25.26432528  26.36124467  27.40037147
+ [4196]  27.50002664  27.36507549  28.52143123  30.32417900  31.38632443
+ [4201]  32.73181902  33.29919973  33.29919973  33.76456520  32.93939462
+ [4206]  35.50366012  35.77623833  34.06969255  32.33015817  32.26422141
+ [4211]  32.85609134  31.62275685  32.16072734  31.85204864  32.13378203
+ [4216]  31.57167417  31.88838835  32.31263333  31.69898584  32.11745148
+ [4221]  32.11144710  31.42516286  31.57851106  31.07095631  30.64886227
+ [4226]  31.50677344  31.02969573  31.74632055  32.44263479  32.38998674
+ [4231]  31.70803594  32.29873564  32.38199257  31.20505140  33.77504343
+ [4236]  34.63302792  34.75776118  34.22220493  34.12563154  33.79275054
+ [4241]  33.63413908  32.81937916  31.74028667  32.15154247  32.95321277
+ [4246]  31.19179142  30.84371556  30.01880288  30.60917542  30.79945520
+ [4251]  32.19298277  30.87865989  31.32351348  30.99719682  32.63914546
+ [4256]  32.85761570  30.15524660  28.71860197  29.45713640  30.87213915
+ [4261]  29.96727850  32.44001924  31.84487201  32.23598216  32.47668407
+ [4266]  33.90979388  35.04352551  35.47414301  34.10375843  32.73385397
+ [4271]  32.97672852  34.13382281  34.30168239  33.56011029  32.12431559
+ [4276]  33.38475937  32.39620903  32.06742969  32.58881553  32.04993634
+ [4281]  32.01345259  31.38888660  30.75279572  30.38924706  31.73504481
+ [4286]  30.70245079  30.51428659  30.51428659  31.88704469  32.63340564
+ [4291]  31.53036910  29.80540183  29.83636975  30.24114181  31.72010974
+ [4296]  30.21411190  33.23292627  33.23292627  33.23292627  35.53916016
+ [4301]  35.83897185  36.56417067  36.74168114  36.74168114  36.83151142
+ [4306]  36.27383083  36.21248525  37.58032906  35.76110578  36.28007592
+ [4311]  35.20983868  35.03421853  35.29901971  34.09462279  32.86920000
+ [4316]  31.42497775  32.69224338  32.69224338  31.45427943  32.80737079
+ [4321]  30.83667260  29.99079958  28.83900058  29.49121909  28.50003874
+ [4326]  28.30459403  31.10945512  31.07839965  32.28703418  32.28703418
+ [4331]  32.89809726  31.52133477  31.57576987  32.10362306  33.53851146
+ [4336]  33.65259228  36.25381789  35.36808615  35.84762044  34.18992995
+ [4341]  34.29995416  34.02351852  34.25811382  34.84301870  34.19258650
+ [4346]  33.67085259  34.63239904  33.16459874  32.15293777  33.84940763
+ [4351]  34.59369113  34.81675268  35.24464578  34.78646185  36.24243891
+ [4356]  36.65034724  36.65981585  34.32431222  35.02913347  35.51110395
+ [4361]  33.84707667  33.84811816  35.02652627  34.94940491  35.32800121
+ [4366]  33.67183465  32.59798403  34.31800323  33.80467542  34.51009637
+ [4371]  32.95527565  33.41058997  34.75395458  34.37301644  33.57851446
+ [4376]  33.09487172  32.86202153  33.37085465  33.14568185  32.75647653
+ [4381]  32.95946995  32.12035950  30.90071432  31.50079398  31.50991502
+ [4386]  31.41744346  31.91144045  31.24548245  31.77468159  31.43280494
+ [4391]  31.09787408  32.31958725  33.72794191  33.13784391  33.12038575
+ [4396]  31.12111616  31.83540644  29.85918969  29.25764357  29.80259524
+ [4401]  29.64523164  30.59181792  29.81452144  31.12517247  32.91858625
+ [4406]  32.32829182  32.35655626  32.35655626  33.14867436  33.17315399
+ [4411]  34.00455401  34.56265381  33.83872341  34.00085602  32.60110794
+ [4416]  31.67753561  31.61114766  31.22209153  30.71601985  32.67612145
+ [4421]  33.40478025  31.73457140  32.99318737  34.07117117  33.26453018
+ [4426]  32.21753636  29.84240295  29.84240295  29.52570840  30.16312230
+ [4431]  30.55384752  31.48732528  30.77179267  31.74619784  31.56401150
+ [4436]  31.31218465  30.31815376  28.48905518  30.08209801  29.24795861
+ [4441]  29.17382846  29.17294335  29.70532925  29.55795205  30.39779315
+ [4446]  31.71788427  32.86193263  33.61085397  33.85610926  33.11473822
+ [4451]  33.41112171  35.00010095  34.37215094  34.22573213  33.41030629
+ [4456]  32.07059834  33.18664899  33.81485221  33.81485221  35.22039301
+ [4461]  34.93899288  37.05144444  38.41952987  38.94617955  40.92496472
+ [4466]  42.69631961  43.39875207  44.26553069  44.74723044  45.33245274
+ [4471]  44.00694093  44.95856598  45.80435343  44.98383509  44.07875055
+ [4476]  42.38029103  41.62677268  42.77681422  42.83411283  43.52889058
+ [4481]  42.28292501  42.89557980  42.15776113  42.15244963  43.41173573
+ [4486]  42.75965154  43.80920217  43.52620696  41.49658182  42.24204968
+ [4491]  43.44797389  43.22751863  42.46119885  42.46119885  41.08301833
+ [4496]  39.86057039  39.52935230  37.66357929  39.14290075  39.88915248
+ [4501]  40.07603874  39.82212784  37.47763564  37.18763467  35.86402519
+ [4506]  36.02512622  34.39312502  36.55818342  34.80349582  32.61933521
+ [4511]  33.22536969  33.44217291  32.74382808  32.75795762  33.83117866
+ [4516]  33.41181959  34.10716274  35.09932898  36.12117378  36.64627283
+ [4521]  35.36610068  36.23958459  36.87160578  35.90615379  36.07461906
+ [4526]  34.79827353  34.33522704  36.28697674  35.59241568  37.23347857
+ [4531]  37.61008312  38.35299247  36.66998287  36.86550815  37.55311035
+ [4536]  36.62475946  35.95842260  34.22118686  33.18949362  34.81882899
+ [4541]  33.94822257  34.57563557  34.22217721  32.46564982  31.75318880
+ [4546]  33.44133906  32.78395557  33.15459426  32.06439398  32.72010148
+ [4551]  32.22595035  32.59114507  30.84716240  29.35396053  28.31895998
+ [4556]  28.65614309  27.14904406  25.09164919  26.97111889  27.54659254
+ [4561]  28.69209417  28.89200775  29.13811072  29.41451206  29.09361195
+ [4566]  28.62318028  27.08380985  27.08380985  27.31124535  27.13269502
+ [4571]  27.60119472  25.93520011  25.00330586  24.88064638  24.58097161
+ [4576]  25.29573838  24.51984848  25.16170898  24.93462088  25.57302363
+ [4581]  24.63193895  25.03872912  24.47924966  24.30947772  23.51627505
+ [4586]  24.93679489  23.09864452  23.94119471  24.40028508  23.38010116
+ [4591]  22.53660369  20.25225829  20.74154339  18.97531882  20.36695023
+ [4596]  20.73453852  21.07331181  20.95213174  21.54098554  21.51509045
+ [4601]  22.33321640  22.51502303  22.09545504  22.37799044  22.77810357
+ [4606]  24.26603586  24.60089864  23.90341684  25.27802833  26.58024111
+ [4611]  26.92325555  26.91101335  26.84141555  27.43611984  27.39659345
+ [4616]  28.44544990  27.46157870  27.90433281  26.96174343  27.55996756
+ [4621]  27.13203476  26.63480628  26.63480628  26.84152080  25.77391501
+ [4626]  26.24437370  26.24437370  27.01433662  28.25149206  28.08939398
+ [4631]  28.48299988  29.86285907  31.06653930  30.40196238  29.86731202
+ [4636]  31.47434371  30.48728554  30.57902867  29.13754330  29.67663845
+ [4641]  30.37328999  30.07513905  29.02542735  28.20234177  28.71398943
+ [4646]  29.15702411  28.48949105  28.76795011  28.76795011  27.74076601
+ [4651]  29.25924084  28.62211164  29.15131721  29.65933981  29.11490642
+ [4656]  30.52161124  31.25473013  32.60915307  33.11528765  32.91331982
+ [4661]  35.10669688  35.32388862  36.78053571  37.71956078  38.29349144
+ [4666]  38.27175888  38.41192738  37.08650966  37.97318803  39.03397834
+ [4671]  38.31015658  39.07374249  39.58693028  41.04589300  40.61644571
+ [4676]  40.29616381  40.90689128  41.15650668  41.94138093  42.00477653
+ [4681]  43.14519927  43.37947363  43.18765827  44.04273112  43.60163489
+ [4686]  43.72443623  45.23488894  44.37941414  43.82971534  44.66336739
+ [4691]  45.68822993  46.05560279  46.65531405  46.40932188  45.65731883
+ [4696]  44.98963421  44.37369309  43.75661307  43.87725739  43.66926123
+ [4701]  43.63064924  42.83831618  42.15053396  41.88655362  42.56988235
+ [4706]  43.10468997  43.28300862  42.71212608  42.70474877  41.80554127
+ [4711]  43.03641823  40.50253811  40.64909684  41.84738014  42.82983866
+ [4716]  43.23081207  44.36984171  45.86860063  46.39029688  46.66995072
+ [4721]  47.29134436  47.48257375  47.07048121  45.36874970  45.36623030
+ [4726]  44.98832889  44.98832889  45.31358094  44.96623130  44.93398118
+ [4731]  46.97850702  48.15190299  50.12040820  49.63059585  48.91293414
+ [4736]  47.87804994  49.16628385  48.90786273  48.54047095  50.08399844
+ [4741]  49.65238831  50.65584947  51.15983837  50.59052160  50.43223921
+ [4746]  49.49556110  49.49541423  47.93001391  47.92547653  46.30267074
+ [4751]  46.78961159  46.63496171  44.42500661  42.93063899  41.47267018
+ [4756]  40.98163074  40.80127890  40.92739626  42.82827749  42.83037814
+ [4761]  42.83037814  42.06424529  41.86789860  41.68791200  41.65785597
+ [4766]  41.68972828  42.96978258  42.44539571  43.18051024  43.72177008
+ [4771]  42.86145404  42.46842213  42.51994214  43.53738519  43.81100737
+ [4776]  43.31707143  43.50825724  44.21940776  44.39979417  43.83055652
+ [4781]  42.90748128  44.42300056  43.38058140  44.88174539  45.97938844
+ [4786]  45.44873898  46.05312050  47.49917321  48.78630974  50.51979629
+ [4791]  50.41036285  50.91924199  50.50838430  49.87965328  49.44497415
+ [4796]  51.46139161  51.20043021  52.37190709  53.69935325  52.81625649
+ [4801]  53.18453163  53.63472939  54.61675789  54.59181616  53.81272820
+ [4806]  54.38083932  54.86850589  55.41907550  56.07095653  55.84236846
+ [4811]  55.33412966  56.20754219  56.22532928  55.70896483  56.62127480
+ [4816]  57.25084218  59.27305978  58.79966698  57.98350222  56.58232304
+ [4821]  56.67796403  56.88044538  55.85343905  56.06570898  55.81369036
+ [4826]  54.23332093  54.81635147  53.78620702  54.91325448  54.51930462
+ [4831]  53.55345304  52.76682150  53.41794956  53.87467575  53.74882050
+ [4836]  54.30857810  54.81464859  54.52639197  54.78607824  54.77304822
+ [4841]  54.10544016  55.01086874  54.80840757  56.06428973  56.63779690
+ [4846]  56.01849064  56.01849064  57.55359370  57.19227676  55.79549122
+ [4851]  55.97618830  55.53896283  55.91687603  55.71713774  55.36913289
+ [4856]  55.65184225  56.20972353  55.53619401  55.30912791  55.01910669
+ [4861]  54.82250331  54.86682554  54.68356560  53.56337847  53.79095179
+ [4866]  52.64254907  52.36867898  53.60376295  53.93882607  53.51242292
+ [4871]  52.94531076  52.41201778  52.89583949  53.27992160  52.11187857
+ [4876]  52.09079625  51.02930100  48.99755491  49.66086295  49.66086295
+ [4881]  50.36374086  51.25486247  50.23790222  48.20012004  48.32643695
+ [4886]  48.76917526  49.40208701  48.04422765  46.97714644  46.99830704
+ [4891]  46.69958863  45.88106852  45.20417938  43.39294735  42.89547162
+ [4896]  43.48858017  42.92405733  41.98460862  43.32872799  44.59211288
+ [4901]  45.58721656  47.35252529  46.69414419  46.69414419  46.85036364
+ [4906]  48.23078242  47.54066774  46.74285951  47.32202477  48.03225777
+ [4911]  48.59444386  49.85555362  50.86970988  50.65502053  50.49398217
+ [4916]  49.96982723  50.66628591  48.40288118  48.27927265  48.86005774
+ [4921]  48.48630204  48.54551304  48.03744447  47.62628997  48.00458771
+ [4926]  48.96589100  49.41403410  49.97439253  49.65395418  49.68973606
+ [4931]  49.48230618  50.42784470  49.21084008  49.82034648  52.06759844
+ [4936]  52.19144929  52.66630424  54.10158538  54.10158538  54.47642701
+ [4941]  52.61625077  53.59989513  53.66439697  52.07804144  50.69382733
+ [4946]  50.49354359  49.63058554  49.59592527  50.54594122  50.80616355
+ [4951]  49.10965581  50.41355550  50.89321820  51.94713359  54.26318555
+ [4956]  55.16140404  53.46290665  54.88397528  54.38103613  51.96080976
+ [4961]  50.54395223  51.31273107  51.88383377  50.59782260  51.21656000
+ [4966]  49.41806290  49.42271551  49.45679690  48.61546230  48.08088688
+ [4971]  48.78817665  50.60221002  50.48851218  50.35046465  51.74432126
+ [4976]  51.93326042  53.04988398  53.29748154  52.74680397  53.24605182
+ [4981]  53.21935845  54.10391318  54.22041814  55.65452346  55.23293262
+ [4986]  57.03373286  56.79639147  54.53788523  54.82631267  54.99955777
+ [4991]  53.29670275  53.82438121  54.10895838  53.92955619  53.42828478
+ [4996]  52.95919685  53.48079013  53.16418083  53.27949678  53.67512860
+ [5001]  54.50893097  55.11501557  54.02819257  54.20580276  54.82584678
+ [5006]  54.86619174  56.65094124  57.26590106  55.50631175  54.56748190
+ [5011]  54.73739730  55.43880734  55.98380373  56.89458910  57.11681418
+ [5016]  54.97820486  56.01305438  56.04788084  57.19115999  56.89060029
+ [5021]  56.49845587  55.43540034  55.05963836  56.09384531  57.97174445
+ [5026]  57.94349833  56.81573201  56.65766743  56.75758892  57.63649274
+ [5031]  58.77102972  58.54399211  58.55395509  57.75042019  59.26705297
+ [5036]  59.64134252  59.86830150  59.15070429  57.99008441  58.19667858
+ [5041]  58.17525963  59.27031391  59.57466282  61.28378870  62.21259637
+ [5046]  60.86047820  59.98659916  60.12406746  60.36569971  60.54149267
+ [5051]  58.97386875  57.55538583  56.70653782  56.72909931  58.33924181
+ [5056]  57.56075368  56.24504712  56.55526993  56.64766966  56.09101755
+ [5061]  56.05332710  55.44568786  55.62098484  55.69319036  56.20961658
+ [5066]  56.56760287  57.53394910  58.73017234  59.70678604  58.83974589
+ [5071]  57.84049014  56.83771612  56.94755146  56.37630303  55.70939610
+ [5076]  55.90186297  55.37839221  55.41766502  56.19621431  56.20253695
+ [5081]  57.12235763  56.51707641  56.21457695  56.85693313  57.80049989
+ [5086]  57.71651136  58.85444370  60.17465110  61.49356448  60.31621314
+ [5091]  60.61951467  60.56958543  61.54574595  61.34396716  60.78225788
+ [5096]  60.54211967  60.74528782  60.93780751  59.66626967  59.03746802
+ [5101]  58.18556878  57.31517423  56.18575155  55.75505683  54.70785984
+ [5106]  54.73360502  54.43275572  54.34473302  54.00082593  54.29547053
+ [5111]  56.31200257  58.74074381  58.97031002  58.56830434  57.77032792
+ [5116]  57.08850412  57.35852224  57.48905564  59.49551703  59.14147711
+ [5121]  59.63017067  59.69176069  59.68134635  59.93883208  60.27465701
+ [5126]  59.82746482  58.99988056  59.43352694  58.69758681  59.14526552
+ [5131]  58.24261069  57.52084535  58.18439772  59.85418090  61.65453613
+ [5136]  63.18384622  62.62110271  61.41989659  62.73322413  63.53519363
+ [5141]  64.59293622  66.08799828  66.42080522  64.85023273  65.60926516
+ [5146]  66.70396441  65.35897932  64.63056144  63.88824572  64.15804352
+ [5151]  64.15804352  63.85760392  63.35009304  60.78569193  61.70554687
+ [5156]  61.72918705  62.85599116  63.17549717  65.07648804  65.92257544
+ [5161]  66.01968955  65.60190177  63.59232123  63.95705599  62.99493288
+ [5166]  63.11683643  62.23495022  61.36929997  60.91520907  61.45309458
+ [5171]  59.77257711  59.38625121  59.37474459  58.88633075  58.03993855
+ [5176]  57.47435281  58.73354568  58.67576595  58.67576595  60.19379214
+ [5181]  60.50795216  62.57665884  64.79095745  64.82898582  64.83798108
+ [5186]  64.64475740  64.51276986  62.85397789  63.84984895  63.31620200
+ [5191]  63.61593000  63.75992716  62.85001629  61.67930385  61.88514320
+ [5196]  62.21172512  63.41350097  63.52375020  63.33683029  63.28001568
+ [5201]  62.88521822  62.50909458  62.06700710  61.44058899  60.78866996
+ [5206]  60.09126180  59.69963144  60.61674387  59.75298648  60.32190243
+ [5211]  61.38902008  60.35732338  60.15783381  60.21862089  60.34970431
+ [5216]  61.29492410  62.36098259  63.21596929  64.09270511  64.38322235
+ [5221]  64.80444178  63.45986537  63.81381586  63.46655763  63.94670739
+ [5226]  66.48087563  67.05196067  67.05820734  66.81355114  66.77315021
+ [5231]  66.29361909  66.15313125  66.77167641  67.46398116  67.08033541
+ [5236]  67.17575762  66.85973149  65.10858787  62.81101058  62.06241549
+ [5241]  60.59551390  61.81869122  61.22363955  62.20824847  62.68241691
+ [5246]  62.32918539  61.79357895  61.74805423  61.10726041  60.21268140
+ [5251]  60.21268140  59.06779707  59.85165218  62.30441477  62.56343797
+ [5256]  62.30548998  62.81005229  62.50769205  62.78547900  61.49628530
+ [5261]  61.98335705  61.48604173  60.36640577  60.60793854  61.00867491
+ [5266]  61.80635589  62.50201577  61.27459459  61.68579718  63.24377327
+ [5271]  64.60656858  63.33652003  61.53428508  61.37880131  59.90807062
+ [5276]  61.02694761  61.06663920  62.84447026  62.83386901  62.03541971
+ [5281]  62.68560890  63.99071673  64.09606566  64.62698542  64.32328285
+ [5286]  63.69776655  63.66233058  62.78144484  62.91657569  62.98735850
+ [5291]  63.30307820  64.49804488  64.20963721  64.02926562  64.30688570
+ [5296]  64.14621477  65.06019593  65.82366288  64.68871398  65.35398362
+ [5301]  64.05964449  62.60842835  62.53126727  62.92717897  62.76323299
+ [5306]  63.13652185  63.25234811  63.01532349  61.32886927  61.39676094
+ [5311]  62.20039340  64.27612066  63.30586897  65.70631915  66.26875343
+ [5316]  66.26875343  66.94554877  65.40519265  66.11087262  67.33528645
+ [5321]  65.97394567  66.91854614  65.40831100  64.41985759  63.98976753
+ [5326]  63.83089838  63.39029603  63.07065248  62.60295636  63.10250082
+ [5331]  63.10250082  63.15190701  61.82853792  60.04219413  61.98672204
+ [5336]  60.52508727  60.67409978  60.48321266  59.47513397  60.23028797
+ [5341]  59.33550130  59.22469895  59.90432838  59.21161767  59.56999165
+ [5346]  57.33947732  58.15523985  57.99506616  58.13042636  58.76418264
+ [5351]  58.75685998  58.28007916  57.41251682  56.81368827  55.87229545
+ [5356]  55.78129389  56.21510107  55.98455600  57.11228027  57.96746772
+ [5361]  57.29439768  57.17201773  58.22423270  57.92974259  57.22523300
+ [5366]  55.01582901  55.12431048  56.07953533  55.81613867  56.28087384
+ [5371]  55.84360746  57.16280430  55.98710150  55.67581690  55.72946993
+ [5376]  56.00115356  56.17482880  55.78239807  56.26801658  55.67805424
+ [5381]  54.78632546  55.37305531  54.93714627  55.65398703  57.26226852
+ [5386]  57.80368003  57.46480342  56.63736166  56.86721273  55.21880673
+ [5391]  55.77581736  56.28899084  55.04538164  53.35814280  54.57065270
+ [5396]  54.40516111  54.38944965  53.35190619  49.91842638  50.12897144
+ [5401]  50.10261415  49.95333111  51.63344467  51.65480913  51.86081888
+ [5406]  52.50704499  53.54707270  53.10164811  51.41909434  50.52751262
+ [5411]  48.06915354  48.89552597  50.20784677  49.10415158  48.40301402
+ [5416]  49.27173610  45.93785400  45.80394632  44.55270965  43.84770386
+ [5421]  42.37827318  42.39579273  40.99534875  40.95349808  40.61737229
+ [5426]  39.71543201  39.71543201  39.26017665  38.04701598  38.01224870
+ [5431]  36.84011201  35.45278853  35.62525509  35.71320257  35.01860578
+ [5436]  35.05040731  35.40084424  37.27567937  37.44323894  37.72982112
+ [5441]  37.50413440  37.29668989  36.89765218  37.45610085  37.45610085
+ [5446]  38.34750977  39.78609524  38.26973633  38.26973633  38.95247437
+ [5451]  37.03912926  36.95874813  37.97552611  38.13071286  36.32736834
+ [5456]  35.23269591  34.00465278  34.95539560  33.40305504  33.43348937
+ [5461]  33.71756034  33.50934498  33.82328178  36.44856350  37.34878416
+ [5466]  35.20051936  37.19949010  37.46020099  36.93069472  36.93069472
+ [5471]  36.28587363  38.39679763  38.07054792  38.91112139  38.30111932
+ [5476]  37.27679107  38.72891091  35.27840849  35.03532793  34.31682919
+ [5481]  34.83243576  34.45280023  33.53932769  33.15942391  32.32856993
+ [5486]  32.48329567  32.85576110  32.61073815  32.96925451  32.99688659
+ [5491]  30.80582581  32.39886741  29.90189119  29.09922249  28.04441445
+ [5496]  26.89860414  25.68633987  26.77780833  26.88132623  27.33380682
+ [5501]  25.98465100  24.89139595  22.95164754  23.22021776  21.58833687
+ [5506]  21.71694404  22.10067225  23.39206471  22.46725434  23.38827272
+ [5511]  24.16752419  25.20071204  25.23287063  25.69420448  25.61732057
+ [5516]  24.41479957  22.88752014  22.93672254  22.83653006  22.20059616
+ [5521]  22.29621669  20.19603452  19.52937028  20.67620813  23.32561923
+ [5526]  25.14228609  25.99113883  24.10551224  23.01463125  23.50843017
+ [5531]  23.49304848  23.69060145  23.82304952  24.95086959  25.53127736
+ [5536]  26.06929996  25.30659451  25.02861553  25.45306212  26.63631058
+ [5541]  26.47884459  26.66186340  26.94477124  27.73156181  27.58826451
+ [5546]  27.91851923  27.97105678  28.13813663  27.68194144  25.94191067
+ [5551]  25.28096249  24.65996642  27.04164938  25.79953827  25.09245812
+ [5556]  25.67731771  25.48316844  26.12785962  24.28726496  25.62176524
+ [5561]  25.03425245  25.51712809  25.51712809  27.56448221  28.83517850
+ [5566]  29.49356172  31.68658909  31.19841367  30.91481111  29.82812664
+ [5571]  28.79359568  28.58296747  27.21478100  27.86574578  26.56869626
+ [5576]  26.68894803  25.56251347  26.11218756  27.44641884  28.28808886
+ [5581]  27.90624927  27.43971286  25.97216901  24.87637393  24.31956879
+ [5586]  22.04366902  21.10558845  21.59966066  20.65936147  19.76762955
+ [5591]  20.81372674  20.82364505  20.70596659  20.70596659  20.36327455
+ [5596]  20.46334787  19.98729303  20.28008739  19.36167113  20.99912990
+ [5601]  20.80238955  20.57151068  20.47306554  20.24835147  19.24061515
+ [5606]  19.70451728  18.36977883  19.28480564  22.12437477  21.64794624
+ [5611]  22.64150697  22.13681841  21.97590385  23.40955588  23.43221087
+ [5616]  23.20758802  23.78495160  25.48353565  24.77768118  24.33146933
+ [5621]  24.18546797  22.32119228  22.61174062  21.35114464  22.59315282
+ [5626]  23.63954719  24.92765595  24.61982732  24.77524541  24.56327547
+ [5631]  24.93116900  24.36571301  24.99928685  25.94875598  25.94875598
+ [5636]  25.88744607  26.53468568  28.11750933  29.92807871  28.85407041
+ [5641]  27.51047826  28.25016739  28.00231665  29.76981978  30.27119990
+ [5646]  30.26396742  31.20053405  30.84341771  29.70264666  28.92791644
+ [5651]  28.77548461  28.36604056  28.25414458  28.10037569  27.26949227
+ [5656]  25.73497284  24.81567795  25.40360703  26.28527958  27.87732770
+ [5661]  27.46189444  28.82020668  28.99133928  28.35560185  28.68698394
+ [5666]  26.91843611  25.73442621  26.72452725  28.35022331  27.72876983
+ [5671]  27.72876983  26.76507616  26.85316121  24.20754160  25.29715646
+ [5676]  25.91844783  24.93524542  24.93524542  22.80967161  22.23789502
+ [5681]  20.91857330  19.78930192  18.81307512  18.11030349  17.24418580
+ [5686]  17.21575294  17.77042668  19.10847621  19.39450621  19.19790297
+ [5691]  21.12862291  19.47475954  19.90310022  20.44210804  19.66584601
+ [5696]  18.74400804  20.62328689  20.90355117  21.72995539  22.70042925
+ [5701]  21.84339803  21.97454497  21.34846815  22.40108201  22.80140680
+ [5706]  22.75848620  23.32566877  25.51090035  26.85360267  27.07980046
+ [5711]  26.88679006  26.80850459  26.59549440  26.36214190  26.36214190
+ [5716]  26.67481854  26.80276062  26.57452889  26.32133381  25.79612990
+ [5721]  24.12640012  23.01904437  23.21266891  22.56638961  22.96170601
+ [5726]  22.54467822  22.75926495  23.13635649  22.47512771  22.59257272
+ [5731]  21.08540980  18.40932627  19.52213308  18.64009463  19.78750156
+ [5736]  20.79142118  22.43160960  21.96487939  22.48074915  23.04016725
+ [5741]  23.52029049  22.30113167  22.80159946  23.32938936  24.84459733
+ [5746]  25.48871672  27.30924861  27.43854102  26.95258263  26.14211750
+ [5751]  26.51731511  26.15112618  24.59769201  25.77700912  27.94287796
+ [5756]  27.67080666  28.61386512  28.69458904  27.28815316  28.00042252
+ [5761]  28.19532344  26.37500012  25.26036560  24.91118209  22.27333876
+ [5766]  23.21821025  22.87186657  23.19322513  22.95792626  21.15550746
+ [5771]  22.68635808  23.23613816  23.46958112  23.24755459  22.87952365
+ [5776]  22.87952365  22.59191541  22.32484102  21.30209451  19.58164763
+ [5781]  18.15210811  19.23312682  18.32311043  18.37929577  18.37929577
+ [5786]  19.02950760  18.67939756  19.30956461  20.96098697  19.65092683
+ [5791]  17.93160326  18.30124818  18.92002823  19.59165258  18.59784719
+ [5796]  18.24350711  17.60244503  17.59686466  19.40108491  18.61831684
+ [5801]  19.70935924  20.04405019  20.48468476  22.05283764  22.16180037
+ [5806]  22.32546238  24.50229040  21.27505749  21.27505749  20.60642704
+ [5811]  20.23727514  19.49693461  21.30817553  20.41838331  20.41838331
+ [5816]  20.58975926  21.46005902  20.86064859  19.93896176  19.65043929
+ [5821]  20.62169775  19.96700899  20.46102197  20.53443309  20.77456042
+ [5826]  22.55695520  22.88792088  22.53709766  22.69581093  22.50060173
+ [5831]  22.06683074  22.06683074  22.35649404  21.33227702  20.33845002
+ [5836]  19.63563601  21.74352277  21.74352277  22.09161441  22.21048305
+ [5841]  23.56335094  23.66753333  24.22514916  24.02960296  24.90693566
+ [5846]  25.21370020  26.70221042  27.61331926  28.07969840  28.99123575
+ [5851]  27.96532499  27.74730155  28.06467510  28.85690046  28.54645969
+ [5856]  29.22713017  29.27842103  28.74175092  26.77569539  25.87807455
+ [5861]  26.40995883  27.14602578  25.40830126  26.26053288  28.87925076
+ [5866]  28.12448965  28.66820418  29.63187810  28.81653176  28.49685142
+ [5871]  27.79296851  28.16244013  29.42141339  28.49897135  29.12311310
+ [5876]  28.29733963  28.78901035  29.94400708  29.30902030  28.96290159
+ [5881]  28.83551119  29.36288379  29.19868194  30.06958619  30.15505510
+ [5886]  29.54761131  29.95553180  31.26933047  30.56675122  30.85007477
+ [5891]  31.36243296  28.87494960  27.83680007  26.53200417  24.22935007
+ [5896]  24.25591758  25.63362941  24.67629425  25.01674632  25.04375528
+ [5901]  24.13300024  24.59676244  24.42906225  24.19028320  25.43680423
+ [5906]  24.10732902  24.19780178  23.62077363  23.59751676  23.63793065
+ [5911]  23.36724576  21.49766886  19.56862049  18.21972858  18.85904264
+ [5916]  19.25069465  20.68783034  21.58197609  19.85095106  20.06943845
+ [5921]  19.05616492  20.70963003  21.33969148  21.38688763  22.25178769
+ [5926]  22.66924765  23.36534014  23.69265510  24.59388839  26.22887490
+ [5931]  25.86787408  25.32224138  24.24394785  22.60519522  23.40383185
+ [5936]  23.14870745  22.45385658  21.77964623  19.80884999  19.94425810
+ [5941]  19.22161429  20.20807136  20.73754022  21.65005752  23.41717894
+ [5946]  23.75123273  24.39220917  24.31277332  23.59183053  23.59183053
+ [5951]  22.95296089  23.07177635  22.47172209  23.42153634  23.69281650
+ [5956]  23.83983925  23.39323479  23.92048561  24.59555231  24.59658224
+ [5961]  24.52820560  24.39575115  24.33030169  24.33030169  24.06951444
+ [5966]  24.41640916  23.48175619  25.15785073  26.57491545  26.34835488
+ [5971]  25.23493238  23.33415706  22.94231825  22.61458363  20.21390736
+ [5976]  20.52340973  21.79205069  21.19282462  21.72183939  21.60600977
+ [5981]  21.45985235  22.78269163  23.02655166  22.30039197  22.12078867
+ [5986]  21.47047140  20.12575645  19.34125292  18.47803787  17.96447930
+ [5991]  18.85191184  19.14818934  18.15995871  19.45959840  19.50791168
+ [5996]  19.78213446  20.13984083  19.15204940  20.93926793  20.97367254
+ [6001]  19.71837733  18.77214806  18.79969392  19.47311628  19.21325626
+ [6006]  20.62867456  20.00421826  20.45445136  20.82817166  20.91351141
+ [6011]  20.91351141  20.91351141  19.93737207  19.29431790  19.54615621
+ [6016]  20.05309950  19.22394324  19.28052711  19.87325614  20.07181532
+ [6021]  19.70454796  20.98938375  20.89482726  20.56451237  20.77310573
+ [6026]  21.70645978  18.97657211  19.29842794  18.35047326  18.03967136
+ [6031]  18.01327766  19.06141622  17.68896877  18.19255826  19.65164258
+ [6036]  19.93626027  20.05150377  18.34288779  17.75244516  17.16718950
+ [6041]  16.16194741  15.79058816  15.79058816  15.86389635  14.88150631
+ [6046]  14.41782392  13.90748664  13.98225307  13.86864483  12.22466880
+ [6051]  10.75607028  11.14350325  11.44348448  11.22153462  13.89173417
+ [6056]  13.89173417  14.00824876  15.82441444  15.82441444  15.93492474
+ [6061]  15.93492474  15.24263761  14.13626799  13.26348092  13.26348092
+ [6066]  12.86472383  12.96052697  14.11447121  13.75748140  13.84429111
+ [6071]  13.84429111  16.06189250  16.06189250  15.66621417  14.46045028
+ [6076]  14.46045028  13.22243226  11.90606505  13.44014698  13.34523764
+ [6081]  11.56756323  10.68687504  11.23717605  10.96701885   9.96602461
+ [6086]  10.28434650  11.57645814  11.91430752  11.29044926  11.96605884
+ [6091]   9.61521535  10.12525877   9.76075791  10.08856436  10.97525172
+ [6096]  11.09086979   9.59779312   8.56258189   7.68830923   8.27829201
+ [6101]   8.25742178   9.28249138   7.43414433   7.58328092   7.58328092
+ [6106]   7.98527290   6.58585188   7.92422654   7.92422654   9.14416993
+ [6111]   7.42689439   7.05953095   8.03800419   9.05363437  11.43953875
+ [6116]  11.23984880  12.22942594  10.97902527  12.87819284  12.86373431
+ [6121]  10.76674051  10.82342333  11.68566866  11.68566866  11.93581419
+ [6126]  11.33629239  11.46801219  12.42819655  12.58327883  13.06580203
+ [6131]  12.65959188  12.17046677  12.34400939  10.48921771   9.68239222
+ [6136]  12.64052917  12.88247129  10.14349594   8.82272708   9.55142426
+ [6141]  10.34999714  10.22673455   8.56805425   8.56805425   9.96104601
+ [6146]   9.66293452  11.26682565  11.51826973  11.72172492  12.40281565
+ [6151]  12.42675868  13.74046543  12.16360741  12.62394451  11.74046747
+ [6156]  11.65263043   9.51610159   9.85410561   9.16994204   9.70209924
+ [6161]  10.44630896   9.28825081   8.19086566   7.85509347   8.92101495
+ [6166]   8.89211596  10.17528053  10.30413496  10.20209944   9.68090580
+ [6171]  10.45270609   9.66082074   9.57174853   9.46834852   9.82010312
+ [6176]  10.98638689   9.63122238   8.88409454   9.31438031   9.54531874
+ [6181]   9.31400395  10.43987870   9.51663275   9.23513502  10.24657867
+ [6186]  10.43373387   8.50230113   7.85504440   6.55587434   6.55587434
+ [6191]   7.65987183   8.20878617   7.68538445   6.56293427   7.62986607
+ [6196]   6.45238284   6.05675167   6.30538113   6.01129383   5.34788405
+ [6201]   6.25892258   6.74977400   5.53215420   5.53215420   5.61342371
+ [6206]   7.88518594   7.00261631   5.67409723   6.27318527   8.17845085
+ [6211]   9.85152326  10.15517114  10.57915801  10.73139787  11.56311399
+ [6216]  13.39796782  14.19210485  13.71732167  14.02502919  13.18312076
+ [6221]  13.81090679  13.53920270  14.51346595  14.89713457  14.89713457
+ [6226]  15.10401716  14.31380215  15.08170392  15.21011518  15.08761258
+ [6231]  15.57648295  15.89638981  16.00352227  15.83473020  15.70323987
+ [6236]  15.24614590  14.08587342  14.91382464  16.52003462  17.01795904
+ [6241]  17.44796760  17.50392660  18.38238575  19.83183142  19.67132333
+ [6246]  18.91223143  19.18149690  19.95611957  18.83351149  18.84891678
+ [6251]  18.84891678  19.19539739  19.43725487  17.88870989  17.80679060
+ [6256]  16.84473119  18.34703739  18.13902404  16.25926558  16.85462712
+ [6261]  17.78710114  18.17509995  18.80331265  17.73667172  19.31029507
+ [6266]  17.93127614  17.96449386  19.07266536  17.62933900  17.54461887
+ [6271]  16.59434921  16.21850476  16.32329505  16.33791216  17.80334221
+ [6276]  18.46718307  18.85672925  16.32343638  17.08978429  16.26537678
+ [6281]  16.75797338  18.41894625  18.31582582  18.94600029  18.08079532
+ [6286]  17.13475058  16.61416842  14.39704580  14.45339289  14.81304553
+ [6291]  14.16788746  14.83513749  14.80622838  14.12324649  13.80849624
+ [6296]  11.37592007  10.30968905  10.48609807  11.90290452  11.90290452
+ [6301]  11.04440450   9.73720275   9.73720275   7.93876572   7.16936409
+ [6306]   6.45757493   6.46714558   5.40864659   5.89381428   5.93432522
+ [6311]   4.06590566   4.09764898   3.19558949   5.14534242   5.10350104
+ [6316]   4.37264811   4.93430414   4.88125421   3.96854776   4.07394365
+ [6321]   6.67064513   7.46416525   7.37069344   7.62180403   7.62553932
+ [6326]   7.14337968   6.05666025   6.05666025   7.98571617   7.98571617
+ [6331]   6.56153789   6.80633984   7.43184990   7.00486851   7.39089367
+ [6336]   7.63368085   7.88367634   9.42976126   9.42976126   8.45000040
+ [6341]   8.08036399   7.28085103   7.25227222   6.29121121   5.75947100
+ [6346]   5.75947100   6.51880616   5.53367587   6.92300379   8.44598908
+ [6351]   8.74419139   8.74419139   7.73243298   9.49184204  11.13039792
+ [6356]  11.87146765  11.22384344  10.04061361   9.25921292   7.12461176
+ [6361]   6.92763405   5.62292567   5.62292567   5.62292567   5.82699408
+ [6366]   5.30929145   3.97827494   4.44407390   4.07593088   5.29846374
+ [6371]   3.75792207   3.75792207   4.17807349   4.10672804   4.72652148
+ [6376]   5.12341476   4.50506006   5.10216421   4.65624410   4.88425937
+ [6381]   6.89197555   7.42801296   7.76100950   7.48228622   7.11040601
+ [6386]   6.53860401   6.94922216   6.89653651   8.43604540   9.00987256
+ [6391]   8.92496818   9.51907853   9.48080411   9.39532153  11.04198842
+ [6396]  11.26792125  11.50759701  11.04106362  11.37292749  11.37292749
+ [6401]  10.53976998   9.64019241   9.85360013   8.78300767   9.03366313
+ [6406]   8.93917033   8.41310914   8.41310914   8.41310914   5.79693074
+ [6411]   6.00862261   6.38329316   7.88538279   6.56050668   5.29679410
+ [6416]   5.23240808   4.41884418   3.59748362   4.34105835   4.65474291
+ [6421]   5.14114347   5.06101967   4.90173666   4.46392292   4.33046736
+ [6426]   4.39382822   4.42891619   2.81898759   2.96291894   2.05164261
+ [6431]   3.18010177   2.26765948   2.26765948   3.28801104   5.42031344
+ [6436]   5.17587712   4.45300804   4.45300804   4.31494232   5.51701931
+ [6441]   6.15559197   5.91209415   5.55823323   7.07164160   7.07164160
+ [6446]   6.50634611   5.69163911   5.69163911   5.69163911   6.01565885
+ [6451]   6.01565885   6.08184542   5.58427184   5.60858331   5.60182051
+ [6456]   5.77768347   6.35520938   7.50971363   6.90962532   4.80911387
+ [6461]   4.80911387   6.08402634   4.10383355   4.71773174   6.21010327
+ [6466]   7.40960195   8.61703375   9.34633595   8.50580765   8.00899500
+ [6471]   8.67544014   8.70234823   8.70234823   9.78620165   9.91257335
+ [6476]   8.76877433   9.61871272   8.82125510   9.31989385  10.00785156
+ [6481]   8.67058669   9.10829402   9.90508565  10.21903984  10.21903984
+ [6486]  12.09102821  11.61269678  12.95437675  12.95437675  12.50820766
+ [6491]  12.71585081  12.71585081  13.27668806  13.92334008  13.92334008
+ [6496]  11.99282856  13.15727437  12.67286900  12.10164759  12.54646378
+ [6501]  11.47716347  10.48017951   9.94990743   9.94990743  10.57117920
+ [6506]  11.36813319  10.90871357  12.18565250  11.92585964  11.54704989
+ [6511]  11.76648237  12.18036562  12.18036562  13.14490906  11.64165103
+ [6516]  12.40962055  12.32832754  11.77948933  10.86614136  11.12515585
+ [6521]   9.11501808   7.85630865   6.64059072   5.30990025   5.82220142
+ [6526]   5.23668510   5.11703736   5.70175366   4.91897848   4.04554349
+ [6531]   2.95766166   2.95766166   1.54340315   1.09869840   0.88179431
+ [6536]  -0.30581826   1.33873799   1.33873799   1.33873799   1.33873799
+ [6541]   0.82232572   0.42294918   0.42294918   0.42294918  -0.68568557
+ [6546]  -0.83664546  -0.83664546  -0.74960520  -0.74960520  -0.74960520
+ [6551]  -0.67903736  -1.34004316  -1.68449918  -3.21097630  -3.21097630
+ [6556]  -3.41511562  -2.94512026  -2.94512026  -2.94512026  -4.07403472
+ [6561]  -3.84840624  -3.13384170  -4.52480597  -4.31260254  -5.46837911
+ [6566]  -6.91878855  -7.82575988  -8.12197881  -7.94742661  -7.94742661
+ [6571]  -9.14537459  -9.55906084  -8.85987607  -9.73492580  -7.98856126
+ [6576]  -7.61368305  -9.41371377  -8.32465397  -9.46796048  -9.95955039
+ [6581] -10.20683463  -9.71101407  -9.81108585 -11.01656860  -9.56280677
+ [6586] -10.22186375 -10.75523502 -10.89103084 -11.23347167 -10.52882722
+ [6591]  -8.51001417 -10.01318351 -10.38552416 -10.71134691 -11.53629289
+ [6596] -11.75981408 -11.46893195 -11.51404978 -10.72619120 -11.87968658
+ [6601] -11.82243796 -11.24263567 -11.24263567 -11.24263567 -12.57983692
+ [6606] -11.58381871 -10.62654607 -10.65248256 -10.65248256  -9.73631873
+ [6611] -10.74819471 -10.82763543 -10.62500428 -12.88729090 -12.56659481
+ [6616] -11.47467223 -11.77416447 -12.33715840 -12.05511658 -10.60393849
+ [6621] -10.74268438  -9.70188547  -7.77161066  -7.51395443  -5.23355934
+ [6626]  -5.93966211  -6.69696717  -6.43014017  -6.43014017  -6.19361127
+ [6631]  -6.20914716  -7.01368670  -5.42356825  -4.13473731  -4.05343076
+ [6636]  -4.99748041  -6.67761840  -6.52914974  -5.98471051  -6.59643266
+ [6641]  -5.93931491  -7.83948254  -7.99199323  -7.39863243  -7.39863243
+ [6646]  -9.14938973  -9.62506778 -10.44423056 -11.73267186 -12.29319383
+ [6651] -12.00459652 -12.36191671 -13.68886618 -12.70577420 -12.29580197
+ [6656] -11.54136061 -11.36584063 -11.13430866  -9.96413119 -10.92297931
+ [6661] -10.41113031 -10.43541892 -10.00035626  -9.79069080  -9.05759858
+ [6666]  -8.55823202  -8.61383532  -9.41816692  -9.91420947 -11.09976982
+ [6671] -11.60918944 -11.91162240 -12.52667247 -11.26735444  -8.97352266
+ [6676]  -9.45243397  -8.78347315  -8.86369420 -10.83755654 -10.83755654
+ [6681]  -9.88720612 -11.15726073 -10.53665909 -12.15342220 -11.87295200
+ [6686] -12.05380783 -11.31469726 -11.13692256 -11.90503141 -11.90503141
+ [6691] -12.81431717 -12.44670308 -12.90946283 -12.04494676 -11.24631894
+ [6696] -10.93221079 -10.98882656 -10.61158387 -10.01286329  -9.92659813
+ [6701] -10.32415615  -9.87698369 -10.41831630 -11.02911383 -11.73306309
+ [6706] -11.93368876 -11.50879716 -12.21802658 -12.89284145 -13.67092022
+ [6711] -13.70511671 -14.66615219 -16.37965688 -16.77469708 -17.20979094
+ [6716] -15.95487059 -16.90515262 -17.26335754 -17.05798662 -16.22595640
+ [6721] -16.09775106 -16.15359839 -17.12743950 -18.66007320 -20.14237452
+ [6726] -20.88811693 -23.09876271 -22.06230042 -21.70012954 -22.82228947
+ [6731] -23.39739863 -23.08650398 -23.88970272 -24.13864142 -26.02542846
+ [6736] -25.87284331 -25.18553448 -24.61567602 -25.93374988 -26.19496274
+ [6741] -25.70235418 -25.30626935 -24.68275583 -24.73386577 -25.48064721
+ [6746] -25.10397442 -25.14606952 -24.84064262 -22.85275818 -21.91742400
+ [6751] -22.71474293 -21.60647322 -22.01867159 -22.29613038 -23.84155562
+ [6756] -23.92348825 -24.77802781 -24.18280338 -23.91164389 -25.33525073
+ [6761] -26.36880084 -28.44157110 -27.31870955 -28.29848358 -28.97827133
+ [6766] -29.63848245 -30.35642784 -32.25069065 -33.29604363 -32.55958463
+ [6771] -32.88568526 -34.39040918 -34.30616609 -33.88394240 -33.88383839
+ [6776] -34.91396949 -35.59147222 -34.23498623 -33.50398621 -34.38939159
+ [6781] -33.00858795 -33.70727092 -35.52689984 -35.25237938 -34.30587598
+ [6786] -35.35854167 -34.58305724 -35.23572094 -33.10654450 -32.87639217
+ [6791] -31.69405056 -33.56816113 -33.91092164 -35.00402360 -37.16542329
+ [6796] -36.54913863 -36.47047384 -37.19362178 -38.42451328 -37.49354379
+ [6801] -38.06024553 -38.68623258 -40.56812390 -39.57203799 -38.40591191
+ [6806] -38.36560200 -39.58880363 -37.24217252 -36.00886811 -35.85519097
+ [6811] -35.74319744 -36.14813818 -37.71569932 -36.44555229 -36.30411495
+ [6816] -39.08922524 -39.22538957 -39.39277958 -38.78079235 -38.76483882
+ [6821] -40.83942694 -40.13125639 -39.98625467 -39.74349031 -40.24075337
+ [6826] -40.84995149 -40.28976926 -41.12018386 -40.22127523 -42.02890536
+ [6831] -41.62073205 -41.27365167 -39.10505791 -39.65019304 -39.36885474
+ [6836] -39.80453984 -40.06852328 -41.20820383 -39.68852161 -39.42685926
+ [6841] -39.92480085 -38.76278227 -37.37955422 -36.75423342 -35.94573920
+ [6846] -36.36144060 -35.42799241 -33.94857225 -33.77178770 -32.13195499
+ [6851] -32.10500861 -32.74260268 -33.62430099 -34.71602944 -34.52362419
+ [6856] -34.38043345 -36.33091250 -35.63630511 -34.30536541 -34.01608430
+ [6861] -33.47787244 -32.96587468 -32.51360269 -31.97390357 -34.32911532
+ [6866] -33.20782913 -32.13016301 -32.47816098 -31.96023469 -29.75733827
+ [6871] -30.54020760 -31.25088888 -32.21207704 -31.08937270 -30.80864223
+ [6876] -31.08764533 -30.19650648 -29.65496533 -29.11910105 -28.83210945
+ [6881] -26.30225299 -26.96887293 -26.42616966 -26.42616966 -24.35739234
+ [6886] -25.17047460 -26.56224904 -27.88001987 -28.06497275 -26.93055183
+ [6891] -26.16235618 -23.97846851 -24.42693261 -24.89824634 -24.41582728
+ [6896] -22.91511271 -22.94526416 -23.16973207 -23.86139713 -23.50148561
+ [6901] -23.41513043 -22.69222815 -21.58501428 -21.93034861 -21.32659943
+ [6906] -21.53400858 -23.04765026 -23.81620580 -23.83773216 -24.44427669
+ [6911] -23.44757004 -23.83982534 -22.90860051 -21.52305669 -20.81252553
+ [6916] -19.87112883 -21.10343928 -22.28121328 -21.61286089 -20.77813380
+ [6921] -22.31333116 -21.92978637 -20.58397114 -20.54059100 -20.67132052
+ [6926] -20.14714223 -20.68754428 -21.67803097 -22.85328183 -22.17456942
+ [6931] -23.46397887 -23.13282081 -24.52162188 -25.04551416 -25.40773382
+ [6936] -25.48558897 -24.60624942 -24.72219662 -26.64995408 -27.78901901
+ [6941] -25.56950776 -25.48679331 -26.57693534 -27.79355324 -28.25487580
+ [6946] -27.28719329 -27.62359713 -28.13874383 -26.99889245 -27.13525328
+ [6951] -26.10249825 -23.50490053 -23.18396884 -23.98779638 -25.00917080
+ [6956] -23.82439871 -23.56223926 -24.08405359 -25.23039984 -26.25824088
+ [6961] -26.25824088 -27.27461072 -26.71266880 -25.80821398 -26.92469350
+ [6966] -26.96567818 -28.61101879 -27.54764347 -25.21544309 -27.44550420
+ [6971] -25.61305945 -25.32992664 -24.19166621 -24.29523503 -24.44569684
+ [6976] -23.10433600 -22.80566794 -21.64040986 -22.11812586 -23.18749849
+ [6981] -24.51438308 -24.37535315 -23.72300124 -23.56636719 -23.29483334
+ [6986] -23.48781408 -24.65789954 -24.00093550 -22.13735143 -23.00874803
+ [6991] -25.17488643 -26.06609598 -26.46238581 -26.27837948 -27.26245163
+ [6996] -27.95112545 -27.58661588 -28.13631318 -28.01917862 -26.86006264
+ [7001] -24.87654275 -25.50341151 -24.91361983 -25.84928320 -25.07679782
+ [7006] -23.10912588 -21.85313625 -20.37387114 -19.91088609 -20.36303906
+ [7011] -20.77004738 -22.21662632 -24.93706899 -25.15965083 -25.88315422
+ [7016] -25.62182076 -25.14720241 -24.75690117 -23.92075916 -24.19810620
+ [7021] -24.25339449 -23.40685688 -22.68612189 -23.80722643 -25.70855588
+ [7026] -27.49387028 -28.14186131 -26.61026416 -26.40483380 -26.73412765
+ [7031] -26.26905515 -25.20160636 -25.51547694 -24.10004678 -24.17668547
+ [7036] -22.99809662 -24.46055260 -24.38149915 -23.78635437 -23.98255708
+ [7041] -23.22792833 -23.07341730 -21.99570983 -21.59409658 -19.48873866
+ [7046] -19.34883770 -19.17615590 -19.27701616 -18.56961142 -18.50349759
+ [7051] -17.05555695 -16.97324454 -19.97878344 -19.63344435 -20.06509588
+ [7056] -19.49033940 -17.92975946 -17.51394572 -17.62602567 -19.03737529
+ [7061] -19.12581788 -19.16478197 -18.77479138 -18.40974789 -18.75871328
+ [7066] -19.77557905 -20.55304491 -19.67433343 -20.55535228 -21.53170820
+ [7071] -23.35695891 -22.81473624 -22.81473624 -22.19933689 -22.90772141
+ [7076] -22.48017122 -22.18183926 -23.18399271 -22.19510461 -22.37305787
+ [7081] -23.34614400 -25.23379895 -24.25346116 -24.12019241 -25.00958811
+ [7086] -24.80884028 -24.06543783 -23.27103579 -23.52505485 -23.05040468
+ [7091] -24.95889710 -24.14206651 -24.11741958 -22.42762892 -21.11987185
+ [7096] -20.77603550 -20.92862524 -21.72500148 -21.78307454 -21.46514802
+ [7101] -23.02721780 -21.26365953 -23.35230006 -23.27436954 -23.65890388
+ [7106] -23.53378205 -23.94705088 -24.96817000 -26.34592063 -26.17570138
+ [7111] -26.56928462 -26.33775058 -26.62203299 -26.30407201 -27.36602317
+ [7116] -26.66854899 -25.21893891 -25.82766183 -25.17366171 -25.31713047
+ [7121] -25.82486345 -24.54110599 -24.93002908 -27.49128383 -25.89101389
+ [7126] -25.26210155 -25.58051812 -26.86936704 -25.46380919 -25.46380919
+ [7131] -24.96713750 -25.10060143 -27.54448542 -26.83061815 -27.15287339
+ [7136] -26.58170127 -24.92999908 -25.70136809 -26.78584945 -27.86095102
+ [7141] -26.90895474 -27.67194804 -27.42032698 -27.67452340 -27.86200212
+ [7146] -29.41578491 -29.79074288 -28.94537830 -28.94537830 -28.82791552
+ [7151] -28.87264302 -28.17022272 -26.67364078 -27.14293465 -26.56834773
+ [7156] -25.39063621 -24.58555272 -23.83978612 -22.90329304 -23.28237984
+ [7161] -23.09354173 -24.43676415 -24.51675904 -24.58538292 -23.43875613
+ [7166] -24.32916783 -23.05767233 -24.06265623 -24.36902554 -24.59763522
+ [7171] -24.21658279 -22.99488231 -22.81933205 -22.35326360 -22.67414002
+ [7176] -22.98882291 -22.84217841 -22.59974746 -21.83689083 -21.78585459
+ [7181] -19.78969965 -19.43932389 -19.26913547 -18.81101005 -19.87907587
+ [7186] -19.85418674 -18.89956862 -17.95760507 -17.91150638 -17.91150638
+ [7191] -17.57645687 -15.87027010 -14.59083383 -16.08034170 -15.98154598
+ [7196] -17.68038310 -18.01626926 -19.06788305 -17.33061005 -16.85177803
+ [7201] -18.90904698 -17.05678204 -16.28662312 -16.20390144 -17.32165466
+ [7206] -17.08294731 -16.88310710 -18.45836893 -18.22838051 -17.58703672
+ [7211] -15.80405640 -15.85628225 -14.65116649 -13.70923820 -13.05189556
+ [7216] -12.71017331 -13.03998356 -12.84091569 -11.43333424 -10.68258104
+ [7221]  -9.30660716  -8.89560488  -9.76342012  -8.97197165  -8.97197165
+ [7226]  -9.34149389  -9.80879169 -10.60913278 -10.45305241 -11.25927989
+ [7231]  -9.44858765  -8.40153200  -8.40153200  -8.78514131  -9.92502411
+ [7236]  -9.41734034  -8.90798205  -9.18786715  -8.55021161  -8.26005950
+ [7241]  -6.83793959  -8.07954929  -8.38784832  -7.51524651  -5.76280775
+ [7246]  -6.47460173  -6.21697964  -5.42524517  -6.75490695  -6.37310558
+ [7251]  -6.29525437  -5.87552272  -5.52195383  -5.33634783  -3.76983473
+ [7256]  -3.02174865  -3.77924677  -2.17296587  -2.17296587  -2.17296587
+ [7261]  -2.05035705  -2.06128463  -2.06128463  -2.06128463  -1.85556066
+ [7266]  -1.85556066  -1.00553731  -1.71918422  -1.71918422  -1.71918422
+ [7271]  -0.85231015  -1.46704091  -1.46704091  -1.46704091  -1.64147329
+ [7276]  -1.64147329  -1.10690762   0.09930499   0.09930499   0.09930499
+ [7281]   0.25420681   0.43425315   1.48054918   1.48054918   1.48054918
+ [7286]   1.48054918   1.31575573   0.51874608   0.58295726   1.13967786
+ [7291]   1.13967786   0.53956924   0.53956924   0.53956924   0.53956924
+ [7296]   0.59515793   0.59515793   0.59515793   0.59515793   0.40354030
+ [7301]   1.32435480   0.71666803   1.63263748   1.50283940   1.48654894
+ [7306]  -0.20679484  -0.20679484   0.04097281   0.04097281   0.04097281
+ [7311]   0.04097281   0.05525076   0.05525076   0.05525076   0.05525076
+ [7316]   0.05525076  -0.24476093  -0.96405173  -1.86633854  -1.78938309
+ [7321]  -1.78938309  -3.08995824  -3.08995824  -3.08995824  -3.86699633
+ [7326]  -2.77824370  -3.95979332  -2.29385534  -2.29385534  -2.29385534
+ [7331]  -2.68039054  -2.52960984  -2.52960984  -2.92503606  -2.92503606
+ [7336]  -2.92503606  -3.92338644  -4.32682713  -6.11790674  -5.77614741
+ [7341]  -5.06123707  -5.06123707  -5.96041697  -5.38934825  -5.84395658
+ [7346]  -6.62144854  -7.43400988  -9.33535235 -10.64902965 -11.04508600
+ [7351] -10.39691200 -10.65078890 -10.49341970 -11.42573868 -11.42573868
+ [7356] -12.70955621 -10.22877606 -10.05170241  -9.03005927  -7.00934424
+ [7361]  -7.00934424  -8.85158105 -10.15509017  -9.81131104  -8.14284791
+ [7366]  -8.63148269  -7.92136187  -8.60857534  -8.60857534  -7.59777612
+ [7371]  -7.60301809  -6.88713948  -7.52576153  -9.53690446  -8.74744984
+ [7376] -10.56442909  -8.21779108  -8.21779108  -7.05620932  -6.82676511
+ [7381]  -8.87636108  -7.29406002  -7.33576511  -8.07806645  -8.53152724
+ [7386] -10.54995816 -10.54995816 -11.26024815 -11.65966980 -11.65966980
+ [7391] -14.02513253 -14.02513253 -14.05432826 -13.70391390 -13.02420101
+ [7396] -12.96073873 -12.95307595 -14.05998690 -13.37570696 -13.85660533
+ [7401] -13.53048034 -14.60384687 -14.81794041 -12.39274736 -12.39274736
+ [7406] -12.53078207 -12.18460745 -11.81875455 -12.31984972 -13.71505159
+ [7411] -12.93580747 -11.04678845  -8.91229677  -9.39932650  -9.83859262
+ [7416] -11.38651353 -12.43091403 -12.62199658 -12.54630354 -11.10298869
+ [7421] -11.42886203 -13.31324410 -13.34727177 -12.72088742 -15.51435479
+ [7426] -16.99796489 -16.58108487 -15.07770473 -13.52766336 -13.96246414
+ [7431] -13.18752996 -11.83349161 -11.02881655 -10.36661991 -10.36661991
+ [7436]  -9.34965581  -9.21439379 -10.10937469 -10.00086419  -8.00639920
+ [7441]  -6.45740434  -8.56112944  -8.72105627  -9.90564410  -9.95851893
+ [7446] -10.56132731 -10.30456321  -8.96321802  -7.65294373  -7.04513378
+ [7451]  -6.91149686  -7.63144130  -7.63724286  -9.05937157  -9.80066101
+ [7456]  -7.96301608  -9.87771314  -9.34446924 -10.70505342  -9.65603725
+ [7461] -10.80501203 -10.03380854  -9.58367742 -10.63833257 -11.12291202
+ [7466] -11.47132092 -11.30484970 -12.47979065 -11.87706605 -12.40236440
+ [7471] -12.43967626 -14.57466323 -12.81243319 -13.07865902 -13.13481683
+ [7476] -10.80322892  -9.99492379  -9.17038423  -8.98440285  -8.98440285
+ [7481]  -6.63066821  -8.36105844  -8.33722192  -9.65888256  -9.21091089
+ [7486] -10.24867910 -10.98870591 -10.98870591 -12.19117012 -11.92579280
+ [7491] -11.39640559 -12.09185811 -11.90358177 -14.06287219 -13.90358615
+ [7496] -13.76972180 -11.71044463 -10.99878961 -10.75312902 -12.10682058
+ [7501] -13.12632364 -12.51806351 -12.19703910 -11.72545256 -12.26920331
+ [7506] -12.86031820 -15.37176998 -13.63268207 -13.28469699 -15.55134727
+ [7511] -14.98042763 -14.92590224 -14.28059761 -14.86502305 -15.30181210
+ [7516] -16.93668461 -16.93668461 -17.74176444 -18.46994216 -17.86807573
+ [7521] -18.59145013 -18.59145013 -18.52819916 -19.03256741 -17.94203389
+ [7526] -17.94203389 -19.16592082 -18.54264894 -19.44740066 -19.84091432
+ [7531] -19.61379403 -20.03269454 -21.10997475 -21.28898251 -21.35360284
+ [7536] -22.62392714 -22.61129178 -21.41066242 -23.13449521 -24.40861323
+ [7541] -25.05404493 -24.73869438 -24.73869438 -24.41339547 -24.48361494
+ [7546] -24.35408283 -24.14441845 -24.12863779 -24.78002620 -22.52836520
+ [7551] -22.52297122 -21.34713504 -21.19341435 -21.69354634 -21.47924551
+ [7556] -22.68570191 -22.41484569 -22.18461629 -20.93253829 -19.85602857
+ [7561] -20.46472562 -19.85777484 -20.55298470 -20.55298470 -20.21595344
+ [7566] -19.94464530 -19.94464530 -19.77442878 -20.89181916 -21.83833407
+ [7571] -20.73940488 -20.81928081 -20.19796609 -20.97231509 -21.33343083
+ [7576] -21.56574969 -21.74667359 -22.59438237 -22.96936233 -23.18939690
+ [7581] -23.66070547 -23.76096272 -23.49096404 -24.04794466 -24.76310953
+ [7586] -25.97444782 -25.22630097 -25.49835231 -27.60815318 -26.95713129
+ [7591] -26.21716302 -25.73778422 -26.16814051 -25.91027381 -25.40027711
+ [7596] -25.35485205 -24.69542447 -25.01614794 -25.42412084 -25.14326365
+ [7601] -25.74900863 -26.34620557 -28.12109880 -28.33866153 -29.79273864
+ [7606] -29.25364899 -28.01961056 -28.37578899 -28.83385786 -26.94181963
+ [7611] -26.87750633 -26.99720058 -26.94093523 -27.22109367 -27.48853300
+ [7616] -26.78880738 -25.62487856 -25.78757780 -26.39400666 -27.98892113
+ [7621] -27.83774353 -27.19792356 -25.39203515 -25.50451305 -25.35259221
+ [7626] -23.42196372 -21.92127485 -21.63740264 -22.62195219 -23.51738529
+ [7631] -22.66598637 -23.97186949 -23.88921442 -22.13685682 -22.34394574
+ [7636] -24.02448692 -24.02448692 -25.42346397 -23.73334872 -23.76021459
+ [7641] -23.76021459 -23.78195834 -23.82507760 -24.29748502 -23.15154371
+ [7646] -22.96422582 -23.83024374 -22.32851149 -22.00061016 -21.74785153
+ [7651] -20.63119469 -21.21316942 -20.43771024 -22.33759859 -19.94306175
+ [7656] -18.95611818 -19.85883637 -18.74783005 -20.85308804 -21.46062782
+ [7661] -22.08482240 -21.61109291 -23.10830406 -24.09701628 -24.10741742
+ [7666] -23.77631996 -24.63479416 -25.03160847 -22.83737528 -22.55107505
+ [7671] -24.91289582 -25.26569109 -23.14378100 -24.56878767 -24.77504651
+ [7676] -25.78438360 -25.73876024 -25.95190127 -26.36659601 -27.70042665
+ [7681] -27.07294274 -25.99674427 -26.25358489 -26.78386891 -25.59958977
+ [7686] -25.97251134 -25.32950825 -25.84153708 -25.73685012 -25.04743158
+ [7691] -25.86024339 -26.69063218 -25.46921491 -26.58968461 -24.40083218
+ [7696] -23.77860893 -23.41355816 -24.77397245 -27.02836051 -26.81854162
+ [7701] -27.83854100 -27.89658677 -27.58605715 -27.86235712 -26.19381552
+ [7706] -25.43296263 -26.90623902 -25.41822258 -24.07249080 -25.75116893
+ [7711] -27.04851189 -26.24872612 -26.08644174 -25.36169689 -24.74600272
+ [7716] -25.89022804 -26.80199304 -26.08964288 -26.51882503 -26.73114961
+ [7721] -29.29301896 -30.23598265 -30.29127980 -29.48638102 -29.10395359
+ [7726] -27.99274951 -27.60142254 -29.20730265 -27.99959947 -27.09801208
+ [7731] -27.04295724 -26.69198783 -26.77310377 -27.04013248 -26.70420869
+ [7736] -26.31003646 -26.04733633 -25.72609361 -26.17847818 -26.84490392
+ [7741] -26.89603011 -26.51971220 -25.98010250 -26.17564815 -27.49743605
+ [7746] -27.73465049 -27.03051483 -25.38355125 -24.61587919 -25.69815017
+ [7751] -26.19040669 -25.14101757 -24.81181873 -24.40838136 -25.03538332
+ [7756] -26.55071644 -27.89755454 -29.18774451 -28.78621390 -31.07580593
+ [7761] -33.09151473 -34.37380120 -33.24980517 -34.55449034 -34.10452549
+ [7766] -31.49822171 -30.10460551 -30.51660799 -29.84032995 -29.17559851
+ [7771] -27.38982250 -25.88956826 -27.24394966 -27.85082853 -26.31392913
+ [7776] -24.99182301 -26.09709357 -26.74601986 -25.99365626 -25.50840085
+ [7781] -24.08956905 -23.29313832 -23.33171348 -22.39337606 -22.83642807
+ [7786] -22.92331615 -23.16372955 -23.65939135 -24.61254219 -25.19177812
+ [7791] -25.19177812 -25.36859127 -24.72759103 -23.93405976 -22.54983140
+ [7796] -22.54983140 -19.41714120 -19.30203350 -20.55004365 -20.58409951
+ [7801] -21.44941059 -22.09003258 -20.95002459 -21.60514409 -19.57195185
+ [7806] -20.57736488 -20.19037997 -20.35569351 -20.48937490 -21.29934202
+ [7811] -19.47570632 -19.93149163 -19.89888877 -19.10264754 -19.16580421
+ [7816] -17.95313707 -17.99238118 -19.41826836 -19.34438031 -17.74820335
+ [7821] -14.82417846 -16.26312089 -16.79735938 -17.50163695 -17.66320973
+ [7826] -16.46550337 -17.13060060 -17.46429938 -17.84236337 -18.63011065
+ [7831] -16.86161409 -17.49349595 -17.49349595 -14.97748379 -15.74568880
+ [7836] -14.82245811 -16.76540163 -17.38379844 -16.87378317 -16.44414818
+ [7841] -15.52098619 -16.23233739 -17.83004560 -17.67346072 -17.67346072
+ [7846] -18.74627092 -18.51563833 -19.39639619 -19.62722625 -19.90036424
+ [7851] -19.28946371 -16.04151109 -16.64523601 -18.07665056 -19.45914359
+ [7856] -19.90558223 -20.74732692 -21.23024771 -22.25202610 -23.33997705
+ [7861] -24.80782971 -24.83301007 -24.61450613 -23.14038981 -25.40229882
+ [7866] -25.61806633 -26.15692580 -28.19411211 -27.50363627 -27.50363627
+ [7871] -29.73274447 -30.89222379 -31.26897166 -32.59959512 -32.40500083
+ [7876] -32.85859944 -35.33235089 -34.66063262 -34.22554852 -34.77066831
+ [7881] -36.22554573 -35.43472007 -34.38182252 -34.34249111 -34.00470549
+ [7886] -34.07781346 -36.34075458 -35.75856175 -36.96879360 -35.82085102
+ [7891] -35.02847569 -34.37569140 -34.97758190 -35.32578926 -34.78048807
+ [7896] -33.87793935 -33.30829497 -31.47566982 -33.23970392 -33.35873255
+ [7901] -33.34002305 -34.05438576 -33.63592711 -33.63592711 -34.32270909
+ [7906] -34.85171170 -36.36393179 -36.79223571 -35.55929382 -35.22348283
+ [7911] -35.70790749 -36.43700765 -37.72447907 -39.54107655 -37.38132946
+ [7916] -37.62507473 -37.28406066 -37.35825027 -35.30715040 -35.96370940
+ [7921] -36.48211528 -35.67207424 -36.31620358 -38.02592524 -39.52553480
+ [7926] -39.58169193 -40.13622219 -40.49662147 -41.17591977 -40.62948487
+ [7931] -39.38547993 -39.66046791 -37.04049926 -37.82023242 -37.82023242
+ [7936] -36.78020196 -37.23623406 -37.38229777 -37.38229777 -37.19292919
+ [7941] -35.41141816 -34.69879994 -33.88862133 -33.20356041 -33.50271591
+ [7946] -32.10011234 -32.55590451 -31.78252770 -30.08102889 -30.77228531
+ [7951] -31.00466500 -30.94155012 -31.06158546 -31.80727133 -32.04257005
+ [7956] -33.31463558 -32.19640496 -32.37340159 -32.77854216 -31.93389334
+ [7961] -30.39911215 -31.89584951 -30.58875632 -30.36703556 -30.93528346
+ [7966] -30.83656239 -32.32509053 -33.43545572 -31.66836991 -30.81514381
+ [7971] -30.64105326 -30.35436445 -31.38791361 -31.74128157 -31.70966358
+ [7976] -29.21056395 -30.51943379 -30.32763133 -29.50924439 -29.46709373
+ [7981] -30.82909777 -29.74484877 -29.83502537 -28.20791916 -27.88204889
+ [7986] -27.94612172 -28.79797010 -28.39259798 -28.65501610 -29.06837210
+ [7991] -29.06837210 -29.73192551 -29.17774894 -29.11413586 -28.82324145
+ [7996] -28.76349446 -27.75594603 -28.57484951 -31.06297131 -31.81633253
+ [8001] -32.01480396 -30.62113903 -31.21642192 -31.30898048 -29.94966773
+ [8006] -30.40966909 -30.10941307 -30.85998624 -33.19146062 -33.71844736
+ [8011] -33.31537693 -33.83506532 -34.49377798 -34.43787585 -33.12756488
+ [8016] -32.74982314 -32.91701101 -31.63264149 -32.48667802 -33.30790023
+ [8021] -33.29311126 -33.29311126 -32.02987295 -31.72655052 -32.59238780
+ [8026] -31.26060917 -31.44583977 -29.86738616 -29.82008178 -31.35453496
+ [8031] -32.07392767 -32.43651687 -32.30716866 -31.95309691 -34.19541228
+ [8036] -32.26455670 -32.06281837 -32.42811238 -32.03737085 -34.61142821
+ [8041] -34.97081264 -34.52251539 -33.44557676 -33.44557676 -34.46023840
+ [8046] -35.63949202 -35.97562073 -36.81561556 -37.59784256 -38.36378633
+ [8051] -37.25211341 -38.08904461 -39.27147253 -37.58231285 -38.23881807
+ [8056] -38.71079072 -38.76231741 -39.34294248 -40.01669416 -38.41677585
+ [8061] -39.60898261 -40.15781586 -40.35383649 -39.40030482 -39.74974688
+ [8066] -39.78235809 -39.14079000 -39.02929062 -41.12161221 -40.38901119
+ [8071] -39.90028368 -40.17512911 -39.81959327 -39.95776301 -39.96392974
+ [8076] -40.55721945 -41.60704380 -40.81294873 -41.42116982 -42.05427683
+ [8081] -42.75137497 -43.28913609 -44.20372827 -42.46053867 -41.73337899
+ [8086] -40.54216589 -42.36141073 -41.79531037 -43.17620406 -43.05593417
+ [8091] -42.34858794 -42.43969302 -41.74667690 -41.72298854 -39.68638986
+ [8096] -38.93369734 -40.31420632 -41.02014255 -42.40574346 -41.30091526
+ [8101] -40.10445434 -40.21370672 -41.75457518 -40.39667837 -40.49433035
+ [8106] -40.91391862 -42.29196740 -42.97671739 -43.85394366 -43.96883085
+ [8111] -45.71801473 -44.40138532 -44.66383688 -46.05921350 -46.21207957
+ [8116] -45.55349652 -45.89282270 -45.15461860 -45.26376245 -44.76084241
+ [8121] -44.38255920 -44.89090566 -44.78188300 -45.50803146 -46.87129885
+ [8126] -47.80395780 -48.84978541 -49.59245402 -50.04841927 -50.34905608
+ [8131] -50.11891560 -50.33389498 -51.02901485 -48.99289502 -48.28825230
+ [8136] -49.08216811 -49.84027883 -50.19894285 -50.28810795 -50.47395281
+ [8141] -49.63936679 -49.64753769 -48.05999879 -49.19178910 -47.99498568
+ [8146] -47.40895859 -47.47998223 -47.02934901 -46.58040470 -46.46038940
+ [8151] -47.23729685 -46.94589287 -45.97374511 -45.93274700 -48.23363660
+ [8156] -49.32019963 -49.65397123 -50.87291121 -49.73748954 -49.46392223
+ [8161] -50.44153265 -51.24006453 -49.63527661 -48.84107808 -47.56511110
+ [8166] -49.08718903 -50.17976797 -49.21496994 -48.19447512 -48.26480507
+ [8171] -48.59575525 -49.03542377 -50.10712184 -51.07672903 -50.85321839
+ [8176] -51.58768244 -51.05851597 -51.83318763 -52.44426015 -51.80608024
+ [8181] -52.22295285 -51.17614728 -51.78270237 -51.46514476 -51.20655777
+ [8186] -50.05390712 -50.23507599 -51.14281735 -51.13689124 -51.27215667
+ [8191] -50.89055510 -51.66120888 -52.17386311 -52.16635683 -51.71532653
+ [8196] -51.34268077 -51.39801311 -50.94117791 -51.00754640 -49.09788226
+ [8201] -49.79539141 -49.46997355 -50.32949853 -51.19207962 -52.05726249
+ [8206] -52.26091034 -52.51657236 -53.18974011 -54.17121426 -54.22830781
+ [8211] -55.57107405 -54.93708340 -54.97269233 -54.21292542 -55.45996353
+ [8216] -56.17201688 -56.81584688 -58.51904082 -59.75214612 -60.09010086
+ [8221] -58.70205225 -58.52371263 -58.54671193 -57.48231860 -57.56564711
+ [8226] -55.98299717 -57.57488515 -58.71217263 -57.43410834 -58.50122763
+ [8231] -58.97919797 -60.35325016 -59.72880787 -60.18375342 -60.09070508
+ [8236] -57.42033815 -55.17583654 -54.11780025 -52.53979264 -53.10795126
+ [8241] -53.29474936 -52.28193421 -52.09918337 -49.86954266 -49.86954266
+ [8246] -50.83411724 -51.63436213 -51.40147622 -50.96461279 -51.59248850
+ [8251] -51.69476161 -50.57365434 -52.55321566 -52.50340918 -52.15519742
+ [8256] -52.25341810 -53.39969584 -52.84343507 -53.36964507 -54.60897886
+ [8261] -55.39170929 -56.48381065 -57.09186133 -55.67768784 -56.66325299
+ [8266] -57.04142582 -55.86116887 -54.61500103 -52.37768239 -52.61614196
+ [8271] -53.11889681 -53.42901859 -53.69714456 -53.97163156 -54.38628665
+ [8276] -53.78887725 -54.23237863 -53.40860619 -54.06782042 -55.99765878
+ [8281] -54.96879047 -55.32649214 -55.03697903 -53.91677296 -54.19700807
+ [8286] -53.76492074 -53.13891360 -55.46249663 -54.08497707 -53.66073420
+ [8291] -53.66073420 -54.63412834 -55.01710364 -53.17321455 -51.24100221
+ [8296] -53.04413298 -51.34914245 -50.76517391 -50.72117478 -51.12725073
+ [8301] -52.19385040 -51.93391744 -51.84883055 -52.16671684 -52.73472002
+ [8306] -52.91432484 -53.21244714 -51.58568935 -53.44179574 -54.59049341
+ [8311] -54.10833259 -55.05749608 -55.41141246 -56.29501087 -56.56942809
+ [8316] -57.05718087 -56.99540934 -56.28870994 -54.93179573 -55.56358984
+ [8321] -55.25181928 -53.67436189 -53.83504103 -54.09752595 -52.73106455
+ [8326] -51.37044754 -50.01285542 -49.14125903 -48.73292029 -48.38908233
+ [8331] -49.33578343 -48.41581383 -48.23336339 -49.97892952 -51.18488649
+ [8336] -50.83181974 -50.84884496 -52.18925569 -53.13581468 -50.42072882
+ [8341] -51.23465884 -51.20565655 -52.97906599 -54.15321442 -54.81585833
+ [8346] -53.83057385 -53.63672796 -55.50393109 -55.92287284 -56.24750629
+ [8351] -56.77665141 -57.40472120 -55.80764583 -56.14180421 -55.51747123
+ [8356] -55.44155508 -55.36215844 -55.38853632 -55.21973069 -56.28553145
+ [8361] -56.52009834 -57.02503568 -56.21546081 -56.27577706 -55.14566848
+ [8366] -54.76303670 -55.94568951 -56.89475606 -57.23189612 -56.34893831
+ [8371] -57.70573144 -58.64546334 -57.94408811 -58.48522745 -57.55294801
+ [8376] -59.36378293 -59.71265689 -59.13005559 -58.05938321 -57.53375141
+ [8381] -58.05612419 -56.69499992 -56.53438126 -56.04466563 -55.54777465
+ [8386] -56.16491124 -55.26446042 -55.01035088 -55.22985761 -54.81862064
+ [8391] -56.51134085 -55.60824430 -54.85531855 -55.07499836 -54.94725360
+ [8396] -53.84526647 -53.29056998 -52.73273968 -53.28555552 -53.19015874
+ [8401] -54.29154887 -53.81608095 -53.17019513 -53.73871976 -54.93776687
+ [8406] -55.55728343 -55.93826850 -56.85104077 -55.97189195 -56.83017073
+ [8411] -56.54587348 -56.98991233 -56.26292760 -56.01244687 -54.47487653
+ [8416] -54.06060230 -54.17202176 -54.09778353 -53.15436903 -52.32125854
+ [8421] -52.15730571 -51.78122888 -51.75864032 -51.84626993 -53.09413751
+ [8426] -53.81830315 -52.63790258 -52.24659273 -50.98944624 -49.55423160
+ [8431] -52.33833418 -53.31057101 -52.88695679 -53.14033261 -53.18895470
+ [8436] -54.21720141 -54.22397507 -52.25819759 -52.27959548 -50.06750667
+ [8441] -49.17940670 -48.14640134 -49.37306348 -48.78937604 -49.15263100
+ [8446] -48.38559696 -50.77818612 -52.06139543 -50.98836594 -51.61751990
+ [8451] -50.91476470 -50.52523587 -51.47132632 -50.48688390 -52.62792177
+ [8456] -52.59056695 -51.35678223 -52.58755652 -52.64707357 -51.43820313
+ [8461] -51.16795583 -52.41910944 -52.16059192 -54.00754982 -55.34307006
+ [8466] -55.15248588 -55.39715137 -56.42615264 -58.75271970 -57.66520543
+ [8471] -59.04131793 -58.51870017 -58.51870017 -58.45524378 -57.73873039
+ [8476] -57.29221679 -57.44047887 -55.83752035 -54.90351922 -55.72508766
+ [8481] -56.08856249 -56.08856249 -54.09033967 -54.51913413 -53.45726427
+ [8486] -53.78656831 -52.96172089 -53.72290366 -53.40737013 -52.84478850
+ [8491] -51.28259845 -52.01723881 -51.29988194 -50.77404601 -52.38714820
+ [8496] -53.33652990 -53.97985144 -55.67096327 -55.55055325 -56.25304157
+ [8501] -56.50619608 -56.76612761 -58.48707258 -59.48413126 -60.91648665
+ [8506] -61.54425352 -61.36032162 -62.73277720 -62.78459522 -62.62101018
+ [8511] -63.16161746 -63.55688055 -63.44185842 -62.78726864 -64.45029642
+ [8516] -65.91915580 -66.67121850 -66.15299831 -65.17650654 -63.32223994
+ [8521] -63.85184101 -64.32070721 -64.29755784 -63.49008199 -63.76642683
+ [8526] -63.09536745 -64.78574781 -64.39006259 -63.88256037 -63.15160779
+ [8531] -64.94477136 -65.57983716 -66.56099960 -68.42461328 -68.38056291
+ [8536] -66.99981370 -68.60542396 -69.74591740 -69.36730384 -67.81516431
+ [8541] -68.72035175 -68.72556994 -66.83645418 -66.10927559 -66.60449816
+ [8546] -67.78082088 -67.87896304 -67.74556523 -69.36980843 -69.50444187
+ [8551] -69.38760049 -69.88212421 -66.86018581 -68.61253995 -67.90315684
+ [8556] -68.05093576 -67.23109784 -65.31687957 -65.70001328 -64.60924408
+ [8561] -65.39536351 -65.40001678 -65.88107882 -66.81684139 -67.49943473
+ [8566] -67.23233355 -67.67593532 -67.05948128 -68.41643697 -68.82978202
+ [8571] -69.16476338 -69.11495875 -69.56444803 -68.01853155 -66.88831247
+ [8576] -67.90931874 -68.99568889 -68.73602455 -68.95298894 -69.54813694
+ [8581] -68.87537284 -66.93541444 -67.82351640 -67.80261842 -67.84446232
+ [8586] -68.60548419 -67.53929597 -66.06258126 -64.63577154 -64.06767284
+ [8591] -62.37028557 -60.50080426 -60.73906705 -61.11540890 -60.86038490
+ [8596] -60.32787831 -59.63707391 -60.30473762 -59.80082026 -59.84467815
+ [8601] -58.00377967 -58.00377967 -57.74256451 -58.53539678 -58.01725582
+ [8606] -58.33128496 -57.83416097 -58.04938928 -56.92201206 -55.03634233
+ [8611] -55.06028209 -54.62235221 -53.82047948 -52.44761584 -52.27350691
+ [8616] -52.55949371 -52.06235652 -52.58253039 -53.46182867 -54.79514436
+ [8621] -55.23300830 -55.98021970 -57.51927317 -58.34764483 -57.47342044
+ [8626] -57.93291518 -59.09760451 -58.41709887 -60.59469126 -61.09080598
+ [8631] -60.82783059 -59.25713612 -58.84457108 -58.89567786 -59.87018421
+ [8636] -57.58407911 -57.66484141 -58.57981623 -58.92205950 -59.53060707
+ [8641] -58.54462630 -57.47761174 -57.41883002 -59.45572306 -61.01436863
+ [8646] -61.67136502 -61.25602857 -60.49241103 -59.64835467 -58.92269628
+ [8651] -59.03282005 -60.39570292 -60.37248583 -60.48398157 -59.15327350
+ [8656] -58.97546937 -60.15342928 -60.38223277 -59.53238641 -58.17234540
+ [8661] -59.05379357 -60.05339885 -58.97112459 -59.07775491 -57.25023831
+ [8666] -56.62289815 -57.54071181 -57.31425810 -56.85278907 -58.83712162
+ [8671] -57.76531319 -57.15202098 -57.10884586 -54.65200958 -53.03385750
+ [8676] -52.73787318 -53.67614202 -53.78139694 -53.89081908 -54.40620697
+ [8681] -52.34364918 -51.03463999 -50.81352087 -51.53557940 -50.84765014
+ [8686] -49.79674694 -47.70345800 -46.60783775 -47.18437975 -48.65641358
+ [8691] -47.72934568 -46.26040800 -45.56355317 -44.32220239 -45.83258689
+ [8696] -46.34643717 -46.77842670 -47.75295287 -48.89137906 -48.83478641
+ [8701] -48.55504150 -48.19750634 -49.12945132 -47.77043503 -48.91534097
+ [8706] -47.58500480 -49.64712931 -49.67321439 -48.71157370 -49.14663422
+ [8711] -47.51534250 -48.03168187 -47.69574493 -46.95029980 -46.76329737
+ [8716] -48.05672819 -46.50516338 -46.35695337 -44.90482607 -46.32169113
+ [8721] -45.75136133 -44.20273701 -42.37094467 -42.29221510 -43.12906710
+ [8726] -43.64906441 -44.02903327 -41.71080701 -42.45017638 -43.25483390
+ [8731] -42.83397614 -43.07428376 -42.85381652 -42.41690194 -42.81008609
+ [8736] -42.63250105 -43.39464479 -42.82659291 -42.82659291 -43.18644837
+ [8741] -43.83918766 -45.19052406 -44.92447244 -43.30314870 -43.66663331
+ [8746] -43.34437083 -44.68160154 -43.76430227 -44.16839660 -44.34524207
+ [8751] -44.30069568 -44.34585376 -44.88876335 -43.88651717 -44.14107599
+ [8756] -45.57450362 -45.02045863 -46.27886465 -43.58204632 -41.82396753
+ [8761] -42.06622888 -42.37669996 -42.03526988 -42.05498247 -41.87823881
+ [8766] -41.52382184 -40.66274020 -40.53212691 -39.57016361 -38.88154926
+ [8771] -38.39421312 -38.57181876 -39.27286335 -39.51363345 -39.92856345
+ [8776] -39.17379290 -39.17379290 -39.53264091 -40.63152043 -41.79348928
+ [8781] -39.89492824 -38.56327376 -38.52434313 -39.18008591 -38.77330607
+ [8786] -39.03142107 -40.15308992 -40.37165780 -40.87814125 -39.85155556
+ [8791] -38.54836280 -39.08274248 -39.30606059 -39.92920513 -39.97300866
+ [8796] -38.95884670 -39.37822664 -38.63668190 -36.95650876 -36.38874061
+ [8801] -36.16013162 -35.80409435 -37.12673395 -36.09674434 -36.11020344
+ [8806] -35.16609449 -36.13018566 -35.99954304 -36.33381638 -35.78933166
+ [8811] -35.35628127 -34.65846713 -34.35614857 -33.30843011 -34.09618046
+ [8816] -32.94005215 -32.91156282 -31.93036967 -32.43567054 -30.93983949
+ [8821] -31.48149138 -31.48149138 -32.85042890 -34.44972945 -36.18699561
+ [8826] -36.39269143 -36.45556040 -37.94422387 -37.64516140 -37.70140994
+ [8831] -37.78902690 -36.09655228 -37.24789825 -36.87685765 -38.34510149
+ [8836] -39.00522346 -39.89109092 -39.47177744 -39.00792083 -40.12256108
+ [8841] -41.55507490 -40.62593084 -40.84750125 -40.32725090 -40.12606859
+ [8846] -40.60635263 -41.15420196 -41.65953277 -43.87854825 -42.53677627
+ [8851] -42.82498282 -43.08141592 -42.95950509 -43.68553984 -43.38541791
+ [8856] -45.02027245 -45.73526627 -46.63589411 -46.68488337 -47.41374130
+ [8861] -48.74750086 -48.32814350 -45.49273044 -45.25719932 -47.65130113
+ [8866] -49.04759189 -49.13611110 -49.17301470 -50.04369303 -51.14273443
+ [8871] -51.44175592 -52.94481841 -52.94481841 -53.28218029 -53.39679249
+ [8876] -53.63173331 -53.04898964 -53.28058062 -52.03523234 -52.46270205
+ [8881] -53.13331779 -52.88253573 -54.47636456 -54.47636456 -54.78732977
+ [8886] -56.81130262 -57.73808339 -56.31439530 -56.21254832 -57.05720017
+ [8891] -58.02101722 -58.99167626 -58.02170431 -57.60274184 -57.81456668
+ [8896] -57.40671459 -57.44525064 -56.74460255 -55.72178730 -53.79171746
+ [8901] -53.35450395 -54.03640980 -53.91347157 -54.18889274 -53.54654424
+ [8906] -54.24899909 -52.81148208 -51.32701729 -51.51025258 -49.79579743
+ [8911] -48.73559064 -48.51834670 -48.76402356 -48.16705924 -49.88091178
+ [8916] -49.87932719 -49.52125755 -49.50734806 -48.25927329 -48.32632309
+ [8921] -48.46832015 -48.36425725 -48.92124672 -48.91970868 -49.13652616
+ [8926] -49.31922414 -50.10747716 -50.87150821 -49.21556404 -48.73475110
+ [8931] -48.79002851 -49.43919603 -49.68219653 -50.05153554 -50.86421465
+ [8936] -52.58270217 -52.54263392 -52.43571323 -52.13965996 -50.72534870
+ [8941] -50.55944348 -50.80436180 -51.35254497 -51.70843999 -50.43884321
+ [8946] -50.05560267 -50.62234117 -51.81709644 -51.07554052 -50.97789486
+ [8951] -51.91838753 -51.58080235 -50.66282397 -51.38992521 -50.24073728
+ [8956] -51.38883842 -51.90231993 -52.51494594 -52.87013803 -51.83164765
+ [8961] -50.67352809 -50.72737380 -50.15534938 -50.60179875 -50.20002762
+ [8966] -50.20002762 -48.93701489 -48.52133518 -47.73143933 -47.58951460
+ [8971] -47.37524120 -47.27549192 -46.76066071 -47.86600704 -47.07426715
+ [8976] -46.82111958 -46.04975187 -45.57524988 -45.07661237 -44.16062279
+ [8981] -42.97603518 -41.83656525 -42.24618606 -41.72993990 -40.38257022
+ [8986] -40.10482889 -39.88494345 -38.74646913 -36.89465208 -37.07126364
+ [8991] -37.40328550 -36.11648576 -34.93102038 -34.93102038 -35.94818447
+ [8996] -36.90238974 -35.64493025 -36.38349322 -36.74255324 -35.60082034
+ [9001] -37.47452289 -36.96478572 -34.84969285 -34.96675119 -34.94985181
+ [9006] -34.99631913 -34.26914760 -35.17292695 -33.25117100 -33.91293803
+ [9011] -34.63255427 -33.51366292 -31.61811050 -31.03778155 -31.97410705
+ [9016] -32.18448672 -31.41512522 -31.76040910 -33.04300200 -32.32775103
+ [9021] -32.02331757 -31.40658769 -30.67385825 -28.88233502 -29.55584593
+ [9026] -29.52504759 -28.24588367 -27.98177610 -27.57969606 -27.76015364
+ [9031] -28.10416029 -29.54131388 -28.57990377 -29.16758595 -28.80137178
+ [9036] -28.09070011 -28.65538943 -29.49665459 -28.86697432 -27.90080083
+ [9041] -27.87634218 -28.30756796 -29.31530729 -30.31024298 -29.87929376
+ [9046] -29.87298031 -28.95495466 -27.98549764 -28.10517165 -27.98846458
+ [9051] -27.74863916 -27.63953334 -27.89244499 -27.99623254 -27.37594577
+ [9056] -29.17023747 -29.06033470 -27.19880987 -27.53130703 -28.37354080
+ [9061] -26.65564921 -25.59562331 -24.77375885 -25.44399697 -25.65505036
+ [9066] -26.31144061 -25.62468537 -25.62468537 -25.62468537 -26.80042416
+ [9071] -27.24919480 -27.46117704 -28.78252643 -27.53952940 -27.89771942
+ [9076] -27.13637200 -26.24158939 -26.64165890 -25.87276436 -26.48494649
+ [9081] -27.72197828 -27.88756762 -29.39491976 -27.73967381 -27.73967381
+ [9086] -27.28896594 -27.40667565 -25.57586062 -26.33487233 -26.28481833
+ [9091] -26.39992565 -26.77326817 -25.15926248 -25.15095460 -25.15095460
+ [9096] -24.08450957 -22.39159341 -23.16343022 -23.31102365 -23.03375669
+ [9101] -23.80058295 -23.47646186 -22.93891911 -22.37102124 -22.87707010
+ [9106] -22.87707010 -23.28916756 -22.06922761 -21.99266040 -22.64009738
+ [9111] -23.16973783 -25.08399843 -22.93107097 -22.28380323 -23.06065567
+ [9116] -24.55776321 -23.51506505 -23.80735385 -22.89644905 -23.62911841
+ [9121] -21.91564956 -21.91564956 -21.39558086 -21.79595547 -21.55901605
+ [9126] -21.70961556 -21.33828935 -19.65976800 -20.35610431 -19.59853357
+ [9131] -21.01988425 -20.40075684 -20.22702268 -18.93979080 -20.64376038
+ [9136] -18.70578374 -18.29581930 -16.22351519 -16.70436054 -18.64025822
+ [9141] -17.62533806 -16.71858429 -16.93579547 -18.39889372 -20.52871200
+ [9146] -22.05251805 -23.21927402 -24.58412643 -24.36177421 -23.64398902
+ [9151] -24.72486354 -23.93234615 -24.00060509 -25.52551748 -27.31040688
+ [9156] -27.47084356 -28.10893885 -27.22948070 -25.70278979 -23.68232672
+ [9161] -22.63874293 -23.11076725 -22.51204422 -23.35932247 -24.87019272
+ [9166] -24.51174754 -24.56525625 -24.92721008 -24.17247202 -24.66212962
+ [9171] -26.31788445 -26.31788445 -24.85434902 -25.75213408 -24.54138762
+ [9176] -23.43303108 -23.22817688 -24.24045035 -23.99424488 -22.67335402
+ [9181] -23.53767307 -24.40378410 -24.53267299 -24.00015412 -24.10095661
+ [9186] -23.71631110 -23.28355622 -22.44419859 -22.59926350 -22.36833160
+ [9191] -22.36833160 -20.00052308 -20.85332818 -21.37941687 -23.47204272
+ [9196] -24.48436863 -25.17553117 -24.85467508 -25.02041242 -26.51089146
+ [9201] -26.90992310 -27.39071702 -27.79621418 -27.42370032 -24.81998713
+ [9206] -24.00908079 -23.51148794 -23.99314032 -23.27734610 -21.68529602
+ [9211] -21.70745198 -21.87468405 -21.49170371 -22.17100682 -21.33404946
+ [9216] -21.13034998 -19.76051195 -19.76051195 -21.26967397 -20.92434312
+ [9221] -20.56024835 -21.24496963 -21.23808087 -21.65082027 -23.56951081
+ [9226] -23.00399210 -23.41763244 -24.77054312 -23.84293455 -23.84293455
+ [9231] -23.85588148 -22.96916582 -24.46898819 -25.06734152 -23.92016391
+ [9236] -23.63716948 -21.88211623 -21.26775151 -21.36257105 -21.96136112
+ [9241] -21.02889493 -21.26327958 -22.15812328 -22.01305006 -22.13017452
+ [9246] -20.99249025 -20.62299404 -19.90146613 -19.79999711 -21.37716047
+ [9251] -21.86509734 -21.49937181 -22.06705614 -21.37873706 -21.71744625
+ [9256] -21.03787210 -20.27599500 -21.61871212 -21.28574961 -20.70109913
+ [9261] -18.99841160 -17.62611924 -17.27520453 -15.95334005 -16.45153739
+ [9266] -15.94694875 -16.91459525 -18.26561828 -17.12475868 -16.69647640
+ [9271] -15.76086391 -16.14437461 -15.64998112 -15.45314556 -15.12932435
+ [9276] -13.76025085 -15.74618078 -16.03151743 -16.88320142 -16.61574614
+ [9281] -16.44639902 -16.57723267 -16.57723267 -15.80241426 -17.04586923
+ [9286] -17.04586923 -17.46177189 -17.81664926 -15.59270624 -16.45705698
+ [9291] -14.53896123 -15.11126646 -14.90522220 -14.19112856 -13.81090858
+ [9296] -14.76307685 -15.38123332 -15.47890634 -15.49059223 -15.82244548
+ [9301] -16.24571726 -17.02489667 -17.28468576 -15.82821366 -16.70067467
+ [9306] -16.89019701 -14.94081239 -17.05234589 -16.58306767 -15.59472695
+ [9311] -13.28144598 -14.95936179 -15.16140641 -13.97288962 -13.34729351
+ [9316] -13.21991074 -11.38112493  -9.84493280  -9.75959820  -9.07971934
+ [9321]  -7.57630335  -7.57630335  -8.63111259  -8.63111259  -8.19536331
+ [9326]  -9.10198630  -8.76220637  -8.44555364  -9.11649682  -9.54087043
+ [9331]  -9.80672815 -10.57057177 -11.83071014 -12.19429572 -12.64919510
+ [9336] -12.37545806 -12.92195961 -13.02394911 -12.98544495 -12.73069673
+ [9341] -12.95407404 -13.76447013 -14.35859402 -14.20964833 -14.03444116
+ [9346] -13.80257422 -12.91803220 -14.14253095 -13.39737908 -13.70489207
+ [9351] -13.70489207 -13.49988340 -13.43803609 -12.20207856 -12.39755628
+ [9356] -12.37965246 -12.81212815 -11.21988828 -10.07213314  -9.42805380
+ [9361]  -9.65945566 -10.20439617  -9.09943245  -8.49480189  -9.60617330
+ [9366]  -9.08520080  -9.49781777 -11.98648685 -15.14544223 -14.39872644
+ [9371] -13.68541853 -14.27118231 -14.53382156 -15.70889893 -16.34394645
+ [9376] -17.34588700 -16.60477665 -16.13927370 -15.13400221 -14.38188328
+ [9381] -15.35001384 -15.40960196 -15.36212140 -15.96209067 -15.21073715
+ [9386] -15.83686533 -16.18271487 -16.18271487 -16.03229030 -15.58528548
+ [9391] -16.95916682 -18.14765969 -19.36110381 -18.86865738 -19.15201333
+ [9396] -19.29193845 -19.08211577 -17.51528640 -16.93711656 -17.64639654
+ [9401] -19.55550067 -18.60533283 -18.60533283 -18.46213806 -17.25482257
+ [9406] -18.03038815 -16.03620274 -15.58303553 -15.84194931 -17.85760279
+ [9411] -18.10959849 -19.53413486 -21.29663616 -19.01474418 -18.37316538
+ [9416] -18.44955816 -17.78396953 -18.32847533 -20.95734747 -23.36511928
+ [9421] -24.25871828 -24.19419723 -23.65596597 -22.55618946 -21.53223322
+ [9426] -22.19639307 -20.41883205 -21.23655464 -21.23655464 -21.38254059
+ [9431] -19.69926818 -21.27749454 -21.72000546 -22.06936678 -19.92796353
+ [9436] -18.83543162 -17.87517470 -18.37022001 -19.96785620 -20.19919521
+ [9441] -20.24226622 -21.22193318 -22.19467262 -21.00999237 -22.90389888
+ [9446] -24.20238556 -22.75635786 -21.81757300 -21.90288549 -21.46821737
+ [9451] -20.61836877 -20.54715747 -20.70401028 -20.70401028 -20.95066988
+ [9456] -19.98305968 -19.44572402 -20.37261090 -23.11404330 -21.87526418
+ [9461] -19.66867278 -18.90096005 -19.02556232 -18.87475208 -20.75545269
+ [9466] -20.92449700 -20.67284736 -20.48992795 -19.83000667 -18.58826533
+ [9471] -18.42522950 -18.35328471 -17.11810489 -16.69764049 -17.61452127
+ [9476] -20.24091123 -18.81598757 -17.92407936 -18.17542836 -18.90761724
+ [9481] -18.82416003 -19.26570017 -19.74654853 -21.71522076 -22.79266769
+ [9486] -23.16085673 -23.86889388 -20.43805627 -20.30757616 -19.74176942
+ [9491] -21.45044702 -21.04132295 -21.29179676 -20.83675499 -21.23947737
+ [9496] -23.85551201 -24.49074471 -24.67151525 -24.10879845 -26.02593430
+ [9501] -26.64513119 -26.64513119 -28.10013080 -28.52500227 -28.10804966
+ [9506] -29.14913655 -28.68444189 -28.25540568 -28.66698911 -28.77434952
+ [9511] -29.40018429 -27.24794770 -26.92067146 -27.69634810 -27.18126618
+ [9516] -27.64238627 -26.61263591 -26.09120510 -26.67841344 -27.86939897
+ [9521] -29.98262663 -29.95372127 -29.97757031 -29.08889894 -29.02950822
+ [9526] -29.60452346 -30.55016298 -29.79495667 -29.47219698 -29.01881835
+ [9531] -30.42555862 -30.77765984 -30.40654487 -28.68922763 -29.32554319
+ [9536] -29.03165273 -29.78802911 -29.11378098 -29.11378098 -29.69208636
+ [9541] -28.47962152 -27.98313395 -25.00886435 -24.56274165 -23.95937365
+ [9546] -24.03015087 -23.75224285 -23.62577172 -23.39069829 -23.56026577
+ [9551] -23.85121931 -24.88512920 -25.06519571 -24.95651799 -25.66860770
+ [9556] -24.85896234 -27.27229240 -27.13868894 -26.78580274 -28.38082996
+ [9561] -28.55650991 -27.99487824 -27.96849604 -28.61786881 -27.93546887
+ [9566] -28.23609680 -27.57008493 -27.60662739 -28.25554811 -27.45298269
+ [9571] -26.55657171 -27.44061857 -29.57834916 -29.80381066 -28.83181869
+ [9576] -29.82867236 -28.94459801 -29.63103344 -29.34287983 -28.67017043
+ [9581] -28.02338848 -29.18464788 -28.63507610 -27.58661107 -27.58661107
+ [9586] -28.51762573 -28.05957032 -29.76832708 -29.13134115 -29.75799297
+ [9591] -29.28522420 -31.25537656 -31.68369251 -30.92565430 -30.85267272
+ [9596] -29.89523343 -29.42930487 -29.74832149 -29.79290593 -29.27406733
+ [9601] -29.77695001 -29.98369579 -30.89291852 -32.38071416 -31.47249797
+ [9606] -31.52004180 -32.53663759 -31.48833657 -31.28371573 -33.10616957
+ [9611] -33.54864104 -32.66169251 -32.91701934 -33.13318883 -32.97742565
+ [9616] -33.86974966 -32.96924268 -33.61143834 -34.08488394 -32.12934200
+ [9621] -33.16623386 -34.57094103 -34.62992758 -35.61368579 -36.33399190
+ [9626] -35.71783604 -36.62563379 -35.99939688 -36.73500360 -37.04824516
+ [9631] -36.13419432 -35.97268474 -36.60997399 -36.68487717 -38.16048685
+ [9636] -38.78696615 -39.24242159 -39.19777145 -41.73171401 -41.84756525
+ [9641] -43.23539538 -43.77222759 -43.04239418 -41.93777189 -41.94122653
+ [9646] -41.39561682 -39.81079535 -41.59841163 -40.03163548 -40.38653045
+ [9651] -40.58394451 -41.29568101 -43.15284406 -42.52094964 -44.37895860
+ [9656] -44.80496070 -43.63158755 -44.18658342 -43.16678285 -40.79071720
+ [9661] -39.63392616 -40.09495182 -40.03413791 -37.98095328 -37.20794269
+ [9666] -38.05927706 -38.83542650 -39.40302883 -39.08920951 -40.46659180
+ [9671] -40.68745337 -39.78412731 -39.94009258 -40.31212495 -40.31212495
+ [9676] -40.40310333 -41.46480986 -40.90187661 -40.56887776 -40.20246303
+ [9681] -40.37462521 -37.59856250 -38.93666704 -40.69359842 -40.63188864
+ [9686] -39.78217465 -39.42146026 -39.17076426 -40.05638272 -40.60176093
+ [9691] -38.93260470 -39.43292820 -39.34017110 -41.11328996 -41.72577988
+ [9696] -42.70491569 -42.83755113 -43.36092308 -45.00798055 -46.17020393
+ [9701] -44.17417373 -44.13251895 -42.68456103 -42.11539586 -42.54739633
+ [9706] -42.81928686 -42.35819744 -41.95562758 -40.99102345 -40.60416491
+ [9711] -40.43087611 -41.81260798 -40.23098358 -41.65824073 -41.65824073
+ [9716] -42.06130663 -43.64022621 -42.64080815 -43.18575195 -42.00186779
+ [9721] -42.82596235 -42.56070322 -42.60771286 -41.37769570 -41.56160290
+ [9726] -43.36395232 -42.81707551 -43.99787937 -44.95351880 -45.29297447
+ [9731] -45.14222808 -44.32644680 -44.63274890 -45.26101039 -45.16639227
+ [9736] -44.37776870 -44.65485718 -44.59143801 -44.17164009 -44.90638174
+ [9741] -45.23820418 -44.71206272 -43.32380647 -43.32380647 -44.18501760
+ [9746] -44.77873431 -44.08447232 -43.57282804 -45.07925888 -43.32368693
+ [9751] -43.70836618 -43.04091168 -43.33952721 -43.45699661 -44.19220874
+ [9756] -45.27829049 -45.75608128 -45.32088116 -45.88541894 -46.11925391
+ [9761] -44.85341902 -45.72249847 -47.97841873 -47.13115919 -47.71430249
+ [9766] -46.87558388 -45.73626913 -45.57127679 -45.18958470 -44.57633539
+ [9771] -43.88377963 -44.67809787 -44.88872739 -45.21011241 -43.73794587
+ [9776] -43.25249343 -44.87841898 -46.09796200 -44.47407515 -45.46390520
+ [9781] -45.06272874 -45.64168808 -46.35823429 -48.44702915 -47.82279051
+ [9786] -46.96338303 -48.55195911 -48.24206932 -45.45900343 -44.93407749
+ [9791] -47.23698045 -47.13600920 -46.21906926 -46.36224010 -48.85235230
+ [9796] -48.47570989 -47.44505470 -46.62826966 -48.13733363 -49.24501130
+ [9801] -48.62872027 -48.39563840 -47.79384879 -48.16017843 -49.18197036
+ [9806] -47.42653680 -46.50469113 -46.03410701 -47.08776825 -47.47910957
+ [9811] -48.36074187 -49.30386237 -49.35513597 -49.34888046 -48.23204608
+ [9816] -48.15375004 -47.94892951 -47.76765357 -47.35865556 -49.07387051
+ [9821] -47.81517009 -48.58090797 -47.91591973 -46.35095273 -45.68963240
+ [9826] -45.53199323 -44.90962131 -46.77659025 -46.09480774 -47.97506939
+ [9831] -49.25210277 -48.76170865 -49.14310581 -49.25614870 -49.53252306
+ [9836] -50.36070021 -48.24841256 -47.72625744 -46.42917216 -44.86670696
+ [9841] -45.46147401 -45.90633857 -45.70553776 -46.12207827 -46.44563029
+ [9846] -47.79807337 -47.97887527 -48.58382931 -50.81000380 -51.31800861
+ [9851] -51.39640169 -52.29107403 -52.57029439 -51.65325659 -52.39667793
+ [9856] -53.51193216 -54.41490706 -54.01417911 -53.51529404 -55.28904686
+ [9861] -55.81991850 -55.35826445 -53.81267047 -54.07484692 -53.29201740
+ [9866] -53.76481830 -54.47902112 -54.99782877 -54.93001999 -54.87959374
+ [9871] -53.89288119 -54.16158519 -53.47177526 -53.24060036 -51.52298050
+ [9876] -51.90679301 -52.57019436 -52.63299933 -52.68835721 -53.13981807
+ [9881] -52.87061774 -52.46279043 -52.41474015 -52.53545466 -52.14423764
+ [9886] -50.33252559 -50.00299491 -50.28489982 -49.87800089 -50.38031353
+ [9891] -50.16500228 -48.01789904 -47.82989227 -48.23899444 -47.83085538
+ [9896] -47.56245446 -47.81237239 -48.84644875 -49.83106093 -48.81242411
+ [9901] -50.40908770 -51.65668982 -53.19797482 -53.93260380 -54.11732125
+ [9906] -54.90490154 -54.58858892 -55.67056174 -55.27232457 -55.55512845
+ [9911] -56.20923878 -56.71803153 -56.30982744 -55.84321526 -53.83687842
+ [9916] -52.69205865 -53.65842117 -52.33206482 -52.56027236 -50.33824762
+ [9921] -50.84962874 -51.45066487 -50.88098558 -51.17231150 -51.91351784
+ [9926] -52.19514131 -51.18410563 -52.49526730 -52.57208280 -51.57749432
+ [9931] -52.16371792 -52.42448488 -52.12527846 -52.29493062 -53.02003989
+ [9936] -53.05571715 -53.16680247 -52.32277133 -52.53290584 -53.19541479
+ [9941] -54.19811724 -55.13404596 -54.84326999 -53.68957389 -53.32257421
+ [9946] -53.79157141 -53.55322391 -52.84284106 -53.22690856 -54.77808259
+ [9951] -56.67955017 -57.01465492 -58.51875107 -57.57916494 -56.98531310
+ [9956] -55.49563195 -57.12751495 -56.90067997 -55.77806919 -55.95902602
+ [9961] -56.67167027 -56.29351915 -57.99723316 -58.64401112 -57.86434254
+ [9966] -57.43332865 -58.46496970 -58.49432783 -59.59138884 -58.83045768
+ [9971] -58.66000588 -59.26423494 -58.85509858 -59.02194648 -57.95642042
+ [9976] -57.45998575 -56.93370203 -56.90145646 -56.30841625 -57.35803560
+ [9981] -58.65461789 -58.99585321 -58.12052279 -59.44832674 -59.69831599
+ [9986] -61.06222028 -60.76673600 -60.76673600 -60.35756941 -59.73295157
+ [9991] -59.79616185 -58.77046064 -59.06467025 -60.27222320 -61.12262497
+ [9996] -59.87686068 -59.78415995 -60.06060606 -61.74470103 -61.69125019
+[10001] -62.10000781</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(pi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(pi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">diff</span>(pi))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="thin-out-the-time-series" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="thin-out-the-time-series"><span class="header-section-number">4</span> Thin out the time series</h2>
+<div class="cell" data-hash="understanding_markov_chain_cache/html/unnamed-chunk-8_a97371703aa56ab98e851ecbcb3cdd42">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(pi[<span class="fu">c</span>(T, F)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(pi[<span class="fu">c</span>(T, F)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(pi[<span class="fu">c</span>(T, F, F)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="understanding_markov_chain_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

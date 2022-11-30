@@ -1,0 +1,152 @@
+---
+title: Markov Chain
+author: Your Name
+date: today
+format: 
+    html:
+      theme: 
+        light: united
+        dark: darkly
+editor: visual
+chunk_output_type: console
+fig-align: center
+always_allow_html: true
+toc: true
+toc-location: right
+number-sections: true
+page-layout: article
+code-overflow: scroll
+code-line-numbers: false
+code-copy: true
+execute:
+  echo: true
+  warning: false
+  eval: true
+  output: true
+  error: false
+  freeze: true
+  out.width: "100%"
+  cache: true
+title-block-banner: true
+bibliography: references.bib
+---
+
+Markov chain example
+
+Image the following scenario:
+
+```{r}
+library(tidyverse)
+library('heemod')
+library('diagram')
+mat_dim <- define_transition(state_names = c('City', 'Rural'),
+  .5, .5, 
+  .5, .5);
+plot(mat_dim)
+```
+
+```{r}
+# mc by hand
+c = 50
+r = 50
+for(i in 1:10){
+  cat(c, r, '\n')
+  c_old = c
+  r_old = r
+  c = 0.90*c_old + 0.60*r_old
+  r = 0.10*c_old + 0.40*r_old
+}
+
+# mc using matrix
+m <- matrix(c(.5, .5, .5, .5), 2, 2)
+m
+x <- c(0, 1)
+
+for(i in 1:10){
+  print(as.vector(x))
+  x = m %*% x
+}
+```
+
+## create time series for P(c)
+
+```{r}
+# mc using matrix
+m <- matrix(c(.9, .1, .6, .4), 2, 2)
+x <- c(.5, .5)
+pc <- c()
+for(i in 1:10){
+  pc <- c(pc, as.vector(x)[1])
+  x = m %*% x
+}
+tibble(pc) %>% 
+  mutate(pr = 1 - pc) %>% 
+  ggplot(aes(x = 1:10)) +
+  geom_line(aes(y = pc)) +
+  geom_point(aes(y = pc), color = 'blue') +
+  geom_line(aes(y = pr)) +
+  geom_point(aes(y = pr), color = 'red')
+plot.ts(pc)
+```
+
+## MCMC algorithm creation (Metrapolis - hasting)
+
+If $0<k<1$, where $k$ depends on prior, data (likelihood) and chosen 'easy' distribution, then
+
+```{r}
+mat_dim <- define_transition(state_names = c('a', 'b'),
+  "1-k", "k", 
+  1, 0);
+plot(mat_dim)
+```
+
+If $k\geq 1$, then
+
+```{r}
+mat_dim <- define_transition(state_names = c('a', 'b'),
+  0, 1, 
+  '1/k', '1 - 1/k');
+plot(mat_dim)
+```
+
+Or better,in either case
+
+```{r}
+mat_dim <- define_transition(state_names = c('a', 'b'),
+  1-min(1, 'k'), min(1, 'k'), 
+  max(1, '1/k'), 1-  max(1, '1/k'));
+plot(mat_dim)
+```
+
+## MCMC example (non-stationary, not metropolis)
+
+```{r}
+# some algo
+set.seed(1)
+pi = c(rnorm(1))
+pi
+for(i in 1:10000){
+  x = rnorm(1, mean = pi[length(pi)])
+  if (abs(pi[length(pi)]) >= abs(x)) {
+    pi = c(pi, sample(c(pi[length(pi)], x),
+                      size = 1,
+                      prob = c( 1-abs(x)/abs(pi[length(pi)]), abs(x)/abs(pi[length(pi)]))))
+  } else {
+    pi = c(pi, sample(c(pi[length(pi)], x),
+                      size = 1,
+                      prob = c( 1-abs(pi[length(pi)])/abs(x), abs(pi[length(pi)])/abs(x))))}
+}
+pi
+plot.ts(pi)
+acf(pi)
+acf(diff(pi))
+```
+
+## Thin out the time series
+
+```{r}
+plot.ts(pi[c(T, F)])
+acf(pi[c(T, F)])
+acf(pi[c(T, F, F)])
+```
+

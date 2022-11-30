@@ -1,5 +1,5 @@
 ---
-title: Bayes Rules! - Chapter 6
+title: Bayes Rules! - Chapter 6 and Chapter 7
 author: Your Name
 date: today
 format: 
@@ -13,7 +13,7 @@ fig-align: center
 always_allow_html: true
 toc: true
 toc-location: right
-number-sections: true
+number-sections: false
 page-layout: article
 code-overflow: scroll
 code-line-numbers: false
@@ -43,6 +43,8 @@ library(janitor)
 library(bayesplot)
 library(bayesrules)
 ```
+
+# Chapter 6
 
 ## Grid Approximation
 
@@ -96,8 +98,8 @@ grid_data %>%
 
 grid_data %>% 
   ggplot(aes(x = pi_grid)) + 
-  geom_point(aes(y = prior, size = 2), color = 'red') + 
-  geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = prior)) +
+  geom_point(aes(y = prior/sum(prior), size = 2), color = 'red') + 
+  geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = prior/sum(prior))) +
   geom_point(aes(y = posterior, size = 2), color='darkgreen') + 
   geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = posterior)) 
 
@@ -144,8 +146,8 @@ grid_data %>%
 
 grid_data %>% 
   ggplot(aes(x = pi_grid)) + 
-  geom_point(aes(y = prior), color = 'red') + 
-  geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = prior)) +
+  geom_point(aes(y = prior/sum(prior)), color = 'red') + 
+  geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = prior/sum(prior))) +
   geom_point(aes(y = posterior), color='darkgreen') + 
   geom_segment(aes(x = pi_grid, xend = pi_grid, y = 0, yend = posterior)) 
 
@@ -198,7 +200,7 @@ $$
 grid_data <- 
   tibble(lambda_grid = seq(from = 0, to = 15, length = 100)) %>% #step1
   mutate(prior = dgamma(lambda_grid, 3, 1),
-         likelihood = dpois(2, lambda_grid)*dpois(2, lambda_grid)) %>% #step2
+         likelihood = dpois(2, lambda_grid)*dpois(8, lambda_grid)) %>% #step2
    mutate(unnormalized = likelihood * prior,
          posterior = unnormalized / sum(unnormalized)) #step3
 grid_data %>% 
@@ -206,10 +208,12 @@ grid_data %>%
 
 grid_data %>% 
   ggplot(aes(x = lambda_grid)) + 
-  geom_point(aes(y = prior), color = 'red') + 
-  geom_segment(aes(x = lambda_grid, xend = lambda_grid, y = 0, yend = prior)) +
+  geom_point(aes(y = prior/sum(prior)), color = 'red') + 
+  geom_segment(aes(x = lambda_grid, xend = lambda_grid, y = 0, yend = prior/sum(prior))) +
   geom_point(aes(y = posterior), color='darkgreen') + 
-  geom_segment(aes(x = lambda_grid, xend = lambda_grid, y = 0, yend = posterior)) 
+  geom_segment(aes(x = lambda_grid, xend = lambda_grid, y = 0, yend = posterior)) +
+  ylab('') +
+  xlab('lambda')
 
 
 # step4: sample from the discretized posterior
@@ -235,3 +239,269 @@ post_sample %>%
   stat_function(fun = dgamma, args = list(13, 3), color = 'blue', linewidth = 1) + 
   lims(x = c(0, 15))
 ```
+
+## Markov Chain Monte Carlo (MCMC)
+
+```{r}
+# STEP 1: DEFINE the model
+bb_model <- "
+  data {
+    int<lower = 0, upper = 10> Y;
+  }
+  parameters {
+    real<lower = 0, upper = 1> pi;
+  }
+  model {
+    Y ~ binomial(10, pi);
+    pi ~ beta(2, 2);
+  }
+"
+
+# STEP 2: SIMULATE the posterior
+bb_sim <- stan(model_code = bb_model, 
+               data = list(Y = 9), 
+               chains = 4, 
+               iter = 5000*2, 
+               seed = 84735)
+```
+
+Extract \pi values from `rstanfit` object.
+
+```{r}
+as.array(bb_sim, pars = "pi") %>% 
+  head(4)
+```
+
+Trace plot (chain tracing through sample space of the posterior distribution)
+
+```{r}
+mcmc_trace(bb_sim, 
+           pars = "pi",
+           size = 0.1)
+mcmc_trace(bb_sim)
+mcmc_trace(bb_sim, pars = "pi")
+```
+
+Density
+
+```{r}
+# Histogram of the Markov chain values
+mcmc_hist(bb_sim, pars = "pi") + 
+  yaxis_text(TRUE) + 
+  ylab("count")
+
+# Density plot of the Markov chain values
+mcmc_dens(bb_sim, pars = "pi") + 
+  yaxis_text(TRUE) + 
+  ylab("density")
+```
+
+Gamma-Poisson example
+
+Assume
+
+$$
+Y \sim Poisson(\lambda)
+$$
+
+where
+
+$$
+\lambda \sim Gamma(3, 1).
+$$
+
+```{r}
+# STEP 1: DEFINE the model
+gp_model <- "
+  data {
+    int<lower = 0> Y[2];
+  }
+  parameters {
+    real<lower = 0> lambda;
+  }
+  model {
+    Y ~ poisson(lambda);
+    lambda ~ gamma(3, 1);
+  }
+"
+
+# STEP 2: SIMULATE the posterior
+gp_sim <- stan(model_code = gp_model, 
+               data = list(Y = c(2,8)), 
+               chains = 4, 
+               iter = 5000*2, 
+               seed = 84735)
+```
+
+Trace.
+
+```{r}
+# Trace plots of the 4 Markov chains
+mcmc_trace(gp_sim, 
+           pars = "lambda", 
+           size = 0.1)
+
+# Histogram of the Markov chain values
+mcmc_hist(gp_sim, pars = "lambda") + 
+  yaxis_text(TRUE) + 
+  ylab("count")
+
+# Density plot of the Markov chain values
+mcmc_dens(gp_sim, pars = "lambda") + 
+  yaxis_text(TRUE) + 
+  ylab("density")
+```
+
+## Example of instability in short runs
+
+```{r}
+# STEP 2: SIMULATE the posterior
+bb_sim_short <- stan(model_code = bb_model, 
+                     data = list(Y = 9), 
+                     chains = 4,
+                     iter = 50*2, 
+                     seed = 84735)
+# Trace plots of short chains
+mcmc_trace(bb_sim_short, pars = "pi")
+
+# Density plots of individual short chains
+mcmc_dens_overlay(bb_sim_short, pars = "pi")
+```
+
+## Effective sample size
+
+```{r}
+neff_ratio(bb_sim, pars = c("pi"))
+neff_ratio(bb_sim, pars = c("pi"))*20000
+```
+
+## Autocorrelation
+
+```{r}
+mcmc_trace(bb_sim, pars = "pi")
+mcmc_acf(bb_sim, pars = "pi")
+```
+
+## Thinning the time series
+
+```{r}
+# Simulate a thinned MCMC sample
+thinned_sim <- stan(model_code = bb_model, 
+                    data = list(Y = 9), 
+                    chains = 4, 
+                    iter = 5000*2, 
+                    seed = 84735, 
+                    thin = 10)
+
+# Check out the results
+mcmc_trace(thinned_sim, pars = "pi")
+mcmc_acf(thinned_sim, pars = "pi")
+```
+
+## rstan and rstanarm
+
+-   Hamiltonian Monte Carlo Algorithm
+-   Advises against thinning
+
+## R-hat
+
+```{r}
+rhat(bb_sim, pars = "pi")
+```
+
+# Chapter 7
+
+Assume the following Normal-Normal model:
+
+$$
+Y|\mu \sim Normal(\mu, 0.75^2)
+$$
+
+$$
+\mu \sim Normal(0, 1^2)
+$$
+
+We observe data:
+
+$$
+Y = 6.25
+$$
+
+Then our posterior is:
+
+$$
+\mu| Y = 6.25 \sim Normal(4, 0.6^2)
+$$
+
+### FIND THIS POSTERIOR THROUGH SIMULATION.
+
+Just independent Monte Carlo simulation
+
+```{r}
+set.seed(84375)
+mc_tour <- tibble(mu = rnorm(5000, 
+                             mean = 4, 
+                             sd = 0.6))
+mc_tour %>% 
+  ggplot(aes(x = mu)) + 
+  geom_histogram(aes(y = ..density..), color = "white", bins = 50) + 
+  stat_function(fun = dnorm, args = list(4, 0.6), color = "blue")
+```
+
+Metropolis
+
+```{r}
+current <- 3
+set.seed(8)
+proposal <- runif(1, 
+                  min = current - 1, 
+                  max = current + 1)
+proposal
+
+# prior * likelihood
+proposal_plaus <- dnorm(proposal, 0, 1) * dnorm(6.25, proposal, 0.75)
+proposal_plaus
+
+current_plaus  <- dnorm(current, 0, 1) * dnorm(6.25, current, 0.75)
+current_plaus
+
+proposal_plaus / current_plaus
+
+alpha <- min(1, proposal_plaus / current_plaus)
+alpha
+
+next_stop <- sample(c(proposal, current),
+                    size = 1, 
+                    prob = c(alpha, 1-alpha))
+next_stop
+```
+
+Automate
+
+```{r}
+one_mh_iteration <- function(w, current){
+ # STEP 1: Propose the next chain location
+ proposal <- runif(1, min = current - w, max = current + w)
+  
+ # STEP 2: Decide whether or not to go there
+ proposal_plaus <- dnorm(proposal, 0, 1) * dnorm(6.25, proposal, 0.75)
+ current_plaus  <- dnorm(current, 0, 1) * dnorm(6.25, current, 0.75)
+ alpha <- min(1, proposal_plaus / current_plaus)
+ next_stop <- sample(c(proposal, current), 
+                     size = 1, prob = c(alpha, 1-alpha))
+  
+ # Return the results
+ return(data.frame(proposal, alpha, next_stop))
+}
+```
+
+```{r}
+set.seed(8)
+one_mh_iteration(w = 1, current = 3)
+set.seed(83)
+one_mh_iteration(w = 1, current = 3)
+set.seed(7)
+one_mh_iteration(w = 1, current = 3)
+```
+
+Next time: 7.3-7.8
