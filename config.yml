@@ -1,0 +1,8 @@
+name: bayes
+channels:
+    - conda-forge
+    - defaults
+    - R
+dependecies:
+    - r-base = 4.0.0
+    - r-tidyverse = 1.3.2
