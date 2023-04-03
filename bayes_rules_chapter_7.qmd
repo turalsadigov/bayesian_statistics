@@ -186,13 +186,12 @@ mh_simulation_1 %>%
   stat_function(fun = dnorm, args = list(4,0.6), color = "blue")
 ```
 
-## 7.5: Beta/Binomial  + Beta proposal model
+## 7.5: Beta/Binomial + Beta proposal model
 
 -   **Independence sampling algorithm (i.e. proposal point does not depend on the previous point, but probabilities does, so it is still MC).**
 
-```{=html}
 <!-- -->
-```
+
 -   Assume Beta(2,3) prior for pi.
 
 ```{r}

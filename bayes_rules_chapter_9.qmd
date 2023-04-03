@@ -1,0 +1,283 @@
+---
+title: Bayes Rules! - Bayesian Simple Linear Regression
+author: Your Name
+date: today
+format: 
+    html:
+      theme: 
+        light: flatly
+        dark: darkly
+editor: visual
+chunk_output_type: console
+fig-align: center
+always_allow_html: true
+toc: true
+toc-location: right
+number-sections: false
+page-layout: article
+code-overflow: scroll
+code-line-numbers: false
+code-copy: true
+execute:
+  echo: true
+  warning: false
+  eval: true
+  output: true
+  error: false
+  freeze: true
+  out.width: "100%"
+  cache: true
+title-block-banner: true
+bibliography: references.bib
+csl: electronic-journal-of-statistics.csl
+---
+
+```{r}
+options(scipen = 100)
+```
+
+
+Libraries
+
+```{r}
+library(tidyverse)
+library(rstan)
+library(rstanarm)
+library(janitor)
+library(bayesplot)
+library(bayesrules)
+library(plotly)
+library(broom)
+library(broom.mixed)
+library(tidybayes)
+```
+
+## Bayesian SLR
+
+Bayesian SLR adds prior assumptions to the parameters that we try to learn.
+
+$$
+Y| \beta_0, \beta_1, \sigma \sim Normal(\beta_0 + \beta_1x, \sigma^2)
+$$
+
+$$
+\beta_0 \sim Normal(m_0, s_0^2)
+$$
+
+$$
+\beta_1 \sim Normal(m_1, s_1^2)
+$$
+
+$$
+\sigma \sim Exp(l)
+$$
+
+
+
+
+## Example: Bike Sharing dataset
+
+
+```{r}
+bikes %>% 
+  tibble() 
+
+bikes %>% 
+  tibble() %>% 
+  summary()
+
+bikes %>% 
+  ggplot(aes(x = rides)) +
+  geom_histogram(color = 'white', alpha = 0.9)
+
+bikes %>% 
+  ggplot(aes(sample = rides)) +
+  stat_qq() +
+  stat_qq_line()
+
+
+bikes %>% 
+  ggplot(aes(sample = log(rides))) +
+  stat_qq() +
+  stat_qq_line()
+
+
+bikes %>% 
+  ggplot(aes(x = temp_feel, y = rides)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = F)
+
+
+bikes %>% 
+  summarise(cor(temp_feel, rides))
+```
+
+
+Based on past bikeshare analyses, suppose we have the following prior understanding of this relationship:
+
+**Observation**: On an average temperature day, say 65 or 70 degrees for D.C., there are typically around 5000 riders, though this average could be somewhere between 3000 and 7000. What does it mean? 
+$$y = \beta_1(x - 70) + \beta_0$$
+
+Since $(7000-3000)/4 = 1000$, $$\beta_0 \sim Normal(m_0 = 5000, s_0^2 = 1000^2)$$. 
+
+
+**Observation**: For every one degree increase in temperature, ridership typically increases by 100 rides, though this average increase could be as low as 20 or as high as 180. What does it mean? Since, $(180 - 20)/4 = 40$,
+
+$$\beta_1 \sim Normal(\mu_1 = 100, s_1^2 = 40^2)$$
+
+
+**Observation**: At any given temperature, daily ridership will tend to vary with a moderate standard deviation of 1250 rides. What does it mean? $\frac{1}{l} = 1250$, i.e, $l = \frac{1}{1250}=$ `r 1/1250`. Thus,
+
+$$\sigma \sim Exp(l = 0.0008)$$
+
+
+
+We have our priors for the model parameters. 
+
+```{r}
+plot_normal(mean = 5000, sd = 1000) + 
+  labs(x = "beta_0c", y = "pdf")
+plot_normal(mean = 100, sd = 40) + 
+  labs(x = "beta_1", y = "pdf")
+plot_gamma(shape = 1, rate = 0.0008) + 
+  labs(x = "sigma", y = "pdf")
+```
+
+
+
+
+## Markov Chain Monte Carlo
+
+-  Dynamical system
+-  Not deterministic
+-  Looking for a steady state solution
+-  'Attractor' in the parameter space
+-  Distribution in the attractor is the posterior distribution
+
+```{r}
+bike_model <- 
+  stan_glm(rides ~ temp_feel, 
+           data = bikes,
+           family = gaussian,
+           prior_intercept = normal(5000, 1000),
+           prior = normal(100, 40), 
+           prior_aux = exponential(0.0008),
+           chains = 4, 
+           iter = 5000*2, 
+           seed = 84735)
+```
+
+
+Dynamics in the phase space (i.e., parameter space)
+
+
+```{r}
+bike_model %>% 
+  as_tibble() %>% 
+  #mutate(time = rep(1:50, 1)) %>% 
+  tail(n = 100) %>% 
+  clean_names() %>% 
+  plot_ly(x = ~log(-intercept), 
+          y = ~temp_feel/10, 
+          z = ~sigma,
+          type = 'scatter3d', 
+          mode = 'lines') %>% 
+  
+  add_markers() %>% 
+  layout(scene = list(xaxis = list(title = 'beta_0'),
+                     yaxis = list(title = 'beta_1'),
+                     zaxis = list(title = 'sigma')))
+  
+```
+
+```{r}
+# Trace plots of parallel chains
+mcmc_trace(bike_model, size = 0.1)
+
+# Density plots of parallel chains
+mcmc_dens_overlay(bike_model)
+```
+
+
+```{r}
+# model parameters
+tidy(bike_model)
+
+tidy(bike_model, 
+     effects = c("fixed", "aux"),
+     conf.int = TRUE, 
+     conf.level = 0.80)
+```
+
+
+```{r}
+# 50 simulated model lines
+bikes %>%
+  add_fitted_draws(bike_model, n = 50) %>%
+  ggplot(aes(x = temp_feel, y = rides)) +
+    geom_line(aes(y = .value, group = .draw), alpha = 0.15) + 
+    geom_point(data = bikes, size = 0.05)
+```
+
+
+How many coefficients (beta_1) is below or equal to 0?
+
+```{r}
+bike_model %>% 
+  as_tibble() %>% 
+  filter(temp_feel <= 0)
+```
+
+What about variation?
+
+```{r}
+bikes %>%
+  add_predicted_draws(bike_model, n = 4) %>%
+  ggplot(aes(x = temp_feel, y = rides)) +
+    geom_point(aes(y = .prediction, group = .draw), size = 0.5) + 
+    facet_wrap(~ .draw)
+```
+
+
+## Predictions
+ 
+-  Sampling variation (ys)
+-  Posterior parameter variation (betas, sigma)
+
+Predict possibe predictions for x = 75?
+
+```{r}
+set.seed(84735)
+df2 <- 
+  bike_model %>% 
+  as_tibble() %>% 
+  clean_names() %>% 
+  mutate(mu_x_75 = temp_feel*75 + intercept ) %>% 
+  mutate(preds_75 = rnorm(20000, mu_x_75, sigma))
+df2
+```
+
+
+```{r}
+df2 %>% 
+  ggplot() +
+  geom_density(aes(x = preds_75, fill = 'blue'), alpha = 0.5) +
+  geom_density(aes(x = mu_x_75, fill = 'red'), alpha = 0.5)
+```
+
+rstan predictions
+
+```{r}
+set.seed(84735)
+shortcut_prediction <- 
+  posterior_predict(bike_model, 
+                    newdata = data.frame(temp_feel = 75))
+shortcut_prediction %>% 
+  tibble()
+```
+
+
+What is missing?
+
+-  9.6: sequential regression modeling
+-  9.7: different rstan priors
